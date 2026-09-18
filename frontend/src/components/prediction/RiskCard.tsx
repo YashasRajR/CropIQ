@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { ShieldAlert, ShieldCheck, AlertTriangle, Check, AlertCircle, ChevronDown, Activity } from 'lucide-react';
+import { ShieldAlert, ShieldCheck, AlertTriangle, ChevronDown, Activity, Check, AlertCircle } from 'lucide-react';
 import { Card } from '../common/Card';
 import { Badge } from '../common/Badge';
 import { RiskPayload } from '../../types/prediction';
-import { explainRisk } from '../../utils/explanations';
 
 interface RiskCardProps {
   risk: RiskPayload;
@@ -14,7 +13,21 @@ export const RiskCard: React.FC<RiskCardProps> = ({ risk }) => {
   const isHigh = risk.level === 'HIGH';
   const isModerate = risk.level === 'MODERATE';
 
-  const { title, badgeLabel, meaning } = explainRisk(risk);
+  // Dynamic marker position along the Low -> Moderate -> High track
+  const markerPosition =
+    risk.score !== undefined
+      ? Math.max(10, Math.min(90, risk.score))
+      : isHigh
+      ? 85
+      : isModerate
+      ? 50
+      : 15;
+
+  const getRiskExplanation = () => {
+    if (isHigh) return 'Significant stress factors detected on the plot requiring management attention.';
+    if (isModerate) return 'Some current conditions may need attention to protect yield potential.';
+    return 'Growing conditions look favorable with low acute crop stress detected.';
+  };
 
   return (
     <Card
@@ -28,10 +41,10 @@ export const RiskCard: React.FC<RiskCardProps> = ({ risk }) => {
       }`}
     >
       <div>
-        {/* 1. Header: What Happened? */}
-        <div className="flex items-center justify-between gap-2 mb-3">
-          <div className="flex items-center gap-2.5">
-            <div
+        {/* Header */}
+        <div className="flex items-center justify-between gap-2 mb-4">
+          <div className="flex items-center gap-2">
+            <span
               className={`p-2 rounded-xl ${
                 isHigh
                   ? 'bg-rose-100 text-rose-800'
@@ -47,72 +60,93 @@ export const RiskCard: React.FC<RiskCardProps> = ({ risk }) => {
               ) : (
                 <ShieldCheck className="w-5 h-5" />
               )}
-            </div>
+            </span>
             <div>
-              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500">
-                {title}
-              </h3>
-              <p className="text-xs text-slate-900 font-semibold">
-                Crop safety & stress level
-              </p>
+              <h2 className="text-xs font-bold uppercase tracking-wider text-slate-500">
+                Crop Risk
+              </h2>
+              <span className="text-xs text-slate-800 font-semibold">
+                Yield risk assessment
+              </span>
             </div>
           </div>
 
           <Badge variant={isHigh ? 'rose' : isModerate ? 'amber' : 'emerald'} size="sm">
-            <span>{badgeLabel}</span>
+            <span>{risk.level} Risk</span>
           </Badge>
         </div>
 
-        {/* 2. What does it mean? */}
-        <div className="my-3">
-          <p className="text-xs text-slate-700 leading-relaxed font-medium">
-            {meaning}
-          </p>
+        {/* Visual Spectrum Track: Low ──── Moderate ──── High */}
+        <div className="my-5 p-4 rounded-xl bg-slate-50 border border-slate-200">
+          <div className="flex justify-between text-[11px] font-bold text-slate-600 mb-2 px-1">
+            <span className={!isModerate && !isHigh ? 'text-emerald-700 font-black' : ''}>
+              Low
+            </span>
+            <span className={isModerate ? 'text-amber-700 font-black' : ''}>
+              Moderate
+            </span>
+            <span className={isHigh ? 'text-rose-700 font-black' : ''}>
+              High
+            </span>
+          </div>
+
+          {/* Track Bar with Pointer Marker */}
+          <div className="relative h-2.5 bg-gradient-to-r from-emerald-400 via-amber-400 to-rose-400 rounded-full shadow-inner">
+            {/* Position Marker */}
+            <div
+              className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-5 h-5 bg-white border-2 border-slate-900 rounded-full shadow-md flex items-center justify-center transition-all duration-500"
+              style={{ left: `${markerPosition}%` }}
+            >
+              <div className="w-2 h-2 rounded-full bg-slate-900" />
+            </div>
+          </div>
+
+          {/* Active Level Label */}
+          <div className="text-center mt-3">
+            <span
+              className={`text-sm font-black uppercase tracking-wider ${
+                isHigh
+                  ? 'text-rose-700'
+                  : isModerate
+                  ? 'text-amber-700'
+                  : 'text-emerald-700'
+              }`}
+            >
+              {risk.level} Risk
+            </span>
+          </div>
         </div>
 
-        {/* 3. Why? Protective Factors & Stress Drivers */}
-        <div className="space-y-2 mt-3 text-xs">
-          {/* Protective factors */}
+        {/* Simple Explanation Underneath */}
+        <p className="text-xs text-slate-700 font-medium leading-relaxed mb-3">
+          {getRiskExplanation()}
+        </p>
+
+        {/* Compact Conditions Indicators */}
+        <div className="space-y-2 mb-3">
           {risk.protective_factors && risk.protective_factors.length > 0 && (
-            <div className="p-3 rounded-xl bg-emerald-50/70 border border-emerald-200 text-emerald-950">
-              <div className="font-semibold flex items-center gap-1.5 mb-1 text-emerald-900 text-[11px]">
-                <Check className="w-3.5 h-3.5 text-emerald-700" />
-                <span>What is protecting your crop:</span>
-              </div>
-              <ul className="space-y-1 text-[11px] text-emerald-800 list-disc list-inside">
-                {risk.protective_factors.map((factor, idx) => (
-                  <li key={idx} className="leading-snug">
-                    {factor}
-                  </li>
-                ))}
-              </ul>
+            <div className="p-2.5 rounded-lg bg-emerald-50 border border-emerald-200/80 text-emerald-950 text-xs flex items-start gap-2">
+              <Check className="w-3.5 h-3.5 text-emerald-700 shrink-0 mt-0.5" />
+              <span className="text-[11px] leading-snug">
+                <strong>Protecting crop: </strong>
+                {risk.protective_factors.slice(0, 2).join(' ')}
+              </span>
             </div>
           )}
 
-          {/* Stress drivers */}
-          {risk.drivers && risk.drivers.length > 0 ? (
-            <div className="p-3 rounded-xl bg-amber-50/70 border border-amber-200 text-amber-950">
-              <div className="font-semibold flex items-center gap-1.5 mb-1 text-amber-900 text-[11px]">
-                <AlertCircle className="w-3.5 h-3.5 text-amber-700" />
-                <span>Conditions to watch closely:</span>
-              </div>
-              <ul className="space-y-1 text-[11px] text-amber-800 list-disc list-inside">
-                {risk.drivers.map((driver, idx) => (
-                  <li key={idx} className="leading-snug">
-                    {driver}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ) : (
-            <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-600 text-[11px]">
-              No acute stress drivers detected for current farm readings.
+          {risk.drivers && risk.drivers.length > 0 && (
+            <div className="p-2.5 rounded-lg bg-amber-50 border border-amber-200/80 text-amber-950 text-xs flex items-start gap-2">
+              <AlertCircle className="w-3.5 h-3.5 text-amber-700 shrink-0 mt-0.5" />
+              <span className="text-[11px] leading-snug">
+                <strong>To watch: </strong>
+                {risk.drivers.slice(0, 2).join(' ')}
+              </span>
             </div>
           )}
         </div>
 
-        {/* 4. Progressive Disclosure: Technical Risk Details Toggle */}
-        <div className="mt-3">
+        {/* Progressive Disclosure: Technical Details */}
+        <div className="mt-2">
           <button
             type="button"
             onClick={() => setShowTechnical(!showTechnical)}
@@ -120,7 +154,7 @@ export const RiskCard: React.FC<RiskCardProps> = ({ risk }) => {
           >
             <span className="inline-flex items-center gap-1.5">
               <Activity className="w-3.5 h-3.5 text-slate-500" />
-              <span>Technical risk details</span>
+              <span>Technical Risk Details</span>
             </span>
             <ChevronDown
               className={`w-3.5 h-3.5 text-slate-500 transition-transform ${
@@ -130,40 +164,30 @@ export const RiskCard: React.FC<RiskCardProps> = ({ risk }) => {
           </button>
 
           {showTechnical && (
-            <div className="mt-2 p-3 rounded-xl bg-slate-900 text-slate-200 text-[11px] font-mono space-y-2 animate-in fade-in duration-150">
-              <div className="flex justify-between items-center border-b border-slate-800 pb-1.5">
-                <span className="text-slate-400">Risk Severity Score:</span>
+            <div className="mt-2 p-3 rounded-xl bg-slate-900 text-slate-200 text-[11px] font-mono space-y-1.5 animate-in fade-in duration-150">
+              <div className="flex justify-between border-b border-slate-800 pb-1">
+                <span className="text-slate-400">Severity Score:</span>
                 <span className="text-amber-400 font-bold">
                   {risk.score !== undefined ? `${risk.score} / 100` : risk.level}
                 </span>
               </div>
-
               {risk.component_scores && (
                 <div className="space-y-1 pt-1 text-[10px]">
-                  <div className="text-slate-400 font-semibold mb-1">Component Penalties:</div>
                   <div className="flex justify-between">
-                    <span className="text-slate-400">Yield Deficit:</span>
-                    <span className="text-slate-300 font-mono">
-                      +{risk.component_scores.yield_deficit ?? 0}
-                    </span>
+                    <span className="text-slate-400">Yield Deficit Penalty:</span>
+                    <span className="text-slate-300">+{risk.component_scores.yield_deficit ?? 0}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-slate-400">Unfavorable Factors:</span>
-                    <span className="text-slate-300 font-mono">
-                      +{risk.component_scores.unfavorable_factors ?? 0}
-                    </span>
+                    <span className="text-slate-300">+{risk.component_scores.unfavorable_factors ?? 0}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-slate-400">Uncertainty Penalty:</span>
-                    <span className="text-slate-300 font-mono">
-                      +{risk.component_scores.uncertainty_penalty ?? 0}
-                    </span>
+                    <span className="text-slate-300">+{risk.component_scores.uncertainty_penalty ?? 0}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-slate-400">Data Quality Penalty:</span>
-                    <span className="text-slate-300 font-mono">
-                      +{risk.component_scores.data_quality_penalty ?? 0}
-                    </span>
+                    <span className="text-slate-300">+{risk.component_scores.data_quality_penalty ?? 0}</span>
                   </div>
                 </div>
               )}

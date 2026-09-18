@@ -66,41 +66,35 @@ export const RecommendationCard: React.FC<RecommendationCardProps> = ({
           {item.title}
         </h3>
 
-        {/* 3-Step Clear Farmer Advisory Structure */}
-        <div className="space-y-3 text-xs mb-4">
+        {/* 3-Step Concise Visual Micro-Blocks */}
+        <div className="space-y-2.5 text-xs mb-4">
           {/* 1. What we noticed */}
           <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
-            <div className="font-bold text-slate-700 flex items-center gap-1.5 mb-1">
+            <div className="font-bold text-slate-600 flex items-center gap-1.5 mb-0.5 text-[10px] uppercase tracking-wider">
               <Eye className="w-3.5 h-3.5 text-slate-500" />
-              <span className="uppercase tracking-wider text-[10px] text-slate-600">
-                What we noticed:
-              </span>
+              <span>What we noticed</span>
             </div>
-            <p className="text-slate-900 text-xs leading-relaxed font-medium">
+            <p className="text-slate-900 text-xs font-medium leading-relaxed">
               {item.summary || item.reason}
             </p>
           </div>
 
-          {/* 2. What you can consider doing */}
+          {/* 2. What you can consider */}
           <div className="p-3 rounded-xl bg-emerald-50/70 border border-emerald-200 text-emerald-950">
-            <div className="font-bold text-emerald-900 flex items-center gap-1.5 mb-1">
+            <div className="font-bold text-emerald-800 flex items-center gap-1.5 mb-0.5 text-[10px] uppercase tracking-wider">
               <CheckCircle2 className="w-3.5 h-3.5 text-emerald-700" />
-              <span className="uppercase tracking-wider text-[10px] text-emerald-800">
-                What you can consider doing:
-              </span>
+              <span>What you can consider</span>
             </div>
-            <p className="text-emerald-950 text-xs leading-relaxed font-semibold">
+            <p className="text-emerald-950 text-xs font-bold leading-relaxed">
               {item.action}
             </p>
           </div>
 
           {/* 3. Why it matters */}
           <div className="p-3 rounded-xl bg-amber-50/50 border border-amber-200 text-amber-950">
-            <div className="font-bold text-amber-900 flex items-center gap-1.5 mb-1">
+            <div className="font-bold text-amber-800 flex items-center gap-1.5 mb-0.5 text-[10px] uppercase tracking-wider">
               <Lightbulb className="w-3.5 h-3.5 text-amber-600" />
-              <span className="uppercase tracking-wider text-[10px] text-amber-800">
-                Why this matters:
-              </span>
+              <span>Why this helps</span>
             </div>
             <p className="text-amber-950 text-xs leading-relaxed">
               {item.reason}
@@ -108,7 +102,7 @@ export const RecommendationCard: React.FC<RecommendationCardProps> = ({
           </div>
         </div>
 
-        {/* 4. Progressive Disclosure: Technical Rule Details Toggle */}
+        {/* Progressive Disclosure: Technical Rule Details Toggle */}
         <div className="mt-2 mb-3">
           <button
             type="button"
@@ -117,7 +111,7 @@ export const RecommendationCard: React.FC<RecommendationCardProps> = ({
           >
             <span className="inline-flex items-center gap-1.5">
               <Code2 className="w-3.5 h-3.5 text-slate-500" />
-              <span>Technical rule details</span>
+              <span>Technical Rule Details</span>
             </span>
             <ChevronDown
               className={`w-3.5 h-3.5 text-slate-500 transition-transform ${
@@ -129,17 +123,17 @@ export const RecommendationCard: React.FC<RecommendationCardProps> = ({
           {showTechnical && (
             <div className="mt-2 p-3 rounded-xl bg-slate-900 text-slate-200 text-[11px] font-mono space-y-2 animate-in fade-in duration-150">
               <div className="flex justify-between border-b border-slate-800 pb-1">
-                <span className="text-slate-400">Rule Identifier:</span>
+                <span className="text-slate-400">Rule ID:</span>
                 <span className="text-emerald-400 font-bold">{item.id}</span>
               </div>
               <div className="flex justify-between border-b border-slate-800 pb-1">
-                <span className="text-slate-400">Confidence Rating:</span>
+                <span className="text-slate-400">Confidence:</span>
                 <span className="text-amber-400">{item.confidence}</span>
               </div>
 
               {item.evidence && item.evidence.length > 0 && (
                 <div className="border-b border-slate-800 pb-1.5">
-                  <div className="text-slate-400 mb-1">Trigger Evidence:</div>
+                  <div className="text-slate-400 mb-1">Evidence:</div>
                   <ul className="list-disc list-inside space-y-0.5 text-slate-300 text-[10px]">
                     {item.evidence.map((ev, idx) => (
                       <li key={idx}>
@@ -152,7 +146,7 @@ export const RecommendationCard: React.FC<RecommendationCardProps> = ({
 
               {item.limitations && (
                 <div className="text-[10px] text-slate-400 pt-0.5">
-                  <span className="text-amber-400 font-semibold">Agronomic Limitations: </span>
+                  <span className="text-amber-400 font-semibold">Agronomic Scope: </span>
                   {Array.isArray(item.limitations)
                     ? item.limitations.join('. ')
                     : item.limitations}

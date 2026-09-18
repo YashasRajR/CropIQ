@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import { ShieldAlert, Info, ChevronDown, SlidersHorizontal } from 'lucide-react';
+import { ShieldAlert, ChevronDown, SlidersHorizontal } from 'lucide-react';
 import { Card } from '../common/Card';
 import { Badge } from '../common/Badge';
 import { ScenarioResponse } from '../../types/scenario';
 import { formatNumber, formatDiff, formatPercentage } from '../../utils/formatting';
-import { explainScenarioComparison } from '../../utils/explanations';
-import { displayUnit } from '../../utils/formatting';
+import { getFriendlyFeatureName } from '../../utils/explanations';
 
 interface ScenarioComparisonProps {
   scenario: ScenarioResponse;
@@ -17,76 +16,73 @@ export const ScenarioComparison: React.FC<ScenarioComparisonProps> = ({ scenario
   const isPositive = comparison.absolute_change > 0;
   const isZero = Math.abs(comparison.absolute_change) < 0.0001;
 
-  const { headline, whatChanged, whatDoesItMean, disclaimer } =
-    explainScenarioComparison(scenario);
+  const changedFeatures = scenario.explanation?.changed_features || Object.keys(scen.changes || {});
+  const friendlyFeatureNames = changedFeatures
+    .map((f) => getFriendlyFeatureName(f).toLowerCase())
+    .join(' and ');
 
   return (
     <div className="mt-8 space-y-6 animate-in fade-in duration-300">
-      <Card variant="elevated" className="p-6 sm:p-7 border-t-4 border-t-emerald-600 bg-white">
+      <Card variant="elevated" className="p-6 sm:p-8 border-t-4 border-t-emerald-600 bg-white border border-slate-200/90 shadow-xs">
         {/* Section Title */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6 pb-3 border-b border-slate-100">
           <div>
             <h3 className="text-lg font-bold text-slate-900 tracking-tight">
               What Happens If Conditions Change?
             </h3>
             <p className="text-xs text-slate-500">
-              Comparison between your current farm baseline and this hypothetical scenario
+              Visual comparison between your current farm baseline and this simulated scenario.
             </p>
           </div>
           <Badge
             variant={comparison.is_material ? (isPositive ? 'emerald' : 'amber') : 'slate'}
             size="sm"
           >
-            <span>{headline}</span>
+            <span>{comparison.materiality_label}</span>
           </Badge>
         </div>
 
-        {/* 3-Column Current -> New -> Difference Display */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 items-center">
-          {/* 1. Current Estimate */}
-          <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-center">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-500 block mb-1">
+        {/* Visual Before / After Flow: CURRENT ──> NEW SITUATION ──> CHANGE */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+          {/* 1. CURRENT */}
+          <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 text-center relative">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 block mb-1">
               Current Farm Baseline
             </span>
-            <div className="text-3xl sm:text-4xl font-black text-slate-900 font-mono">
-              {formatNumber(baseline.predicted_yield, 2)}
+            <div className="text-3xl sm:text-4xl font-black text-slate-900 font-mono my-1">
+              🌾 {formatNumber(baseline.predicted_yield, 1)}
             </div>
-            {displayUnit(baseline.unit) && (
-              <div className="text-xs font-semibold text-emerald-800 mt-0.5">
-                {displayUnit(baseline.unit)}
-              </div>
-            )}
-            <div className="mt-2 text-[11px] text-slate-500">
+            <div className="text-xs font-bold text-emerald-800">
+              {baseline.unit}
+            </div>
+            <div className="mt-3 pt-2 border-t border-slate-200 text-[11px] text-slate-500">
               Risk: <strong className="text-slate-700">{baseline.risk.level}</strong>
             </div>
           </div>
 
-          {/* 2. New Scenario Estimate */}
-          <div className="p-4 rounded-xl bg-emerald-50/60 border border-emerald-200 text-center">
-            <span className="text-xs font-bold uppercase tracking-wider text-emerald-800 block mb-1">
-              Hypothetical Scenario
+          {/* 2. NEW SITUATION */}
+          <div className="p-5 rounded-2xl bg-emerald-50/60 border border-emerald-200 text-center relative">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-800 block mb-1">
+              New Situation
             </span>
-            <div className="text-3xl sm:text-4xl font-black text-emerald-950 font-mono">
-              {formatNumber(scen.predicted_yield, 2)}
+            <div className="text-3xl sm:text-4xl font-black text-emerald-950 font-mono my-1">
+              🌾 {formatNumber(scen.predicted_yield, 1)}
             </div>
-            {displayUnit(scen.unit) && (
-              <div className="text-xs font-semibold text-emerald-800 mt-0.5">
-                {displayUnit(scen.unit)}
-              </div>
-            )}
-            <div className="mt-2 text-[11px] text-emerald-800 font-medium">
+            <div className="text-xs font-bold text-emerald-800">
+              {scen.unit}
+            </div>
+            <div className="mt-3 pt-2 border-t border-emerald-200/80 text-[11px] text-emerald-900">
               Risk: <strong>{scen.risk.level}</strong>
             </div>
           </div>
 
-          {/* 3. Difference Column */}
-          <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-center">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-500 block mb-1">
-              Estimated Difference
+          {/* 3. CHANGE */}
+          <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 text-center relative">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 block mb-1">
+              Estimated Change
             </span>
-
             <div
-              className={`text-3xl sm:text-4xl font-black font-mono tracking-tight ${
+              className={`text-3xl sm:text-4xl font-black font-mono tracking-tight my-1 ${
                 isZero
                   ? 'text-slate-400'
                   : isPositive
@@ -98,62 +94,42 @@ export const ScenarioComparison: React.FC<ScenarioComparisonProps> = ({ scenario
             </div>
 
             {comparison.percentage_change !== null && comparison.percentage_change !== undefined && (
-              <div className="text-xs text-slate-600 mt-0.5 font-medium">
-                {formatPercentage(comparison.percentage_change)} change
+              <div className="text-xs text-slate-600 font-semibold">
+                {formatPercentage(comparison.percentage_change)} shift
               </div>
             )}
 
-            <div className="mt-2">
+            <div className="mt-3 pt-2 border-t border-slate-200 text-[11px]">
               <Badge
                 variant={comparison.is_material ? (isPositive ? 'emerald' : 'amber') : 'slate'}
                 size="sm"
               >
-                <span>
-                  {comparison.is_material
-                    ? 'Noticeable Model Shift'
-                    : 'Small Model Fluctuation'}
-                </span>
+                <span>{comparison.is_material ? 'Noticeable Shift' : 'Minor Fluctuation'}</span>
               </Badge>
             </div>
           </div>
         </div>
 
-        {/* Plain-Language Explanations */}
-        <div className="mt-6 pt-5 border-t border-slate-200 space-y-3 text-xs leading-relaxed">
-          {/* What Changed */}
-          <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
-            <strong className="text-slate-900 block mb-1 font-semibold">What changed:</strong>
-            <p className="text-slate-700">{whatChanged}</p>
-          </div>
+        {/* Short Plain-Language Explanation */}
+        <div className="mt-6 p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-700 space-y-2">
+          <p className="leading-relaxed font-medium">
+            When <strong className="text-slate-900">{friendlyFeatureNames || 'this input'}</strong> was changed in the model, the estimated yield changed by around <strong className="text-slate-900">{formatDiff(comparison.absolute_change, baseline.unit)}</strong>.
+          </p>
 
-          {/* What Does It Mean */}
-          <div
-            className={`p-3.5 rounded-xl border ${
-              comparison.is_material
-                ? 'bg-emerald-50/70 border-emerald-200 text-emerald-950'
-                : 'bg-slate-50 border-slate-200 text-slate-700'
-            }`}
-          >
-            <strong className="block mb-1 font-semibold">What this means for your farm:</strong>
-            <p>{whatDoesItMean}</p>
-          </div>
+          <p className="text-[11px] text-slate-500 leading-snug">
+            This is a model-based scenario estimate, not a guaranteed harvest result.
+          </p>
 
           {/* Out of Training Range Notice */}
           {validation && !validation.within_training_range && (
-            <div className="p-3.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-950 flex items-start gap-2">
+            <div className="mt-3 p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-950 flex items-start gap-2">
               <ShieldAlert className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
               <div>
-                <strong className="block mb-0.5">Outside typical observation range: </strong>
-                This hypothetical value is outside the conditions usually seen in the training data, so this prediction carries higher uncertainty.
+                <strong>Outside typical observation range: </strong>
+                This hypothetical value deviates from historical training data, so this prediction carries wider uncertainty.
               </div>
             </div>
           )}
-
-          {/* Non-Causal Framing Disclaimer */}
-          <div className="p-3 rounded-xl bg-slate-50/80 border border-slate-200 text-slate-500 text-[11px] flex items-start gap-2">
-            <Info className="w-4 h-4 text-slate-400 shrink-0 mt-0.5" />
-            <span>{disclaimer}</span>
-          </div>
         </div>
 
         {/* Progressive Disclosure: Technical Scenario Details Toggle */}
@@ -165,7 +141,7 @@ export const ScenarioComparison: React.FC<ScenarioComparisonProps> = ({ scenario
           >
             <span className="inline-flex items-center gap-2">
               <SlidersHorizontal className="w-4 h-4 text-slate-500" />
-              <span>Technical Scenario Details & Changed Features</span>
+              <span>Technical Scenario Details</span>
             </span>
             <ChevronDown
               className={`w-4 h-4 text-slate-500 transition-transform ${
@@ -183,24 +159,20 @@ export const ScenarioComparison: React.FC<ScenarioComparisonProps> = ({ scenario
                 </span>
               </div>
               <div className="flex justify-between border-b border-slate-800 pb-1.5">
-                <span className="text-slate-400">Materiality Label:</span>
-                <span className="text-emerald-400 font-bold">{comparison.materiality_label}</span>
-              </div>
-              <div className="flex justify-between border-b border-slate-800 pb-1.5">
-                <span className="text-slate-400">Causal Claim Policy:</span>
-                <span className="text-amber-400">NON-CAUSAL (Correlational Model Delta)</span>
+                <span className="text-slate-400">Policy:</span>
+                <span className="text-amber-400">NON-CAUSAL (Predictive Association Delta)</span>
               </div>
 
               {comparison.feature_diffs && Object.keys(comparison.feature_diffs).length > 0 && (
                 <div className="pt-2">
-                  <div className="text-slate-400 font-semibold mb-2">Modified Feature Values:</div>
+                  <div className="text-slate-400 font-semibold mb-2">Feature Adjustments:</div>
                   <table className="w-full text-left text-[11px]">
                     <thead>
                       <tr className="border-b border-slate-800 text-slate-400">
                         <th className="py-1">Feature</th>
                         <th className="py-1">Baseline</th>
                         <th className="py-1">Scenario</th>
-                        <th className="py-1">Difference</th>
+                        <th className="py-1">Delta</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-800">
@@ -208,12 +180,8 @@ export const ScenarioComparison: React.FC<ScenarioComparisonProps> = ({ scenario
                         <tr key={fKey}>
                           <td className="py-1 text-slate-300">{fKey}</td>
                           <td className="py-1 text-slate-400">{formatNumber(item.baseline, 2)}</td>
-                          <td className="py-1 text-slate-200 font-bold">
-                            {formatNumber(item.scenario, 2)}
-                          </td>
-                          <td className="py-1 text-emerald-400 font-mono">
-                            {formatDiff(item.difference, '')}
-                          </td>
+                          <td className="py-1 text-slate-200 font-bold">{formatNumber(item.scenario, 2)}</td>
+                          <td className="py-1 text-emerald-400 font-mono">{formatDiff(item.difference, '')}</td>
                         </tr>
                       ))}
                     </tbody>

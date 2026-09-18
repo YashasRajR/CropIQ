@@ -13,6 +13,8 @@ import { ScenarioComparison } from './components/simulator/ScenarioComparison';
 import { SensitivityChart } from './components/simulator/SensitivityChart';
 import { ScenarioHistory } from './components/simulator/ScenarioHistory';
 import { FarmSummaryCard } from './components/narrative/FarmSummaryCard';
+import { FarmSnapshot } from './components/narrative/FarmSnapshot';
+import { ModelPerformanceCard } from './components/transparency/ModelPerformanceCard';
 import { ModelInfoModal } from './components/transparency/ModelInfoModal';
 import { TechnicalDrawer } from './components/transparency/TechnicalDrawer';
 import { Skeleton } from './components/common/Skeleton';
@@ -259,19 +261,14 @@ export const App: React.FC = () => {
             </div>
           ) : prediction ? (
             <div className="space-y-6">
-              <FarmSummaryCard
+              {/* 1. Farm Snapshot Visual Indicators */}
+              <FarmSnapshot
                 prediction={prediction}
                 farmInput={currentInput}
-                onScrollToRecommendations={() => {
-                  const el = document.getElementById('recommendations-section');
-                  if (el) el.scrollIntoView({ behavior: 'smooth' });
-                }}
-                onScrollToFactors={() => {
-                  const el = document.getElementById('factors-section');
-                  if (el) el.scrollIntoView({ behavior: 'smooth' });
-                }}
+                scenarioCatalog={scenarioCatalog}
               />
 
+              {/* 2. Visual Outcome Cards: Estimated Yield, Risk Spectrum Track, Reliability Trust Meter */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <PredictionCard
                   prediction={prediction.prediction}
@@ -286,6 +283,20 @@ export const App: React.FC = () => {
                   dataQuality={prediction.data_quality}
                 />
               </div>
+
+              {/* 3. Farm Narrative Summary */}
+              <FarmSummaryCard
+                prediction={prediction}
+                farmInput={currentInput}
+                onScrollToRecommendations={() => {
+                  const el = document.getElementById('recommendations-section');
+                  if (el) el.scrollIntoView({ behavior: 'smooth' });
+                }}
+                onScrollToFactors={() => {
+                  const el = document.getElementById('factors-section');
+                  if (el) el.scrollIntoView({ behavior: 'smooth' });
+                }}
+              />
             </div>
           ) : null}
         </section>
@@ -337,6 +348,13 @@ export const App: React.FC = () => {
             onSelectScenario={(scen) => setActiveScenario(scen)}
           />
         </section>
+
+        {/* Section 6: How Did the Model Perform? */}
+        <ModelPerformanceCard
+          metrics={modelInfo?.metrics}
+          datasetSummary={modelInfo?.dataset_summary}
+          modelVersion={prediction?.metadata?.model_version || modelInfo?.model_version}
+        />
       </main>
 
       {/* Footer */}
