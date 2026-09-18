@@ -1,0 +1,231 @@
+{
+  "features": {
+    "soil_moisture": {
+      "display_name": "Soil Moisture",
+      "unit": "unconfirmed",
+      "classification": "ACTIONABLE_SIMULATABLE",
+      "controllability": "partial",
+      "modifiable": true,
+      "scenario_supported": true,
+      "description": "Volumetric root-zone moisture level manageable via supplemental irrigation and drainage.",
+      "source": "training_distribution",
+      "physical_bounds": [0.0, 105.0],
+      "training_stats": {
+        "min": 4.789,
+        "max": 102.1287,
+        "p01": 6.4552,
+        "p05": 10.8338,
+        "p25": 20.2776,
+        "median": 27.2845,
+        "p75": 34.0147,
+        "p95": 57.8925,
+        "p99": 77.9587,
+        "mean": 29.1019,
+        "std": 14.0951
+      },
+      "slider": {
+        "min": 10.0,
+        "max": 60.0,
+        "step": 0.5,
+        "default": 27.28
+      },
+      "recommended_in_rules": ["water_001", "water_002", "water_003", "crop_rice_001", "crop_maize_001"]
+    },
+    "rainfall": {
+      "display_name": "Precipitation / Rainfall",
+      "unit": "unconfirmed",
+      "classification": "CONTEXTUAL_SIMULATABLE",
+      "controllability": "contextual",
+      "modifiable": true,
+      "scenario_supported": true,
+      "description": "Environmental rainfall conditions; simulated as weather scenarios but not directly controllable by the farmer.",
+      "source": "training_distribution",
+      "physical_bounds": [0.0, 200.0],
+      "training_stats": {
+        "min": 0.8712,
+        "max": 93.3675,
+        "p01": 1.9695,
+        "p05": 4.8713,
+        "p25": 6.2581,
+        "median": 8.023,
+        "p75": 13.0251,
+        "p95": 15.791,
+        "p99": 20.6644,
+        "mean": 9.5077,
+        "std": 5.2309
+      },
+      "slider": {
+        "min": 0.0,
+        "max": 30.0,
+        "step": 0.5,
+        "default": 8.02
+      },
+      "recommended_in_rules": ["water_003", "water_004", "weather_002"]
+    },
+    "temperature": {
+      "display_name": "Ambient Temperature",
+      "unit": "assumed Celsius",
+      "classification": "CONTEXTUAL_SIMULATABLE",
+      "controllability": "contextual",
+      "modifiable": true,
+      "scenario_supported": true,
+      "description": "Surface ambient temperature; simulated to assess heat or cold stress scenarios.",
+      "source": "training_distribution",
+      "physical_bounds": [-15.0, 55.0],
+      "training_stats": {
+        "min": -4.7519,
+        "max": 44.691,
+        "p01": 0.5042,
+        "p05": 5.737,
+        "p25": 12.686,
+        "median": 19.811,
+        "p75": 26.2615,
+        "p95": 37.7993,
+        "p99": 43.0732,
+        "mean": 20.023,
+        "std": 9.7283
+      },
+      "slider": {
+        "min": 0.0,
+        "max": 45.0,
+        "step": 0.5,
+        "default": 19.81
+      },
+      "recommended_in_rules": ["weather_001", "crop_wheat_001"]
+    },
+    "NDVI": {
+      "display_name": "Vegetation Health (NDVI)",
+      "unit": "index [-1, 1]",
+      "classification": "MONITORING_ONLY",
+      "controllability": "none",
+      "modifiable": true,
+      "scenario_supported": true,
+      "description": "Remotely sensed Normalized Difference Vegetation Index; simulated for model sensitivity exploration.",
+      "source": "training_distribution",
+      "physical_bounds": [-1.0, 1.0],
+      "training_stats": {
+        "min": -1.0,
+        "max": 0.8321,
+        "p01": -0.2388,
+        "p05": -0.0521,
+        "p25": 0.2323,
+        "median": 0.3461,
+        "p75": 0.4786,
+        "p95": 0.7091,
+        "p99": 0.7954,
+        "mean": 0.3505,
+        "std": 0.2217
+      },
+      "slider": {
+        "min": -0.2,
+        "max": 0.85,
+        "step": 0.01,
+        "default": 0.35
+      },
+      "recommended_in_rules": ["veg_001", "veg_002"]
+    },
+    "GNDVI": {
+      "display_name": "Green Vegetation Index (GNDVI)",
+      "unit": "index [-1, 1]",
+      "classification": "MONITORING_ONLY",
+      "controllability": "none",
+      "modifiable": true,
+      "scenario_supported": true,
+      "description": "Green canopy chlorophyll index.",
+      "source": "training_distribution",
+      "physical_bounds": [-1.0, 1.0],
+      "training_stats": {
+        "min": -1.0,
+        "max": 0.7465,
+        "p01": -0.478,
+        "p05": -0.1202,
+        "p25": 0.2849,
+        "median": 0.3975,
+        "p75": 0.5042,
+        "p95": 0.6505,
+        "p99": 0.7186,
+        "mean": 0.3598,
+        "std": 0.235
+      },
+      "slider": {
+        "min": -0.3,
+        "max": 0.75,
+        "step": 0.01,
+        "default": 0.40
+      },
+      "recommended_in_rules": []
+    },
+    "NDWI": {
+      "display_name": "Canopy Water Index (NDWI)",
+      "unit": "index [-1, 1]",
+      "classification": "MONITORING_ONLY",
+      "controllability": "none",
+      "modifiable": true,
+      "scenario_supported": true,
+      "description": "Normalized Difference Water Index reflecting canopy liquid water content.",
+      "source": "training_distribution",
+      "physical_bounds": [-1.0, 1.0],
+      "training_stats": {
+        "min": -0.7465,
+        "max": 1.0,
+        "p01": -0.7186,
+        "p05": -0.6505,
+        "p25": -0.5042,
+        "median": -0.3975,
+        "p75": -0.2849,
+        "p95": 0.1202,
+        "p99": 0.478,
+        "mean": -0.3598,
+        "std": 0.235
+      },
+      "slider": {
+        "min": -0.75,
+        "max": 0.5,
+        "step": 0.01,
+        "default": -0.40
+      },
+      "recommended_in_rules": ["veg_003"]
+    },
+    "SAVI": {
+      "display_name": "Soil-Adjusted Vegetation Index (SAVI)",
+      "unit": "index [-1.5, 1.5]",
+      "classification": "MONITORING_ONLY",
+      "controllability": "none",
+      "modifiable": true,
+      "scenario_supported": true,
+      "description": "Soil-Adjusted Vegetation Index mitigating soil brightness in early canopy growth.",
+      "source": "training_distribution",
+      "physical_bounds": [-1.5, 1.5],
+      "training_stats": {
+        "min": -1.4958,
+        "max": 1.248,
+        "p01": -0.3575,
+        "p05": -0.0782,
+        "p25": 0.3484,
+        "median": 0.519,
+        "p75": 0.7179,
+        "p95": 1.0634,
+        "p99": 1.1928,
+        "mean": 0.5257,
+        "std": 0.3325
+      },
+      "slider": {
+        "min": -0.3,
+        "max": 1.2,
+        "step": 0.01,
+        "default": 0.52
+      },
+      "recommended_in_rules": []
+    }
+  },
+  "blocked_targets": ["yield"],
+  "blocked_identifiers": [
+    "field_id",
+    "date_of_image",
+    "source_dataset",
+    "raw_row_index",
+    "soil_moisture_flag"
+  ],
+  "material_change_threshold": 0.9765,
+  "material_change_metric": "Phase 2 Validation MAE"
+}
