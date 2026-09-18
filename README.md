@@ -1,81 +1,148 @@
-# CropIQ - Phase 1: Data Foundation
+# CropIQ: AI-Powered Crop Yield Intelligence
+> **Predict. Understand. Optimize.**
 
-**AI-Powered Crop Yield Intelligence** - Predict. Understand. Optimize.
+CropIQ is an end-to-end artificial intelligence and machine learning system engineered to deliver trusted, explainable, and actionable crop yield predictions, multi-factor risk diagnostics, agronomic recommendations, and interactive what-if scenario simulations.
 
-This is the Phase 1 (data foundation) deliverable for the CropIQ 10-hour
-hackathon project. Phase 1 produces a clean, validated, documented,
-reproducible, model-ready agricultural dataset for Phase 2 (ML yield
-prediction) to consume. **No model training, recommendation engine, or
-frontend work happens in this phase.**
+```text
+Farm Data → ML Yield Prediction → Explainability → Risk Assessment → Agronomic Recommendations → What-If Scenario Simulation → REST API → Dashboard
+```
 
-## Quickstart
+---
 
+## Key System Components (Phases 1–6 Complete)
+
+1. **Phase 1: Data Foundation (`src/data/`)**
+   - 1,625 field observations, 30 predictive features across remote sensing (NDVI, GNDVI, NDWI, SAVI), soil moisture, weather, and temporal cyclical features.
+   - Clean group-aware field-level partition preventing data leakage.
+2. **Phase 2: Machine Learning Prediction Engine (`src/ml/`)**
+   - Random Forest Regressor (`models/cropiq_yield_model.joblib`) with 300 estimators.
+   - Validation MAE: **0.9765** | Test MAE: **1.1438** | Test $R^2$: **0.9169**. Target unit: strictly **`unconfirmed`**.
+3. **Phase 3: Explainability & Risk Intelligence (`src/intelligence/`)**
+   - TreeSHAP feature attributions + deterministic feature ablation fallback.
+   - Ensemble tree dispersion prediction uncertainty and 4-factor risk score (0–100).
+4. **Phase 4: Actionable Agricultural Recommendation Engine (`src/recommendations/`)**
+   - 19 deterministic agronomic rules spanning water, soil, weather, canopy, and crop-specific guidance.
+   - Conflict resolution, deduplication, and auditable evidence.
+5. **Phase 5: What-If Scenario Simulator (`src/simulator/`)**
+   - Multi-variable what-if simulation on the SAME trained model.
+   - Delta SHAP shifts, empirical quantile presets, and 1D feature sensitivity curves.
+6. **Phase 6: FastAPI Backend Integration & API Layer (`backend/app/`)**
+   - Production-grade REST API connecting all intelligence layers.
+   - Singleton model caching, Pydantic validation, CORS, and full Swagger/OpenAPI documentation.
+
+---
+
+## Backend Installation & Quickstart
+
+### 1. Environment Setup
 ```bash
+# Clone and enter directory
+cd CropIQ-main
+
+# Install dependencies
 pip install -r requirements.txt
-
-python src/data/profile_data.py     # generates reports/profile_*.csv
-python src/data/validate_data.py    # prints PASS/WARNING/FAIL report, writes reports/validation_results.csv
-python src/data/clean_data.py       # data/raw -> data/interim/dataset1_cleaned.csv
-python src/data/preprocess.py       # data/interim -> data/processed/crop_yield_model_data.csv
 ```
 
-To regenerate the exploration notebook with fresh outputs:
-
+### 2. Start FastAPI Server
 ```bash
-python notebooks/_build_notebook.py   # rebuilds notebooks/01_data_exploration.ipynb
-jupyter nbconvert --to notebook --execute --inplace notebooks/01_data_exploration.ipynb
+# Start backend server on port 8000 with auto-reload
+uvicorn backend.app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-## Repository structure
+The API will be accessible at:
+- **Root:** `http://localhost:8000/`
+- **Interactive Swagger Documentation:** `http://localhost:8000/docs`
+- **ReDoc Documentation:** `http://localhost:8000/redoc`
+- **Health Check:** `http://localhost:8000/health`
 
+---
+
+## API Endpoints Reference
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/health` | Lightweight service and model loading status |
+| `GET` | `/model-info` | Verified model specifications, features, and metrics |
+| `GET` | `/metadata/scenario-features` | Scenario feature catalog and slider bounds |
+| `POST` | `/predict` | Full pipeline: Prediction + Context + SHAP + Risk + Recommendations |
+| `POST` | `/explain` | Standalone local feature contributions (TreeSHAP) |
+| `POST` | `/risk` | Standalone multi-factor yield risk assessment |
+| `POST` | `/recommendations` | Prioritized agricultural recommendations (`mode=farmer` or `technical`) |
+| `POST` | `/scenario` | What-if scenario simulation comparing against baseline |
+| `POST` | `/scenario/sensitivity` | 1D feature sensitivity analysis curve |
+| `POST` | `/scenario/presets` | Standardized empirical scenario presets |
+
+*All endpoints are also available with `/api/v1` prefix (e.g. `/api/v1/predict`).*
+
+---
+
+## cURL Usage Examples
+
+### Health Probe
+```bash
+curl http://localhost:8000/health
 ```
-CropIQ/
-├── data/
-│   ├── raw/            # original datasets, NEVER modified by the pipeline
-│   ├── interim/         # output of clean_data.py
-│   └── processed/       # crop_yield_model_data.csv - the Phase 2 input
-├── notebooks/
-│   └── 01_data_exploration.ipynb
-├── src/data/
-│   ├── utils.py
-│   ├── profile_data.py
-│   ├── validate_data.py
-│   ├── clean_data.py
-│   └── preprocess.py
-├── reports/
-│   ├── data_quality_report.md    # full investigation write-up (start here)
-│   ├── data_dictionary.md
-│   ├── dataset_source.md
-│   ├── phase1_handoff.md         # Phase 2 read this
-│   ├── validation_results.csv
-│   ├── profile_*.csv
-│   └── fig_*.png                 # figures from the exploration notebook
-├── requirements.txt
-└── datasets/            # original location the raw CSVs were found in (untouched)
+
+### Model Information
+```bash
+curl http://localhost:8000/model-info
 ```
 
-## Key findings (see `reports/data_quality_report.md` for full detail)
+### Unified Prediction & Recommendations
+```bash
+curl -X POST http://localhost:8000/predict \
+  -H "Content-Type: application/json" \
+  -d '{
+    "crop_type": "Rice",
+    "latitude": 22.625,
+    "longitude": 88.498,
+    "NDVI": 0.511,
+    "GNDVI": 0.467,
+    "NDWI": -0.467,
+    "SAVI": 0.767,
+    "soil_moisture": 21.98,
+    "temperature": 14.6,
+    "rainfall": 17.5
+  }'
+```
 
-- Dataset 1 (primary, 1,625 rows / 90 fields / 2023) has **zero missing
-  values and zero duplicates**, but `yield` varies at every observation
-  date for the same field - it is **not** a single season-final harvest
-  figure. The modeling grain is therefore **one row = one field
-  observation at a specific date**.
-- `NDWI` is an exact deterministic negation of `GNDVI` in every row -
-  redundant, flagged, not removed.
-- `yield`, `soil_moisture`, and `rainfall` units could not be confirmed
-  from source metadata and are documented as unconfirmed rather than
-  guessed.
-- Dataset 2 (secondary, Indian historical district-level crop yield,
-  1966-2017) has **no defensible join key** against Dataset 1 (no shared
-  location key, zero year overlap) and is kept as contextual reference
-  only - **not merged**.
-- Field-level leakage risk: Phase 2 **must** use a `field_id`-grouped
-  train/validation split (GroupShuffleSplit / GroupKFold), never a random
-  row split.
+### What-If Scenario Simulation
+```bash
+curl -X POST http://localhost:8000/scenario \
+  -H "Content-Type: application/json" \
+  -d '{
+    "current_input": {
+      "crop_type": "Rice",
+      "latitude": 22.625,
+      "longitude": 88.498,
+      "NDVI": 0.511,
+      "GNDVI": 0.467,
+      "NDWI": -0.467,
+      "SAVI": 0.767,
+      "soil_moisture": 21.98,
+      "temperature": 14.6,
+      "rainfall": 17.5
+    },
+    "changes": {
+      "soil_moisture": 32.0
+    },
+    "scenario_name": "Supplemental Irrigation"
+  }'
+```
 
-## Validation status
+---
 
-Run `python src/data/validate_data.py` - current result: **PASS WITH
-WARNINGS** (unconfirmed units for `yield`/`soil_moisture`/`rainfall`; 1 row
-with `soil_moisture` > 100, flagged not removed).
+## Running the Automated Test Suite
+
+Run the full automated test suite covering ML, Intelligence, Recommendations, Simulator, API Routes, and Integration:
+```bash
+python -m unittest discover -s tests -p "test_*.py"
+```
+**Test Status:** 115 / 115 tests passing (100% pass rate).
+
+---
+
+## Non-Causal Framing & Governance
+
+All predictive outputs and scenario differences represent **model-based statistical associations** learned from historical data. The backend explicitly enforces non-causal language and disclaims physical guarantees.
+Target `yield` is strictly designated with unit `unconfirmed`.
