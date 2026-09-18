@@ -1,19 +1,27 @@
 # CropIQ: AI-Powered Crop Yield Intelligence
 > **Predict. Understand. Optimize.**
 
-CropIQ is an end-to-end artificial intelligence and machine learning system engineered to deliver trusted, explainable, and actionable crop yield predictions, multi-factor risk diagnostics, agronomic recommendations, and interactive what-if scenario simulations.
+CropIQ is an end-to-end artificial intelligence and machine learning system engineered to deliver trusted, explainable, and actionable crop yield predictions, multi-factor risk diagnostics, agronomic recommendations, and interactive what-if scenario simulations with a modern React web dashboard.
 
 ```text
-Farm Data → ML Yield Prediction → Explainability → Risk Assessment → Agronomic Recommendations → What-If Scenario Simulation → REST API → Dashboard
+┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
+│                                    CROPIQ COMPLETE PIPELINE                                      │
+│                                                                                                  │
+│  Farm & Satellite Data ──► ML Yield Regression ──► TreeSHAP Factors ──► Multi-Factor Risk       │
+│                                                                              │                   │
+│  Audit Drawer ◄── Dashboard UI ◄── React App ◄── FastAPI REST API ◄── Agronomic Recommendations  │
+│                                           │                                                      │
+│                                           └──► What-If Simulator & 1D Sensitivity Curve          │
+└──────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## Key System Components (Phases 1–6 Complete)
+## Complete System Architecture (Phases 1–7)
 
 1. **Phase 1: Data Foundation (`src/data/`)**
    - 1,625 field observations, 30 predictive features across remote sensing (NDVI, GNDVI, NDWI, SAVI), soil moisture, weather, and temporal cyclical features.
-   - Clean group-aware field-level partition preventing data leakage.
+   - Clean group-aware field-level partition preventing data leakage across 75 unique fields.
 2. **Phase 2: Machine Learning Prediction Engine (`src/ml/`)**
    - Random Forest Regressor (`models/cropiq_yield_model.joblib`) with 300 estimators.
    - Validation MAE: **0.9765** | Test MAE: **1.1438** | Test $R^2$: **0.9169**. Target unit: strictly **`unconfirmed`**.
@@ -29,31 +37,141 @@ Farm Data → ML Yield Prediction → Explainability → Risk Assessment → Agr
 6. **Phase 6: FastAPI Backend Integration & API Layer (`backend/app/`)**
    - Production-grade REST API connecting all intelligence layers.
    - Singleton model caching, Pydantic validation, CORS, and full Swagger/OpenAPI documentation.
+7. **Phase 7: React Frontend, Dashboard & Product Integration (`frontend/`)**
+   - React 18, TypeScript, Vite, Tailwind CSS, Recharts, and Lucide-React.
+   - 5 authentic dataset presets, 1-click scenario links from recommendations, live backend health monitoring, and a raw API audit drawer for hackathon judges.
 
 ---
 
-## Backend Installation & Quickstart
+## Quickstart Guide
 
-### 1. Environment Setup
+### 1. Prerequisites
+- **Python:** 3.10+ (tested on Python 3.12)
+- **Node.js:** 18+ (tested on Node v24)
+
+### 2. Backend Setup & Startup
 ```bash
-# Clone and enter directory
-cd CropIQ-main
+# Clone the repository
+git clone https://github.com/YashasRajR/CropIQ.git
+cd CropIQ
 
-# Install dependencies
+# Install Python dependencies
 pip install -r requirements.txt
-```
 
-### 2. Start FastAPI Server
-```bash
-# Start backend server on port 8000 with auto-reload
-uvicorn backend.app.main:app --reload --host 0.0.0.0 --port 8000
+# Start FastAPI backend server on port 8000
+python -m uvicorn backend.app.main:app --host 127.0.0.1 --port 8000 --reload
 ```
-
-The API will be accessible at:
-- **Root:** `http://localhost:8000/`
-- **Interactive Swagger Documentation:** `http://localhost:8000/docs`
+The backend will be live at:
+- **Interactive Swagger Docs:** `http://localhost:8000/docs`
 - **ReDoc Documentation:** `http://localhost:8000/redoc`
 - **Health Check:** `http://localhost:8000/health`
+
+### 3. Frontend Setup & Startup
+Open a second terminal:
+```bash
+cd frontend
+
+# Install Node dependencies
+npm install
+
+# Start Vite development server
+npm run dev
+```
+Open your browser to: **`http://localhost:5173`**
+
+### 4. Production Build Verification
+```bash
+cd frontend
+npm run typecheck    # 0 errors
+npm run build        # Generates production bundle in dist/
+```
+
+---
+
+## Interactive Dashboard Tour & User Flow
+
+```text
+┌────────────────────────────────────────────────────────┐
+│                        NAVBAR                          │
+│ [CropIQ Logo]        [Status: FastAPI Ready ●] [Specs] │
+├────────────────────────────────────────────────────────┤
+│                     HERO SECTION                       │
+│ AI-Powered Crop Yield Intelligence                     │
+│ Predict. Understand. Optimize.                         │
+│ [ Analyze Farm ]       [ Load Example Farm ▼ ]         │
+│ Pipeline: Input → Predict → Understand → Act → Simulate│
+├────────────────────────────────────────────────────────┤
+│                   FARM INPUT FORM                      │
+│ ┌──────────────┬──────────────┬──────────────────────┐ │
+│ │ Crop & Geo   │ Weather      │ Soil & Vegetation    │ │
+│ │ Crop: Rice   │ Temp: 14.6°C │ Soil Moisture: 21.98 │ │
+│ │ Lat: 22.625  │ Rain: 17.5mm │ NDVI: 0.51, SAVI:... │ │
+│ └──────────────┴──────────────┴──────────────────────┘ │
+│                  [ Analyze Farm ]                      │
+├────────────────────────────────────────────────────────┤
+│                 ANALYSIS DASHBOARD                     │
+│ ┌───────────────────────────┬────────────────────────┐ │
+│ │ ESTIMATED YIELD           │ RISK ASSESSMENT        │ │
+│ │ 52.59 unconfirmed         │ LOW RISK (Score: 16)   │ │
+│ │ Benchmark: High Potential │ Protective: Good vigor │ │
+│ ├───────────────────────────┼────────────────────────┤ │
+│ │ KEY MODEL FACTORS (SHAP)  │ MODEL RELIABILITY      │ │
+│ │ Rainfall      █████████   │ HIGH                   │ │
+│ │ Soil Moisture ██████      │ In-distribution        │ │
+│ └───────────────────────────┴────────────────────────┘ │
+├────────────────────────────────────────────────────────┤
+│              ACTIONABLE RECOMMENDATIONS                │
+│ [Farmer Mode / Technical Audit Toggle]                 │
+│ ┌────────────────────────────────────────────────────┐ │
+│ │ WATER (MEDIUM) • Maintain Current Irrigation       │ │
+│ │ Action: Continue scheduled moisture monitoring     │ │
+│ │ Evidence: Moisture within favorable zone           │ │
+│ │ [ Explore Scenario ]                               │ │
+│ └────────────────────────────────────────────────────┘ │
+├────────────────────────────────────────────────────────┤
+│              WHAT-IF SCENARIO SIMULATOR                │
+│ Non-Causal Model Disclaimer Banner                     │
+│ Variable: [ Soil Moisture ▼ ] (Farm-Manageable)        │
+│ Slider: 10.0 ────────●────────── 60.0 (Current: 21.98) │
+│ Presets: [ Improve Moisture ] [ Drought Stress ]       │
+│                  [ Run Scenario ]                      │
+│                                                        │
+│ Baseline: 52.59  →  Scenario: 52.61  (Diff: +0.02)     │
+│ Materiality: Below Model Noise Threshold (< MAE: 0.98) │
+│ ┌───────────────────────────┬────────────────────────┐ │
+│ │ 1D Sensitivity Curve      │ Trial Comparison Table │ │
+│ └───────────────────────────┴────────────────────────┘ │
+├────────────────────────────────────────────────────────┤
+│       MODEL TRANSPARENCY & DATA DICTIONARY             │
+│ Random Forest (300 trees), Val MAE: 0.9765, R²: 0.9169 │
+├────────────────────────────────────────────────────────┤
+│                        FOOTER                          │
+│ Model-based insights. Not a guarantee of crop yield.   │
+└────────────────────────────────────────────────────────┘
+```
+
+---
+
+## Hackathon Judge Presentation Script (3 Minutes)
+
+1. **Live Backend Connectivity (Navbar)**:
+   - Point out the `"FastAPI Ready ●"` green indicator in the navbar.
+   - Click **"Model Specs"** to open the Model Card modal showing the Random Forest architecture, evaluation metrics (Val MAE: 0.9765, Test $R^2$: 0.9169), and candidate model benchmarks.
+2. **Auto-Loaded Real Dataset Observation**:
+   - The app loads with Sample 1 (Rice, West Bengal).
+   - Point out the Predicted Yield card displaying `52.59 unconfirmed` alongside historical percentile context.
+   - Show the Risk Assessment card (`LOW RISK`, score: 16) and 300-tree ensemble uncertainty.
+3. **Local TreeSHAP Explainability**:
+   - Scroll down to the Recharts horizontal bar chart showing exactly which observed features pushed yield higher or lower relative to the baseline.
+4. **Agronomic Recommendations & Scenario Transition**:
+   - Toggle between **Farmer Mode** and **Technical Audit Mode**.
+   - Click **"Explore Scenario"** on the Soil Moisture card to automatically jump to the What-If Simulator with `soil_moisture` pre-selected.
+5. **Interactive What-If Simulation**:
+   - Drag the slider to test hypothetical irrigation changes and click **"Run Scenario"**.
+   - Show the live $\Delta Y$ delta, delta SHAP shifts, and the **Materiality Warning** ($|\Delta Y| < 0.9765$), which prevents farmers from acting on minor statistical fluctuations.
+6. **Live Technical Audit Drawer**:
+   - Click **"Audit Data"** in the top navbar.
+   - Inspect the live JSON payloads directly from FastAPI to prove **zero client-side fabrication**.
 
 ---
 
@@ -76,73 +194,17 @@ The API will be accessible at:
 
 ---
 
-## cURL Usage Examples
+## Automated Test Suite
 
-### Health Probe
-```bash
-curl http://localhost:8000/health
-```
-
-### Model Information
-```bash
-curl http://localhost:8000/model-info
-```
-
-### Unified Prediction & Recommendations
-```bash
-curl -X POST http://localhost:8000/predict \
-  -H "Content-Type: application/json" \
-  -d '{
-    "crop_type": "Rice",
-    "latitude": 22.625,
-    "longitude": 88.498,
-    "NDVI": 0.511,
-    "GNDVI": 0.467,
-    "NDWI": -0.467,
-    "SAVI": 0.767,
-    "soil_moisture": 21.98,
-    "temperature": 14.6,
-    "rainfall": 17.5
-  }'
-```
-
-### What-If Scenario Simulation
-```bash
-curl -X POST http://localhost:8000/scenario \
-  -H "Content-Type: application/json" \
-  -d '{
-    "current_input": {
-      "crop_type": "Rice",
-      "latitude": 22.625,
-      "longitude": 88.498,
-      "NDVI": 0.511,
-      "GNDVI": 0.467,
-      "NDWI": -0.467,
-      "SAVI": 0.767,
-      "soil_moisture": 21.98,
-      "temperature": 14.6,
-      "rainfall": 17.5
-    },
-    "changes": {
-      "soil_moisture": 32.0
-    },
-    "scenario_name": "Supplemental Irrigation"
-  }'
-```
-
----
-
-## Running the Automated Test Suite
-
-Run the full automated test suite covering ML, Intelligence, Recommendations, Simulator, API Routes, and Integration:
+Run the full automated backend test suite:
 ```bash
 python -m unittest discover -s tests -p "test_*.py"
 ```
-**Test Status:** 115 / 115 tests passing (100% pass rate).
+**Test Status:** **115 / 115 tests passing** (100% pass rate).
 
 ---
 
-## Non-Causal Framing & Governance
+## Scientific Rigor & Non-Causal Framing
 
-All predictive outputs and scenario differences represent **model-based statistical associations** learned from historical data. The backend explicitly enforces non-causal language and disclaims physical guarantees.
-Target `yield` is strictly designated with unit `unconfirmed`.
+All predictive outputs and scenario differences represent **model-based statistical associations** learned from historical observational data. CropIQ explicitly enforces non-causal language and disclaims physical guarantees.
+Target `yield` is strictly designated with the unit **`unconfirmed`** (never falsely presented as tons or kilograms per hectare).

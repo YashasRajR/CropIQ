@@ -23,3 +23,9 @@ notebooks/.ipynb_checkpoints/
 # below if you'd rather regenerate them from data/raw/ on every checkout.
 # data/interim/
 # data/processed/
+
+# Node & Frontend
+node_modules/
+frontend/node_modules/
+frontend/dist/
+
