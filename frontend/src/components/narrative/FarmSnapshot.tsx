@@ -4,7 +4,7 @@ import { Card } from '../common/Card';
 import { Badge } from '../common/Badge';
 import { PredictionResponse } from '../../types/prediction';
 import { FarmInput, ScenarioFeaturesCatalog } from '../../types/farm';
-import { formatNumber } from '../../utils/formatting';
+import { formatNumber, displayUnit } from '../../utils/formatting';
 
 interface FarmSnapshotProps {
   prediction: PredictionResponse;
@@ -188,9 +188,11 @@ export const FarmSnapshot: React.FC<FarmSnapshotProps> = ({
               {formatNumber(yieldVal, 1)}
             </div>
           </div>
-          <div className="mt-2 text-[10px] text-emerald-800 font-semibold truncate">
-            {unit}
-          </div>
+          {displayUnit(unit) && (
+            <div className="mt-2 text-[10px] text-emerald-800 font-semibold truncate">
+              {displayUnit(unit)}
+            </div>
+          )}
         </div>
 
         {/* 6. Crop Risk */}

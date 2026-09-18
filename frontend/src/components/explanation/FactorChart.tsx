@@ -75,7 +75,7 @@ export const FactorChart: React.FC<FactorChartProps> = ({
         </div>
 
         <div className="text-xs px-3 py-1.5 rounded-lg bg-slate-100 text-slate-600 font-medium">
-          Baseline benchmark: <span className="font-mono font-bold text-slate-900">{formatNumber(explanation.baseline_yield, 1)}</span> unconfirmed
+          Starting point: <span className="font-mono font-bold text-slate-900">{formatNumber(explanation.baseline_yield, 1)}</span>
         </div>
       </div>
 
@@ -300,7 +300,7 @@ export const FactorChart: React.FC<FactorChartProps> = ({
         <Info className="w-4 h-4 text-slate-400 shrink-0 mt-0.5" />
         <span className="leading-relaxed">
           <strong>Understanding influence: </strong>
-          Visual bars indicate the mathematical association learned by CropIQ from past harvests. They highlight which factors the model focused on when formulating this estimate.
+          These bars show patterns CropIQ found in past harvests, not proven cause-and-effect. They highlight which conditions mattered most for this estimate.
         </span>
       </div>
     </Card>

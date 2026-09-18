@@ -59,7 +59,7 @@ export const ModelPerformanceCard: React.FC<ModelPerformanceCardProps> = ({
           <div>
             <div className="flex items-center justify-between mb-1">
               <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
-                R² Accuracy Score
+                Accuracy Score <span className="normal-case font-medium text-slate-400">(R²)</span>
               </span>
               <span className="text-xs font-bold text-emerald-700 font-mono">
                 {r2Percent}%
@@ -88,20 +88,18 @@ export const ModelPerformanceCard: React.FC<ModelPerformanceCardProps> = ({
         <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col justify-between">
           <div>
             <span className="text-xs font-bold uppercase tracking-wider text-slate-500 block mb-1">
-              Average Margin (MAE)
+              Typical Error <span className="normal-case font-medium text-slate-400">(MAE)</span>
             </span>
 
             <div className="text-3xl font-black font-mono text-slate-900 tracking-tight my-1">
               {formatNumber(mae, 2)}
             </div>
 
-            <div className="text-xs font-semibold text-slate-500 font-mono">
-              unconfirmed yield units
-            </div>
+
           </div>
 
           <p className="text-xs text-slate-600 mt-3 font-medium leading-relaxed">
-            On average, predictions fall within ~{formatNumber(mae, 1)} units of real harvest records.
+            On average, predictions are within ~{formatNumber(mae, 1)} of real harvest records.
           </p>
         </div>
 
@@ -109,20 +107,18 @@ export const ModelPerformanceCard: React.FC<ModelPerformanceCardProps> = ({
         <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col justify-between">
           <div>
             <span className="text-xs font-bold uppercase tracking-wider text-slate-500 block mb-1">
-              Peak Error Check (RMSE)
+              Worst-Case Error <span className="normal-case font-medium text-slate-400">(RMSE)</span>
             </span>
 
             <div className="text-3xl font-black font-mono text-slate-900 tracking-tight my-1">
               {formatNumber(rmse, 2)}
             </div>
 
-            <div className="text-xs font-semibold text-slate-500 font-mono">
-              unconfirmed yield units
-            </div>
+
           </div>
 
           <p className="text-xs text-slate-600 mt-3 font-medium leading-relaxed">
-            Confirms the model avoids extreme outlier errors across varied weather seasons.
+            Confirms the model doesn't make wildly wrong guesses across different weather seasons.
           </p>
         </div>
       </div>
@@ -131,7 +127,7 @@ export const ModelPerformanceCard: React.FC<ModelPerformanceCardProps> = ({
       <div className="p-3.5 rounded-xl bg-emerald-50/70 border border-emerald-200 text-xs text-emerald-950 flex items-start gap-2.5 my-3">
         <ShieldCheck className="w-4 h-4 text-emerald-700 shrink-0 mt-0.5" />
         <span className="leading-relaxed">
-          These benchmark figures were established on a completely held-out 20% test dataset that the model never saw during training.
+          These numbers come from testing on 20% of the data that was deliberately held back and never shown to the model while it was learning — so they reflect real accuracy, not memorization.
         </span>
       </div>
 

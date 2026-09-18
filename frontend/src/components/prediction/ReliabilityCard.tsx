@@ -45,7 +45,7 @@ export const ReliabilityCard: React.FC<ReliabilityCardProps> = ({
     trustLabel = 'Lower Reliability';
     badgeVariant = 'rose';
     trustExplanation =
-      'Higher variance exists across decision trees for these specific inputs; use this estimate as general guidance.';
+      'CropIQ is less confident than usual about this estimate for your specific mix of conditions.';
   }
 
   const hasBounds = uncertainty.lower_bound !== undefined && uncertainty.upper_bound !== undefined;
@@ -186,7 +186,7 @@ export const ReliabilityCard: React.FC<ReliabilityCardProps> = ({
       </div>
 
       <div className="pt-3 mt-4 border-t border-slate-100 text-[11px] text-slate-500">
-        Computed from cross-tree dispersion across the random forest ensemble.
+        Based on how much CropIQ's estimates vary across similar farm conditions.
       </div>
     </Card>
   );
