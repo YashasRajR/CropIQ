@@ -1,0 +1,31 @@
+column,category,count,pct
+crop_type,Saffron,69,4.246
+crop_type,Barley,64,3.938
+crop_type,Mustard,63,3.877
+crop_type,Wheat,63,3.877
+crop_type,Soybean,61,3.754
+crop_type,Bajra,61,3.754
+crop_type,Millets,61,3.754
+crop_type,Tobacco,60,3.692
+crop_type,Linseed,59,3.631
+crop_type,Sesame,58,3.569
+crop_type,Sorghum,58,3.569
+crop_type,Pulses,57,3.508
+crop_type,Cotton,56,3.446
+crop_type,Maize,56,3.446
+crop_type,Jowar,56,3.446
+crop_type,Ragi,56,3.446
+crop_type,Sunflower,55,3.385
+crop_type,Rice,54,3.323
+crop_type,Sugarcane,54,3.323
+crop_type,Coffee,51,3.138
+crop_type,Groundnut,51,3.138
+crop_type,Ginger,50,3.077
+crop_type,Turmeric,49,3.015
+crop_type,Black Pepper,47,2.892
+crop_type,Tea,46,2.831
+crop_type,Cashew Nut,44,2.708
+crop_type,Oil Palm,44,2.708
+crop_type,Rubber,42,2.585
+crop_type,Cardamom,41,2.523
+crop_type,Coconut,39,2.4

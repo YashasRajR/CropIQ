@@ -1,0 +1,10 @@
+check,pass,details
+Schema,True,{'missing_columns': []}
+Target,True,"{'missing_target': 0, 'negative_yield': 0, 'zero_yield': 0}"
+Dates,True,"{'parse_failures': 0, 'min_date': '2023-01-01 00:00:00', 'max_date': '2023-12-27 00:00:00', 'span_days': 360}"
+Coordinates,True,"{'missing_coords': 0, 'out_of_india_bbox': 0}"
+Missingness,True,"{'columns_with_some_missing': {}, 'columns_high_missing': {}}"
+Duplicates,True,"{'exact_duplicates': 0, 'field_date_duplicates': 0}"
+Categories,True,{'unknown_crop_categories': []}
+Leakage,True,{'suspicious_columns_present': []}
+Units,False,"{'soil_moisture_over_100': 1, 'target_unit_unconfirmed': True}"

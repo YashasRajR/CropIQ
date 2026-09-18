@@ -1,0 +1,2 @@
+column,min_date,max_date,n_unique_dates,n_parse_failures
+date_of_image,2023-01-01,2023-12-27,25,0

@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# Environments
+.venv/
+venv/
+env/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Jupyter
+notebooks/.ipynb_checkpoints/
+
+# Large intermediate artifacts (regenerable from raw data via the pipeline)
+# data/interim/ and data/processed/ are intentionally NOT ignored here so the
+# CropIQ Phase 1 deliverables (model-ready dataset) are versioned; uncomment
+# below if you'd rather regenerate them from data/raw/ on every checkout.
+# data/interim/
+# data/processed/

@@ -1,0 +1,336 @@
+column,category,count,pct
+State Name,Uttar Pradesh,7488,14.75
+State Name,Madhya Pradesh,6339,12.487
+State Name,Maharashtra,4734,9.325
+State Name,Rajasthan,4100,8.076
+State Name,Karnataka,3473,6.841
+State Name,Gujarat,3211,6.325
+State Name,Orissa,2410,4.747
+State Name,West Bengal,2077,4.091
+State Name,Andhra Pradesh,1996,3.932
+State Name,Punjab,1975,3.89
+State Name,Tamil Nadu,1864,3.672
+State Name,Telangana,1774,3.495
+State Name,Assam,1761,3.469
+State Name,Bihar,1693,3.335
+State Name,Himachal Pradesh,1351,2.661
+State Name,Haryana,1201,2.366
+State Name,Chhattisgarh,981,1.932
+State Name,Uttarakhand,894,1.761
+State Name,Jharkhand,864,1.702
+State Name,Kerala,579,1.141
+Dist Name,Khargone / West Nimar,208,0.41
+Dist Name,Jhabua,208,0.41
+Dist Name,Kalahandi,208,0.41
+Dist Name,Khandwa / East Nimar,208,0.41
+Dist Name,Bidar,208,0.41
+Dist Name,Guntur,208,0.41
+Dist Name,Ananthapur,208,0.41
+Dist Name,Chandrapur,208,0.41
+Dist Name,Amarawati,208,0.41
+Dist Name,Banswara,208,0.41
+Dist Name,Satara,208,0.41
+Dist Name,Ahmednagar,208,0.41
+Dist Name,Dhule,208,0.41
+Dist Name,Sangli,208,0.41
+Dist Name,Nasik,208,0.41
+Dist Name,Osmanabad,208,0.41
+Dist Name,Nanded,208,0.41
+Dist Name,Belgaum,208,0.41
+Dist Name,Chitradurga,208,0.41
+Dist Name,Karbi Anglong,208,0.41
+Dist Name,Chittorgarh,208,0.41
+Dist Name,Chhindwara,208,0.41
+Dist Name,Agra,208,0.41
+Dist Name,Bijapur / Vijayapura,207,0.408
+Dist Name,Kurnool,207,0.408
+Dist Name,Gulbarga / Kalaburagi,207,0.408
+Dist Name,Solapur,207,0.408
+Dist Name,Bharuch,207,0.408
+Dist Name,Vadodara / Baroda,207,0.408
+Dist Name,Sabarkantha,207,0.408
+Dist Name,Panchmahal,207,0.408
+Dist Name,Aligarh,207,0.408
+Dist Name,Kheda,207,0.408
+Dist Name,Surat,207,0.408
+Dist Name,Beed,207,0.408
+Dist Name,Bellary,207,0.408
+Dist Name,Koraput,207,0.408
+Dist Name,Adilabad,207,0.408
+Dist Name,Mathura,207,0.408
+Dist Name,Udaipur,207,0.408
+Dist Name,Ganganagar,207,0.408
+Dist Name,Dewas,206,0.406
+Dist Name,Buland Shahar,206,0.406
+Dist Name,Raichur,206,0.406
+Dist Name,Coimbatore,206,0.406
+Dist Name,Salem,206,0.406
+Dist Name,Betul,206,0.406
+Dist Name,Dhar,206,0.406
+Dist Name,Hoshangabad,206,0.406
+Dist Name,Nizamabad,205,0.404
+Dist Name,Muzaffarnagar,205,0.404
+Dist Name,Ratlam,205,0.404
+Dist Name,Dungarpur,205,0.404
+Dist Name,Sangrur,204,0.402
+Dist Name,Parbhani,204,0.402
+Dist Name,Mysore,203,0.4
+Dist Name,Dharwad,203,0.4
+Dist Name,Hassan,203,0.4
+Dist Name,Bolangir,202,0.398
+Dist Name,Mehsana,202,0.398
+Dist Name,Medak,202,0.398
+Dist Name,Tumkur,202,0.398
+Dist Name,Meerut,202,0.398
+Dist Name,Cachar,201,0.396
+Dist Name,Shimoge,201,0.396
+Dist Name,Warangal,201,0.396
+Dist Name,Sehore,200,0.394
+Dist Name,Patiala,200,0.394
+Dist Name,S.P.S. Nellore,200,0.394
+Dist Name,Tiruchirapalli / Trichy,200,0.394
+Dist Name,Ahmedabad,200,0.394
+Dist Name,Chickmagalur,199,0.392
+Dist Name,Aurangabad,199,0.392
+Dist Name,Ganjam,198,0.39
+Dist Name,Jalgaon,198,0.39
+Dist Name,Mahabubnagar,198,0.39
+Dist Name,Akola,197,0.388
+Dist Name,Pune,197,0.388
+Dist Name,Nalgonda,196,0.386
+Dist Name,Jhalawar,196,0.386
+Dist Name,Etah,196,0.386
+Dist Name,Yeotmal,196,0.386
+Dist Name,Rohtak,196,0.386
+Dist Name,Kolhapur,196,0.386
+Dist Name,Krishna,196,0.386
+Dist Name,Phulbani ( Kandhamal ),196,0.386
+Dist Name,Kamrup,196,0.386
+Dist Name,Nagpur,195,0.384
+Dist Name,Saharanpur,195,0.384
+Dist Name,Ajmer,195,0.384
+Dist Name,Buldhana,194,0.382
+Dist Name,East Godavari,193,0.38
+Dist Name,Bhilwara,193,0.38
+Dist Name,Ferozpur,192,0.378
+Dist Name,Karimnagar,192,0.378
+Dist Name,Hyderabad,192,0.378
+Dist Name,Madurai,192,0.378
+Dist Name,Amritsar,189,0.372
+Dist Name,Rajgarh,188,0.37
+Dist Name,Bhatinda,188,0.37
+Dist Name,Mandsaur,187,0.368
+Dist Name,Kadapa YSR,187,0.368
+Dist Name,Bhavnagar,186,0.366
+Dist Name,Nagaon,186,0.366
+Dist Name,Sambalpur,184,0.362
+Dist Name,Kangra,184,0.362
+Dist Name,Hissar,184,0.362
+Dist Name,Dhenkanal,184,0.362
+Dist Name,Shajapur,184,0.362
+Dist Name,Bharatpur,183,0.36
+Dist Name,Karnal,182,0.359
+Dist Name,Darrang,182,0.359
+Dist Name,Sundargarh,182,0.359
+Dist Name,Khammam,181,0.357
+Dist Name,Ludhiana,181,0.357
+Dist Name,Junagadh,180,0.355
+Dist Name,Hoshiarpur,179,0.353
+Dist Name,Alwar,179,0.353
+Dist Name,Kanpur,178,0.351
+Dist Name,Solan,178,0.351
+Dist Name,Banaskantha,178,0.351
+Dist Name,Sirohi,178,0.351
+Dist Name,Thanjavur,176,0.347
+Dist Name,Ramananthapuram,175,0.345
+Dist Name,Amreli,175,0.345
+Dist Name,Roopnagar / Ropar,174,0.343
+Dist Name,Sirmaur,174,0.343
+Dist Name,Jind,173,0.341
+Dist Name,Balasore,173,0.341
+Dist Name,Gurgaon,172,0.339
+Dist Name,Bilashpur,171,0.337
+Dist Name,Ambala,171,0.337
+Dist Name,Raigarh,170,0.335
+Dist Name,North Arcot / Vellore,170,0.335
+Dist Name,Pali,170,0.335
+Dist Name,Puri,169,0.333
+Dist Name,24 Parganas,169,0.333
+Dist Name,Mayurbhanja,169,0.333
+Dist Name,Durg,169,0.333
+Dist Name,Keonjhar,169,0.333
+Dist Name,Cuttack,169,0.333
+Dist Name,Gurdaspur,168,0.331
+Dist Name,Bundi,168,0.331
+Dist Name,Thirunelveli,168,0.331
+Dist Name,Swami Madhopur,168,0.331
+Dist Name,Wardha,167,0.329
+Dist Name,Goalpara,167,0.329
+Dist Name,North Cachar Hil / Dima hasao,166,0.327
+Dist Name,Surguja,166,0.327
+Dist Name,Indore,165,0.325
+Dist Name,Ujjain,165,0.325
+Dist Name,Tonk,165,0.325
+Dist Name,Rajkot,165,0.325
+Dist Name,Bijnor,165,0.325
+Dist Name,Jalandhar,165,0.325
+Dist Name,Sibsagar,164,0.323
+Dist Name,Kolar,164,0.323
+Dist Name,Visakhapatnam,164,0.323
+Dist Name,Uttara Kannada,163,0.321
+Dist Name,Srikakulam,161,0.317
+Dist Name,Morena,161,0.317
+Dist Name,Shivpuri,161,0.317
+Dist Name,Lakhimpur,161,0.317
+Dist Name,Raipur,161,0.317
+Dist Name,Moradabad,160,0.315
+Dist Name,Kota,159,0.313
+Dist Name,Bastar,159,0.313
+Dist Name,Birbhum,158,0.311
+Dist Name,Lucknow,158,0.311
+Dist Name,Mainpuri,158,0.311
+Dist Name,Gaya,158,0.311
+Dist Name,Saran,158,0.311
+Dist Name,Seoni / Shivani,157,0.309
+Dist Name,Purnea,157,0.309
+Dist Name,Purulia,157,0.309
+Dist Name,Jamnagar,157,0.309
+Dist Name,Jaunpur,157,0.309
+Dist Name,Ballia,157,0.309
+Dist Name,Shahdol,157,0.309
+Dist Name,Guna,157,0.309
+Dist Name,Murshidabad,157,0.309
+Dist Name,West Godavari,157,0.309
+Dist Name,Bahraich,157,0.309
+Dist Name,Etawah,157,0.309
+Dist Name,Vidisha,156,0.307
+Dist Name,Raisen,156,0.307
+Dist Name,Faizabad,156,0.307
+Dist Name,Unnao,156,0.307
+Dist Name,Chhatarpur,156,0.307
+Dist Name,Mirzpur,156,0.307
+Dist Name,Damoh,156,0.307
+Dist Name,Jabalpur,156,0.307
+Dist Name,Sagar,156,0.307
+Dist Name,Mandla,156,0.307
+Dist Name,Narsinghpur,156,0.307
+Dist Name,Bilaspur,156,0.307
+Dist Name,Balaghat,156,0.307
+Dist Name,Tikamgarh,156,0.307
+Dist Name,Hardoi,156,0.307
+Dist Name,Jhansi,156,0.307
+Dist Name,Allahabad,156,0.307
+Dist Name,Sitapur,156,0.307
+Dist Name,Azamgarh,156,0.307
+Dist Name,Ghazipur,156,0.307
+Dist Name,Basti,156,0.307
+Dist Name,Deoria,156,0.307
+Dist Name,Pratapgarh,156,0.307
+Dist Name,Fatehpur,156,0.307
+Dist Name,Varanasi,156,0.307
+Dist Name,Kheri,156,0.307
+Dist Name,Gonda,156,0.307
+Dist Name,Farrukhabad,156,0.307
+Dist Name,Shahjahanpur,156,0.307
+Dist Name,Patna,156,0.307
+Dist Name,Gorakhpur,156,0.307
+Dist Name,Barabanki,156,0.307
+Dist Name,Sultanpur,156,0.307
+Dist Name,Rewa,156,0.307
+Dist Name,Panna,156,0.307
+Dist Name,Sidhi,156,0.307
+Dist Name,Malda,155,0.305
+Dist Name,Datia,155,0.305
+Dist Name,Shahabad (now part of Bhojpur district),155,0.305
+Dist Name,Bankura,155,0.305
+Dist Name,Satna,155,0.305
+Dist Name,Nainital,155,0.305
+Dist Name,Bhagalpur,155,0.305
+Dist Name,Surendranagar,155,0.305
+Dist Name,Rae-Bareily,155,0.305
+Dist Name,Budaun,155,0.305
+Dist Name,Mungair,155,0.305
+Dist Name,Dehradun,155,0.305
+Dist Name,South Arcot / Cuddalore,154,0.303
+Dist Name,Darbhanga,154,0.303
+Dist Name,Champaran,154,0.303
+Dist Name,Burdwan,154,0.303
+Dist Name,Muzaffarpur,154,0.303
+Dist Name,Bareilly,152,0.299
+Dist Name,Jaipur,151,0.297
+Dist Name,Jalore,151,0.297
+Dist Name,Nadia,151,0.297
+Dist Name,Nagaur,151,0.297
+Dist Name,Midnapur,150,0.295
+Dist Name,Rampur,150,0.295
+Dist Name,Gwalior,150,0.295
+Dist Name,Bhandara,150,0.295
+Dist Name,Mandi,149,0.294
+Dist Name,Mandya,149,0.294
+Dist Name,Bangalore,148,0.292
+Dist Name,Palamau,146,0.288
+Dist Name,Santhal Paragana / Dumka,146,0.288
+Dist Name,Hazaribagh,146,0.288
+Dist Name,Pilibhit,145,0.286
+Dist Name,Ranchi,145,0.286
+Dist Name,Singhbhum,144,0.284
+Dist Name,West Dinajpur,138,0.272
+Dist Name,Dhanbad,137,0.27
+Dist Name,Saharsa,137,0.27
+Dist Name,Dangs,136,0.268
+Dist Name,Kapurthala,135,0.266
+Dist Name,Shimla,133,0.262
+Dist Name,Kullu,133,0.262
+Dist Name,Banda,131,0.258
+Dist Name,Thane,131,0.258
+Dist Name,Valsad,131,0.258
+Dist Name,Dibrugarh,130,0.256
+Dist Name,Jalpaiguri,128,0.252
+Dist Name,Jalaun,127,0.25
+Dist Name,Jodhpur,125,0.246
+Dist Name,Hamirpur,124,0.244
+Dist Name,Mahendragarh / Narnaul,123,0.242
+Dist Name,Kodagu / Coorg,121,0.238
+Dist Name,Bikaner,120,0.236
+Dist Name,Sikar,118,0.232
+Dist Name,Chittoor,115,0.227
+Dist Name,Raigad,114,0.225
+Dist Name,Garhwal,110,0.217
+Dist Name,Hooghly,109,0.215
+Dist Name,Darjeeling,108,0.213
+Dist Name,Bhind,108,0.213
+Dist Name,Chengalpattu MGR / Kanchipuram,108,0.213
+Dist Name,Pithorgarh,108,0.213
+Dist Name,Palakkad,105,0.207
+Dist Name,Almorah,104,0.205
+Dist Name,Kutch,104,0.205
+Dist Name,Chamba,102,0.201
+Dist Name,Cooch Behar,99,0.195
+Dist Name,Tehri Garhwal,97,0.191
+Dist Name,Kinnaur,93,0.183
+Dist Name,Howrah,89,0.175
+Dist Name,Ratnagiri,87,0.171
+Dist Name,Uttar Kashi,85,0.167
+Dist Name,Chamoli,80,0.158
+Dist Name,Jhunjhunu,79,0.156
+Dist Name,Churu,74,0.146
+Dist Name,Barmer,74,0.146
+Dist Name,Jaisalmer,68,0.134
+Dist Name,Dakshina Kannada,66,0.13
+Dist Name,Kozhikode,56,0.11
+Dist Name,Thrissur,56,0.11
+Dist Name,Kanyakumari,55,0.108
+Dist Name,The Nilgiris,54,0.106
+Dist Name,Kottayam,54,0.106
+Dist Name,Thiruvananthapuram,52,0.102
+Dist Name,Kollam,52,0.102
+Dist Name,Alappuzha,52,0.102
+Dist Name,Kannur,52,0.102
+Dist Name,Eranakulam,52,0.102
+Dist Name,Malappuram,48,0.095
+Dist Name,Lahul & Spiti,34,0.067
+Dist Name,Bombay,23,0.045
+Crop,rice,14978,29.505
+Crop,maize,14136,27.846
+Crop,chickpea,13847,27.277
+Crop,cotton,7804,15.373
