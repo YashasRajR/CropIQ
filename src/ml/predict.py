@@ -76,6 +76,13 @@ def validate_input_features(
     # 3. Numeric checks
     for col in NUMERICAL_FEATURES:
         series = input_df[col]
+        if series.dtype == object:
+            try:
+                converted = pd.to_numeric(series)
+                input_df[col] = converted
+                series = converted
+            except (ValueError, TypeError):
+                raise TypeError(f"Numerical feature '{col}' contains non-numeric values.")
         if not np.issubdtype(series.dtype, np.number):
             raise TypeError(f"Numerical feature '{col}' contains non-numeric values.")
         if series.isna().any():

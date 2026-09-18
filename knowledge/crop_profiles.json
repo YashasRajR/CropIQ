@@ -1,0 +1,122 @@
+{
+  "Rice": {
+    "display_name": "Rice",
+    "supported": true,
+    "water_sensitivity": "HIGH",
+    "temperature_sensitivity": "MODERATE",
+    "critical_monitoring_factors": ["soil_moisture", "rainfall", "NDVI", "NDWI"],
+    "optimal_temp_range": [20.0, 35.0],
+    "optimal_soil_moisture_range": [28.0, 48.0],
+    "description": "High water-requirement semi-aquatic cereal crop sensitive to moisture deficit during flowering and tillering.",
+    "source": "FAO Irrigation and Drainage Paper 56 (Crop Evapotranspiration); ICAR Rice Agronomy Handbook",
+    "source_type": "sourced"
+  },
+  "Wheat": {
+    "display_name": "Wheat",
+    "supported": true,
+    "water_sensitivity": "MODERATE",
+    "temperature_sensitivity": "HIGH",
+    "critical_monitoring_factors": ["temperature", "soil_moisture", "NDVI"],
+    "optimal_temp_range": [15.0, 25.0],
+    "optimal_soil_moisture_range": [20.0, 34.0],
+    "description": "Temperate rabi cereal sensitive to high terminal heat stress and moisture stress at crown root initiation.",
+    "source": "FAO Crop Water Information; Indian Council of Agricultural Research (ICAR) Wheat Production Manual",
+    "source_type": "sourced"
+  },
+  "Maize": {
+    "display_name": "Maize",
+    "supported": true,
+    "water_sensitivity": "MODERATE",
+    "temperature_sensitivity": "MODERATE",
+    "critical_monitoring_factors": ["soil_moisture", "rainfall", "NDVI"],
+    "optimal_temp_range": [18.0, 32.0],
+    "optimal_soil_moisture_range": [22.0, 36.0],
+    "description": "C4 cereal crop highly susceptible to water deficit during silking and tasseling stages.",
+    "source": "FAO Irrigation and Drainage Paper 33 (Yield response to water); CIMMYT Agronomy Guidelines",
+    "source_type": "sourced"
+  },
+  "Cotton": {
+    "display_name": "Cotton",
+    "supported": true,
+    "water_sensitivity": "MODERATE",
+    "temperature_sensitivity": "MODERATE",
+    "critical_monitoring_factors": ["soil_moisture", "temperature", "NDVI"],
+    "optimal_temp_range": [21.0, 35.0],
+    "optimal_soil_moisture_range": [20.0, 35.0],
+    "description": "Deep-rooted cash crop sensitive to waterlogging as well as severe moisture stress during squaring.",
+    "source": "ICAR-Central Institute for Cotton Research (CICR) Technical Bulletin",
+    "source_type": "sourced"
+  },
+  "Pulses": {
+    "display_name": "Pulses",
+    "supported": true,
+    "water_sensitivity": "LOW",
+    "temperature_sensitivity": "MODERATE",
+    "critical_monitoring_factors": ["soil_moisture", "rainfall", "SAVI"],
+    "optimal_temp_range": [18.0, 30.0],
+    "optimal_soil_moisture_range": [16.0, 30.0],
+    "description": "Leguminous protein crops with low water demand; intolerant to excessive standing water and drainage impedance.",
+    "source": "ICAR-Indian Institute of Pulses Research (IIPR) Package of Practices",
+    "source_type": "sourced"
+  },
+  "Sugarcane": {
+    "display_name": "Sugarcane",
+    "supported": true,
+    "water_sensitivity": "HIGH",
+    "temperature_sensitivity": "MODERATE",
+    "critical_monitoring_factors": ["soil_moisture", "rainfall", "NDVI"],
+    "optimal_temp_range": [20.0, 38.0],
+    "optimal_soil_moisture_range": [28.0, 50.0],
+    "description": "Long-duration perennial grass requiring sustained water availability throughout formative and grand growth phases.",
+    "source": "FAO Crop Water Information: Sugarcane; ICAR-Sugarcane Breeding Institute",
+    "source_type": "sourced"
+  },
+  "Soybean": {
+    "display_name": "Soybean",
+    "supported": true,
+    "water_sensitivity": "MODERATE",
+    "temperature_sensitivity": "MODERATE",
+    "critical_monitoring_factors": ["soil_moisture", "rainfall", "NDVI"],
+    "optimal_temp_range": [20.0, 32.0],
+    "optimal_soil_moisture_range": [20.0, 35.0],
+    "description": "Major oilseed and protein crop sensitive to drought stress during pod initiation and seed filling.",
+    "source": "ICAR-Indian Institute of Soybean Research (IISR) Guidelines",
+    "source_type": "sourced"
+  },
+  "Groundnut": {
+    "display_name": "Groundnut",
+    "supported": true,
+    "water_sensitivity": "MODERATE",
+    "temperature_sensitivity": "MODERATE",
+    "critical_monitoring_factors": ["soil_moisture", "rainfall", "SAVI"],
+    "optimal_temp_range": [22.0, 34.0],
+    "optimal_soil_moisture_range": [18.0, 32.0],
+    "description": "Oilseed legume requiring adequate moisture during pegging and pod development; prone to pod rot if waterlogged.",
+    "source": "ICAR-Directorate of Groundnut Research (DGR)",
+    "source_type": "sourced"
+  },
+  "Mustard": {
+    "display_name": "Mustard",
+    "supported": true,
+    "water_sensitivity": "LOW",
+    "temperature_sensitivity": "HIGH",
+    "critical_monitoring_factors": ["temperature", "soil_moisture", "NDVI"],
+    "optimal_temp_range": [12.0, 25.0],
+    "optimal_soil_moisture_range": [16.0, 28.0],
+    "description": "Rabi oilseed crop sensitive to elevated temperature during flowering and pod development.",
+    "source": "ICAR-Directorate of Rapeseed-Mustard Research (DRMR)",
+    "source_type": "sourced"
+  },
+  "Millets": {
+    "display_name": "Millets",
+    "supported": true,
+    "water_sensitivity": "LOW",
+    "temperature_temperature": "LOW",
+    "critical_monitoring_factors": ["rainfall", "soil_moisture", "SAVI"],
+    "optimal_temp_range": [20.0, 38.0],
+    "optimal_soil_moisture_range": [14.0, 26.0],
+    "description": "Drought-resilient hardy grain crop capable of sustaining production in marginal moisture conditions.",
+    "source": "ICAR-Indian Institute of Millets Research (IIMR)",
+    "source_type": "sourced"
+  }
+}

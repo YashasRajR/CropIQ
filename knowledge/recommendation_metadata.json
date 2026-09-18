@@ -1,0 +1,71 @@
+{
+  "project": "CropIQ",
+  "engine_version": "1.0.0",
+  "categories": [
+    "WATER",
+    "SOIL",
+    "WEATHER",
+    "VEGETATION",
+    "CROP",
+    "MONITORING",
+    "RISK",
+    "DATA_QUALITY",
+    "GENERAL"
+  ],
+  "actionability_types": [
+    "ACTIONABLE",
+    "MONITOR",
+    "INFORMATIONAL"
+  ],
+  "feature_actionability": {
+    "soil_moisture": "PARTIALLY_ACTIONABLE",
+    "NDVI": "MONITORING_ONLY",
+    "GNDVI": "MONITORING_ONLY",
+    "NDWI": "MONITORING_ONLY",
+    "SAVI": "MONITORING_ONLY",
+    "rainfall": "CONTEXTUAL",
+    "temperature": "CONTEXTUAL",
+    "crop_type": "CONTEXTUAL",
+    "latitude": "CONTEXTUAL",
+    "longitude": "CONTEXTUAL",
+    "year": "CONTEXTUAL",
+    "month": "CONTEXTUAL",
+    "day_of_year": "CONTEXTUAL"
+  },
+  "priority_levels": [
+    "HIGH",
+    "MEDIUM",
+    "LOW"
+  ],
+  "priority_thresholds": {
+    "HIGH": 70,
+    "MEDIUM": 40,
+    "LOW": 0
+  },
+  "confidence_levels": [
+    "HIGH",
+    "MEDIUM",
+    "LOW"
+  ],
+  "evidence_levels": [
+    "HIGH",
+    "MEDIUM",
+    "LOW"
+  ],
+  "source_types": [
+    "sourced",
+    "prototype_heuristic"
+  ],
+  "prohibited_phrases": [
+    "guaranteed",
+    "will definitely",
+    "100% effective",
+    "will increase",
+    "will prevent",
+    "cure",
+    "diagnose",
+    "exact dosage",
+    "guaranteed yield",
+    "crop will fail"
+  ]
+}
