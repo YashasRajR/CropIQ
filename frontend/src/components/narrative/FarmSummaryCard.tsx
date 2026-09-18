@@ -141,7 +141,7 @@ export const FarmSummaryCard: React.FC<FarmSummaryCardProps> = ({
       {/* Quick Navigation Links */}
       <div className="mt-4 pt-3 border-t border-slate-200/60 flex flex-wrap items-center justify-between gap-3 text-xs">
         <span className="text-slate-500 text-[11px]">
-          Based on verified machine-learning predictions and in-situ field rules.
+          Based on your field data and expert farming guidelines.
         </span>
 
         <div className="flex items-center gap-3">

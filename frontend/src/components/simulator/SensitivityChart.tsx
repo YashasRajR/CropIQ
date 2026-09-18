@@ -82,7 +82,7 @@ export const SensitivityChart: React.FC<SensitivityChartProps> = ({ currentInput
             <option value="soil_moisture">Soil Moisture (%)</option>
             <option value="rainfall">Recent Rainfall (mm)</option>
             <option value="temperature">Temperature (°C)</option>
-            <option value="SAVI">SAVI (Greenness)</option>
+            <option value="SAVI">Crop Greenness</option>
           </select>
         </div>
       </div>
@@ -116,7 +116,7 @@ export const SensitivityChart: React.FC<SensitivityChartProps> = ({ currentInput
               />
               <RechartsTooltip
                 formatter={(val: number) => [
-                  `${formatNumber(val, 2)} unconfirmed`,
+                  formatNumber(val, 2),
                   'Estimated Yield',
                 ]}
                 labelFormatter={(label) =>
@@ -160,8 +160,8 @@ export const SensitivityChart: React.FC<SensitivityChartProps> = ({ currentInput
       <div className="mt-3 text-[11px] text-slate-500 leading-relaxed flex items-start gap-2">
         <Info className="w-3.5 h-3.5 text-slate-400 shrink-0 mt-0.5" />
         <span>
-          Curves show how the trained Random Forest responds when varying this single feature holding all other observations fixed.
-          This illustrates model sensitivity and does not guarantee that physical interventions will follow this exact curve.
+          This line shows how the estimate changes as this one condition varies, with everything else held the same.
+          It's a model pattern, not a guarantee of what will happen in the field.
         </span>
       </div>
     </Card>

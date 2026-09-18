@@ -105,10 +105,9 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
         <AlertCircle className="w-5 h-5 text-amber-700 shrink-0 mt-0.5" />
         <div className="text-xs text-amber-950 leading-relaxed">
           <strong className="font-semibold text-amber-900 block mb-0.5">
-            Scenario Estimate — Not a Causal Guarantee
+            This is an estimate, not a promise
           </strong>
-          This simulator evaluates how our model estimates yield under hypothetical conditions.
-          It demonstrates learned statistical patterns from historical data, not a guarantee that changing this condition in the field will produce this exact outcome.
+          This tool shows what the model would predict if a condition were different. It's based on patterns in past data, not a guarantee of what will happen if you change something in the field.
         </div>
       </div>
 
@@ -128,8 +127,8 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
                 <option value="soil_moisture">💧 Soil Moisture (%)</option>
                 <option value="rainfall">🌧️ Recent Rainfall (mm)</option>
                 <option value="temperature">☀️ Temperature (°C)</option>
-                <option value="SAVI">🌿 Soil-Adjusted Greenness (SAVI)</option>
-                <option value="NDVI">🌱 Canopy Greenness (NDVI)</option>
+                <option value="SAVI">🌿 Crop Greenness (from satellite)</option>
+                <option value="NDVI">🌱 Plant Health (from satellite)</option>
               </select>
             </div>
 

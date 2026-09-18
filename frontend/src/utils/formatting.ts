@@ -6,15 +6,25 @@ export function formatNumber(val: number | undefined | null, decimals = 2): stri
   });
 }
 
+// The dataset's yield unit was never confirmed by the data source (see Phase 1
+// data quality report), so the backend sends the literal string "unconfirmed"
+// as a placeholder. Showing that word next to a number reads as a bug to
+// farmers, so we just omit the unit rather than print it.
+export function displayUnit(unit?: string): string {
+  return !unit || unit === 'unconfirmed' ? '' : unit;
+}
+
 export function formatYield(val: number | undefined | null, unit = 'unconfirmed'): string {
   if (val === undefined || val === null || isNaN(val)) return '—';
-  return `${formatNumber(val, 2)} ${unit}`;
+  const u = displayUnit(unit);
+  return u ? `${formatNumber(val, 2)} ${u}` : formatNumber(val, 2);
 }
 
 export function formatDiff(diff: number | undefined | null, unit = 'unconfirmed'): string {
   if (diff === undefined || diff === null || isNaN(diff)) return '—';
   const prefix = diff > 0 ? '+' : '';
-  return `${prefix}${formatNumber(diff, 2)} ${unit}`;
+  const u = displayUnit(unit);
+  return u ? `${prefix}${formatNumber(diff, 2)} ${u}` : `${prefix}${formatNumber(diff, 2)}`;
 }
 
 export function formatPercentage(val: number | undefined | null): string {

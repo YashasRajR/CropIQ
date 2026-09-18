@@ -4,7 +4,7 @@ import { Card } from '../common/Card';
 import { Badge } from '../common/Badge';
 import { PredictionValue, ContextPayload } from '../../types/prediction';
 import { FeatureContribution } from '../../types/explanation';
-import { formatNumber } from '../../utils/formatting';
+import { formatNumber, displayUnit } from '../../utils/formatting';
 import { explainPrediction } from '../../utils/explanations';
 
 interface PredictionCardProps {
@@ -68,10 +68,6 @@ export const PredictionCard: React.FC<PredictionCardProps> = ({
           <div className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight font-mono">
             {headline}
           </div>
-          <div className="text-xs font-semibold text-emerald-800 mt-1">
-            Target Unit: <span className="font-mono">{prediction.unit}</span>
-          </div>
-
           {/* 3. What does it mean? */}
           <p className="text-xs text-slate-700 mt-3 leading-relaxed font-medium">
             {meaning}
@@ -105,7 +101,7 @@ export const PredictionCard: React.FC<PredictionCardProps> = ({
               <div className="flex items-center justify-between text-slate-500 text-[11px]">
                 <span>Historical mean for {context.crop}:</span>
                 <span className="font-mono font-medium text-slate-700">
-                  {formatNumber(context.historical_mean, 2)} {prediction.unit}
+                  {formatNumber(context.historical_mean, 2)}{displayUnit(prediction.unit) && ` ${displayUnit(prediction.unit)}`}
                 </span>
               </div>
             )}

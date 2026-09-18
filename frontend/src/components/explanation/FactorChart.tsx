@@ -72,7 +72,7 @@ export const FactorChart: React.FC<FactorChartProps> = ({
         </div>
 
         <div className="text-xs px-3 py-1.5 rounded-lg bg-slate-100 text-slate-600 font-medium">
-          Baseline benchmark: <span className="font-mono font-bold text-slate-900">{formatNumber(explanation.baseline_yield, 2)}</span> unconfirmed
+          Starting point: <span className="font-mono font-bold text-slate-900">{formatNumber(explanation.baseline_yield, 2)}</span>
         </div>
       </div>
 
@@ -213,7 +213,7 @@ export const FactorChart: React.FC<FactorChartProps> = ({
                 />
                 <RechartsTooltip
                   formatter={(val: number) => [
-                    `${val > 0 ? '+' : ''}${formatNumber(val, 2)} unconfirmed`,
+                    `${val > 0 ? '+' : ''}${formatNumber(val, 2)}`,
                     'Estimated Impact',
                   ]}
                   contentStyle={{
@@ -272,7 +272,7 @@ export const FactorChart: React.FC<FactorChartProps> = ({
             <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-2">
               <span className="text-slate-400">Baseline Expected Value:</span>
               <span className="text-slate-200 font-mono">
-                {formatNumber(explanation.baseline_yield, 4)} unconfirmed
+                {formatNumber(explanation.baseline_yield, 4)}
               </span>
             </div>
 
@@ -333,8 +333,7 @@ export const FactorChart: React.FC<FactorChartProps> = ({
         <Info className="w-4 h-4 text-slate-400 shrink-0 mt-0.5" />
         <span className="leading-relaxed">
           <strong>Understanding these influences: </strong>
-          These values represent statistical associations learned by the machine-learning model from historical data.
-          They explain what the model looked at to calculate your estimate, and should be evaluated alongside local agricultural knowledge.
+          These are patterns CropIQ found in past farm data, not proven cause-and-effect. Use them alongside your own field knowledge.
         </span>
       </div>
     </Card>

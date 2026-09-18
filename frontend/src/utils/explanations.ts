@@ -2,7 +2,7 @@ import { FeatureContribution } from '../types/explanation';
 import { PredictionResponse, RiskPayload, UncertaintyPayload, ContextPayload } from '../types/prediction';
 import { ScenarioResponse } from '../types/scenario';
 import { FarmInput } from '../types/farm';
-import { formatNumber, formatDiff } from './formatting';
+import { formatNumber, formatDiff, displayUnit } from './formatting';
 
 /**
  * Human-friendly names for model features.
@@ -210,8 +210,9 @@ export function explainPrediction(
 } {
   const crop = context?.crop || 'this crop';
   const formattedVal = formatNumber(yieldVal, 1);
-  const headline = `Around ${formattedVal} ${unit}`;
-  const meaning = `CropIQ estimates that your farm could produce around ${formattedVal} ${unit} of ${crop} based on the field conditions and satellite data provided.`;
+  const u = displayUnit(unit);
+  const headline = u ? `Around ${formattedVal} ${u}` : `Around ${formattedVal}`;
+  const meaning = `CropIQ estimates that your farm could produce around ${formattedVal}${u ? ` ${u}` : ''} of ${crop} based on the field conditions and satellite data provided.`;
 
   let whyEstimate = `CropIQ evaluated your field against historical records. `;
   if (topPos && topNeg) {
@@ -292,11 +293,11 @@ export function explainReliability(
   } else if (uncertainty.classification === 'MODERATE') {
     badgeLabel = 'Moderate Reliability';
     badgeVariant = 'amber';
-    meaning = 'Confidence is reasonable, though slight variability across model decision trees suggests variable local conditions.';
+    meaning = 'This is a fairly solid estimate, though your field conditions vary a bit from the clearest patterns CropIQ has seen.';
   } else if (uncertainty.classification === 'HIGH') {
     badgeLabel = 'Lower Reliability';
     badgeVariant = 'rose';
-    meaning = 'There is higher variance in model trees for these specific conditions; use this estimate as general guidance.';
+    meaning = 'CropIQ is less sure about this one — treat it as a rough guide rather than a precise number.';
   }
 
   const hasBounds = uncertainty.lower_bound !== undefined && uncertainty.upper_bound !== undefined;
@@ -341,9 +342,10 @@ export function explainScenarioComparison(scenario: ScenarioResponse): {
     ? isPositive
       ? `Noticeable Potential Gain (${formattedDiff})`
       : `Potential Yield Reduction (${formattedDiff})`
-    : `Modest Statistical Fluctuation (${formattedDiff})`;
+    : `Small Change (${formattedDiff})`;
 
-  const whatChanged = `When ${friendlyFeatureNames || 'field conditions'} were adjusted in the model, estimated yield shifted from ${formatNumber(baseline.predicted_yield, 2)} to ${formatNumber(scen.predicted_yield, 2)} ${baseline.unit}.`;
+  const baseUnit = displayUnit(baseline.unit);
+  const whatChanged = `When ${friendlyFeatureNames || 'field conditions'} were adjusted, the estimate shifted from ${formatNumber(baseline.predicted_yield, 2)} to ${formatNumber(scen.predicted_yield, 2)}${baseUnit ? ` ${baseUnit}` : ''}.`;
 
   let whatDoesItMean = '';
   if (isMaterial) {
@@ -353,7 +355,7 @@ export function explainScenarioComparison(scenario: ScenarioResponse): {
       whatDoesItMean = `This indicates that a drop in ${friendlyFeatureNames || 'these conditions'} is associated with lower yield outcomes in historical data.`;
     }
   } else {
-    whatDoesItMean = `This small difference (${formattedDiff}) is within normal model variation margins (${formatNumber(comparison.material_threshold, 2)} ${baseline.unit}) and may not reflect a meaningful difference in the field.`;
+    whatDoesItMean = `This small difference (${formattedDiff}) is within CropIQ's normal wobble for this kind of estimate and may not reflect a real difference in the field.`;
   }
 
   const disclaimer =
@@ -386,7 +388,7 @@ export function generateFarmSummary(
 ): FarmSummaryNarrative {
   const crop = farmInput.crop_type || predictionResp.context?.crop || 'crop';
   const yieldVal = predictionResp.prediction.yield;
-  const unit = predictionResp.prediction.unit || 'unconfirmed';
+  const unit = displayUnit(predictionResp.prediction.unit);
   const risk = predictionResp.risk;
   const topPos = predictionResp.explanation?.top_positive_factors?.[0];
   const topNeg = predictionResp.explanation?.top_negative_factors?.[0];
@@ -394,7 +396,7 @@ export function generateFarmSummary(
   const topRec = recs.find((r) => r.priority === 'HIGH') || recs[0];
 
   // 1. Yield Outlook Sentence
-  const yieldSentence = `Your estimated yield for this ${crop} plot is around ${formatNumber(yieldVal, 1)} ${unit}.`;
+  const yieldSentence = `Your estimated yield for this ${crop} plot is around ${formatNumber(yieldVal, 1)}${unit ? ` ${unit}` : ''}.`;
 
   // 2. Main Drivers Sentence
   let driversSentence = '';

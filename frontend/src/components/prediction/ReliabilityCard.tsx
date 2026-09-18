@@ -148,7 +148,7 @@ export const ReliabilityCard: React.FC<ReliabilityCardProps> = ({
       </div>
 
       <div className="pt-3 mt-4 border-t border-slate-100 text-[11px] text-slate-500">
-        Calculated from cross-tree dispersion across the random forest ensemble.
+        Based on how much CropIQ's estimates vary across similar farm conditions.
       </div>
     </Card>
   );

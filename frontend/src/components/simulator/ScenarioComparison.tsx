@@ -5,6 +5,7 @@ import { Badge } from '../common/Badge';
 import { ScenarioResponse } from '../../types/scenario';
 import { formatNumber, formatDiff, formatPercentage } from '../../utils/formatting';
 import { explainScenarioComparison } from '../../utils/explanations';
+import { displayUnit } from '../../utils/formatting';
 
 interface ScenarioComparisonProps {
   scenario: ScenarioResponse;
@@ -50,9 +51,11 @@ export const ScenarioComparison: React.FC<ScenarioComparisonProps> = ({ scenario
             <div className="text-3xl sm:text-4xl font-black text-slate-900 font-mono">
               {formatNumber(baseline.predicted_yield, 2)}
             </div>
-            <div className="text-xs font-semibold text-emerald-800 mt-0.5">
-              {baseline.unit}
-            </div>
+            {displayUnit(baseline.unit) && (
+              <div className="text-xs font-semibold text-emerald-800 mt-0.5">
+                {displayUnit(baseline.unit)}
+              </div>
+            )}
             <div className="mt-2 text-[11px] text-slate-500">
               Risk: <strong className="text-slate-700">{baseline.risk.level}</strong>
             </div>
@@ -66,9 +69,11 @@ export const ScenarioComparison: React.FC<ScenarioComparisonProps> = ({ scenario
             <div className="text-3xl sm:text-4xl font-black text-emerald-950 font-mono">
               {formatNumber(scen.predicted_yield, 2)}
             </div>
-            <div className="text-xs font-semibold text-emerald-800 mt-0.5">
-              {scen.unit}
-            </div>
+            {displayUnit(scen.unit) && (
+              <div className="text-xs font-semibold text-emerald-800 mt-0.5">
+                {displayUnit(scen.unit)}
+              </div>
+            )}
             <div className="mt-2 text-[11px] text-emerald-800 font-medium">
               Risk: <strong>{scen.risk.level}</strong>
             </div>
