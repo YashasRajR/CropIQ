@@ -1,0 +1,200 @@
+"""
+CropIQ Phase 3 - Crop Yield Risk Assessment Engine
+Combines yield deviation, prediction uncertainty, negative model contributors,
+and data quality indicators into a transparent 0-100 Crop Yield Risk Indicator.
+"""
+
+from typing import Any, Dict, List, Optional, Tuple, Union
+import numpy as np
+import pandas as pd
+
+from .utils import (
+    get_feature_display_name,
+    load_crop_reference_distributions,
+)
+
+# Risk Thresholds (Section 28, 52)
+RISK_LEVEL_THRESHOLDS = {
+    "low_max": 35.0,        # 0 <= score < 35 -> LOW
+    "moderate_max": 65.0,   # 35 <= score < 65 -> MODERATE
+                            # score >= 65 -> HIGH
+}
+
+# Component Weights (Section 30, 52)
+RISK_COMPONENT_WEIGHTS = {
+    "yield_deviation": 0.50,
+    "uncertainty": 0.25,
+    "negative_contributors": 0.15,
+    "data_quality": 0.10,
+}
+
+
+def compute_yield_risk(
+    predicted_yield: float,
+    crop_type: str,
+    explanation_result: Dict[str, Any],
+    uncertainty_result: Dict[str, Any],
+    quality_warnings: List[str],
+    is_out_of_distribution: bool = False,
+    extrapolation_warning: bool = False,
+    ref_data: Optional[Dict[str, Any]] = None,
+) -> Dict[str, Any]:
+    """
+    Compute structured Crop Yield Risk Indicator.
+
+    Parameters:
+    -----------
+    predicted_yield: model prediction.
+    crop_type: crop variety.
+    explanation_result: output from explain_prediction().
+    uncertainty_result: output from estimate_prediction_uncertainty().
+    quality_warnings: list of input data quality / OOD warning strings.
+    is_out_of_distribution: boolean flag.
+    extrapolation_warning: boolean flag.
+    ref_data: optional cached crop reference distributions.
+
+    Returns:
+    --------
+    dict containing:
+      - risk_level: LOW | MODERATE | HIGH
+      - risk_score: int (0 to 100)
+      - component_scores: detailed breakdown of 4 sub-scores
+      - risk_drivers: list of factors that elevated risk
+      - protective_factors: list of factors that reduced risk
+      - yield_context: comparison against crop baseline
+    """
+    all_refs = ref_data or load_crop_reference_distributions()
+    crops_ref = all_refs.get("crops", {})
+    overall_ref = all_refs.get("overall", {})
+
+    # 1. Determine Yield Reference (Hierarchy: Crop -> Overall)
+    if crop_type in crops_ref and crops_ref[crop_type]["has_sufficient_samples"]:
+        active_ref = crops_ref[crop_type]
+        reference_type = "crop"
+    else:
+        active_ref = overall_ref
+        reference_type = "overall_dataset_fallback"
+
+    ref_median = active_ref["median"]
+    ref_q1 = active_ref["q1"]
+    ref_q3 = active_ref["q3"]
+
+    # Yield relative position
+    if predicted_yield >= ref_q3:
+        relative_pos = "in the upper historical quartile (above 75th percentile)"
+    elif predicted_yield >= ref_median:
+        relative_pos = "above the historical median"
+    elif predicted_yield >= ref_q1:
+        relative_pos = "moderately below historical median (within interquartile range)"
+    else:
+        relative_pos = "in the lower historical quartile (below 25th percentile)"
+
+    # -------------------------------------------------------------
+    # 2. Component Calculations (0 to 100 each)
+    # -------------------------------------------------------------
+    risk_drivers: List[str] = []
+    protective_factors: List[str] = []
+
+    # Component A: Yield Deviation (50% weight)
+    if predicted_yield >= ref_median:
+        # Favorable yield
+        surplus_ratio = min(1.0, (predicted_yield - ref_median) / max(ref_median, 1.0))
+        comp_yield = max(0.0, 15.0 - (surplus_ratio * 15.0))  # 0 to 15
+        protective_factors.append(
+            f"Estimated yield ({predicted_yield:.2f}) is at or above the historical {crop_type} reference median ({ref_median:.2f})."
+        )
+    else:
+        # Deficit below median
+        deficit_ratio = (ref_median - predicted_yield) / max(ref_median, 1.0)
+        # 10% deficit -> 30 score; 25% deficit -> 75 score; >35% deficit -> 100 score
+        comp_yield = min(100.0, deficit_ratio * 280.0)
+        risk_drivers.append(
+            f"Estimated yield ({predicted_yield:.2f}) is {deficit_ratio * 100:.1f}% below the historical {crop_type} reference median ({ref_median:.2f})."
+        )
+
+    # Component B: Prediction Uncertainty (25% weight)
+    rel_unc = uncertainty_result.get("relative_uncertainty", 0.15)
+    # < 10% -> 0-30; 10-25% -> 30-70; > 25% -> 70-100
+    comp_uncertainty = min(100.0, max(0.0, (rel_unc / 0.30) * 100.0))
+    if uncertainty_result.get("classification") == "HIGH":
+        risk_drivers.append(
+            f"Model prediction shows elevated uncertainty ({rel_unc * 100:.1f}% relative spread across decision trees)."
+        )
+    elif uncertainty_result.get("classification") == "LOW":
+        protective_factors.append(
+            f"Model prediction shows high ensemble stability across decision trees (relative spread: {rel_unc * 100:.1f}%)."
+        )
+
+    # Component C: Negative Contributors (15% weight)
+    top_negatives = explanation_result.get("top_negative_factors", [])
+    total_neg_contrib = sum(abs(item["contribution"]) for item in top_negatives)
+    base_val = max(explanation_result.get("baseline_yield", 40.0), 1.0)
+
+    neg_ratio = total_neg_contrib / base_val
+    comp_negative = min(100.0, neg_ratio * 400.0)
+
+    if top_negatives:
+        strongest_neg = top_negatives[0]
+        risk_drivers.append(
+            f"{strongest_neg['display_name']} contributed negatively ({strongest_neg['contribution']:+.2f}) to the prediction based on learned patterns."
+        )
+
+    top_positives = explanation_result.get("top_positive_factors", [])
+    if top_positives:
+        strongest_pos = top_positives[0]
+        protective_factors.append(
+            f"{strongest_pos['display_name']} contributed positively ({strongest_pos['contribution']:+.2f}) to the prediction based on learned patterns."
+        )
+
+    # Component D: Data Quality / OOD (10% weight)
+    if extrapolation_warning:
+        comp_quality = 100.0
+        risk_drivers.append("Multiple input features are outside the historical training range (extrapolation warning).")
+    elif is_out_of_distribution:
+        comp_quality = 50.0
+        risk_drivers.append("One or more input features are near the extreme tails of the historical training distribution.")
+    elif quality_warnings:
+        comp_quality = 25.0
+    else:
+        comp_quality = 0.0
+        protective_factors.append("Current input observations are well-aligned with the model's historical training distribution.")
+
+    # -------------------------------------------------------------
+    # 3. Weighted Score & Risk Level Mapping (Section 29, 30)
+    # -------------------------------------------------------------
+    final_score = (
+        (RISK_COMPONENT_WEIGHTS["yield_deviation"] * comp_yield)
+        + (RISK_COMPONENT_WEIGHTS["uncertainty"] * comp_uncertainty)
+        + (RISK_COMPONENT_WEIGHTS["negative_contributors"] * comp_negative)
+        + (RISK_COMPONENT_WEIGHTS["data_quality"] * comp_quality)
+    )
+    final_score = int(np.clip(round(final_score), 0, 100))
+
+    if final_score < RISK_LEVEL_THRESHOLDS["low_max"]:
+        risk_level = "LOW"
+    elif final_score < RISK_LEVEL_THRESHOLDS["moderate_max"]:
+        risk_level = "MODERATE"
+    else:
+        risk_level = "HIGH"
+
+    return {
+        "risk_level": risk_level,
+        "risk_score": final_score,
+        "risk_drivers": risk_drivers,
+        "protective_factors": protective_factors,
+        "component_scores": {
+            "yield_deviation_score": round(comp_yield, 2),
+            "uncertainty_score": round(comp_uncertainty, 2),
+            "negative_contributors_score": round(comp_negative, 2),
+            "data_quality_score": round(comp_quality, 2),
+            "weights": RISK_COMPONENT_WEIGHTS,
+        },
+        "yield_context": {
+            "reference_type": reference_type,
+            "crop": crop_type,
+            "reference_median": ref_median,
+            "reference_q1": ref_q1,
+            "reference_q3": ref_q3,
+            "relative_position": relative_pos,
+        },
+    }

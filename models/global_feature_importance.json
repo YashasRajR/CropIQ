@@ -1,0 +1,272 @@
+[
+  {
+    "feature": "rainfall",
+    "display_name": "Rainfall",
+    "importance": 0.791027,
+    "category": "Weather",
+    "actionable_type": "NON_ACTIONABLE",
+    "user_controlled": false,
+    "rank": 1
+  },
+  {
+    "feature": "NDVI",
+    "display_name": "Vegetation Health (NDVI)",
+    "importance": 0.06203,
+    "category": "Vegetation",
+    "actionable_type": "MONITORING",
+    "user_controlled": false,
+    "rank": 2
+  },
+  {
+    "feature": "SAVI",
+    "display_name": "Soil-Adjusted Vegetation Index (SAVI)",
+    "importance": 0.055249,
+    "category": "Vegetation",
+    "actionable_type": "MONITORING",
+    "user_controlled": false,
+    "rank": 3
+  },
+  {
+    "feature": "crop_type",
+    "display_name": "Crop Type",
+    "importance": 0.021447,
+    "category": "Crop",
+    "actionable_type": "FIXED_CHOICE",
+    "user_controlled": true,
+    "rank": 4
+  },
+  {
+    "feature": "soil_moisture",
+    "display_name": "Soil Moisture",
+    "importance": 0.01752,
+    "category": "Soil",
+    "actionable_type": "ACTIONABLE",
+    "user_controlled": true,
+    "rank": 5
+  },
+  {
+    "feature": "NDWI",
+    "display_name": "Vegetation Water Index (NDWI)",
+    "importance": 0.010668,
+    "category": "Vegetation",
+    "actionable_type": "MONITORING",
+    "user_controlled": false,
+    "rank": 6
+  },
+  {
+    "feature": "GNDVI",
+    "display_name": "Green Vegetation Index (GNDVI)",
+    "importance": 0.008779,
+    "category": "Vegetation",
+    "actionable_type": "MONITORING",
+    "user_controlled": false,
+    "rank": 7
+  },
+  {
+    "feature": "latitude",
+    "display_name": "Field Latitude",
+    "importance": 0.005884,
+    "category": "Geography",
+    "actionable_type": "FIXED_CHOICE",
+    "user_controlled": false,
+    "rank": 8
+  },
+  {
+    "feature": "month_sin",
+    "display_name": "Seasonal Cyclical Term (Month Sin)",
+    "importance": 0.002512,
+    "category": "Temporal",
+    "actionable_type": "NON_ACTIONABLE",
+    "user_controlled": false,
+    "rank": 9
+  },
+  {
+    "feature": "rainfall_field_expanding_mean",
+    "display_name": "Historical Rainfall Mean",
+    "importance": 0.002402,
+    "category": "Historical Trends",
+    "actionable_type": "MONITORING",
+    "user_controlled": false,
+    "rank": 10
+  },
+  {
+    "feature": "temperature",
+    "display_name": "Ambient Temperature",
+    "importance": 0.002157,
+    "category": "Weather",
+    "actionable_type": "NON_ACTIONABLE",
+    "user_controlled": false,
+    "rank": 11
+  },
+  {
+    "feature": "temperature_field_expanding_mean",
+    "display_name": "Historical Temperature Mean",
+    "importance": 0.002119,
+    "category": "Historical Trends",
+    "actionable_type": "MONITORING",
+    "user_controlled": false,
+    "rank": 12
+  },
+  {
+    "feature": "month_cos",
+    "display_name": "Seasonal Cyclical Term (Month Cos)",
+    "importance": 0.001764,
+    "category": "Temporal",
+    "actionable_type": "NON_ACTIONABLE",
+    "user_controlled": false,
+    "rank": 13
+  },
+  {
+    "feature": "GNDVI_field_expanding_mean",
+    "display_name": "Historical GNDVI Mean",
+    "importance": 0.001673,
+    "category": "Historical Trends",
+    "actionable_type": "MONITORING",
+    "user_controlled": false,
+    "rank": 14
+  },
+  {
+    "feature": "temperature_field_expanding_std",
+    "display_name": "Historical Temperature Variability (Std)",
+    "importance": 0.001659,
+    "category": "Historical Trends",
+    "actionable_type": "MONITORING",
+    "user_controlled": false,
+    "rank": 15
+  },
+  {
+    "feature": "doy_sin",
+    "display_name": "Annual Cyclical Term (DOY Sin)",
+    "importance": 0.001422,
+    "category": "Temporal",
+    "actionable_type": "NON_ACTIONABLE",
+    "user_controlled": false,
+    "rank": 16
+  },
+  {
+    "feature": "doy_cos",
+    "display_name": "Annual Cyclical Term (DOY Cos)",
+    "importance": 0.001421,
+    "category": "Temporal",
+    "actionable_type": "NON_ACTIONABLE",
+    "user_controlled": false,
+    "rank": 17
+  },
+  {
+    "feature": "rainfall_field_expanding_std",
+    "display_name": "Historical Rainfall Variability (Std)",
+    "importance": 0.001355,
+    "category": "Historical Trends",
+    "actionable_type": "MONITORING",
+    "user_controlled": false,
+    "rank": 18
+  },
+  {
+    "feature": "soil_moisture_field_expanding_mean",
+    "display_name": "Historical Soil Moisture Mean",
+    "importance": 0.00126,
+    "category": "Historical Trends",
+    "actionable_type": "MONITORING",
+    "user_controlled": false,
+    "rank": 19
+  },
+  {
+    "feature": "longitude",
+    "display_name": "Field Longitude",
+    "importance": 0.001257,
+    "category": "Geography",
+    "actionable_type": "FIXED_CHOICE",
+    "user_controlled": false,
+    "rank": 20
+  },
+  {
+    "feature": "GNDVI_field_expanding_std",
+    "display_name": "Historical GNDVI Variability (Std)",
+    "importance": 0.000999,
+    "category": "Historical Trends",
+    "actionable_type": "MONITORING",
+    "user_controlled": false,
+    "rank": 21
+  },
+  {
+    "feature": "soil_moisture_field_expanding_std",
+    "display_name": "Historical Soil Moisture Variability (Std)",
+    "importance": 0.000968,
+    "category": "Historical Trends",
+    "actionable_type": "MONITORING",
+    "user_controlled": false,
+    "rank": 22
+  },
+  {
+    "feature": "NDVI_field_expanding_mean",
+    "display_name": "Historical NDVI Mean",
+    "importance": 0.00095,
+    "category": "Historical Trends",
+    "actionable_type": "MONITORING",
+    "user_controlled": false,
+    "rank": 23
+  },
+  {
+    "feature": "SAVI_field_expanding_mean",
+    "display_name": "Historical SAVI Mean",
+    "importance": 0.000815,
+    "category": "Historical Trends",
+    "actionable_type": "MONITORING",
+    "user_controlled": false,
+    "rank": 24
+  },
+  {
+    "feature": "day_of_year",
+    "display_name": "Day of Year",
+    "importance": 0.000623,
+    "category": "Temporal",
+    "actionable_type": "NON_ACTIONABLE",
+    "user_controlled": false,
+    "rank": 25
+  },
+  {
+    "feature": "SAVI_field_expanding_std",
+    "display_name": "Historical SAVI Variability (Std)",
+    "importance": 0.000599,
+    "category": "Historical Trends",
+    "actionable_type": "MONITORING",
+    "user_controlled": false,
+    "rank": 26
+  },
+  {
+    "feature": "NDVI_field_expanding_std",
+    "display_name": "Historical NDVI Variability (Std)",
+    "importance": 0.000579,
+    "category": "Historical Trends",
+    "actionable_type": "MONITORING",
+    "user_controlled": false,
+    "rank": 27
+  },
+  {
+    "feature": "month",
+    "display_name": "Calendar Month",
+    "importance": 0.000463,
+    "category": "Temporal",
+    "actionable_type": "NON_ACTIONABLE",
+    "user_controlled": false,
+    "rank": 28
+  },
+  {
+    "feature": "field_obs_number",
+    "display_name": "Observation Pass Number",
+    "importance": 0.000396,
+    "category": "Temporal",
+    "actionable_type": "MONITORING",
+    "user_controlled": false,
+    "rank": 29
+  },
+  {
+    "feature": "year",
+    "display_name": "Observation Year",
+    "importance": 0.0,
+    "category": "Temporal",
+    "actionable_type": "FIXED_CHOICE",
+    "user_controlled": false,
+    "rank": 30
+  }
+]
