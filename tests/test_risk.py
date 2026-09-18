@@ -90,7 +90,7 @@ class TestRiskEngine(unittest.TestCase):
             extrapolation_warning=True,
         )
         self.assertGreater(res_extrap["risk_score"], res_normal["risk_score"])
-        self.assertTrue(any("extrapolation" in d.lower() for d in res_extrap["risk_drivers"]))
+        self.assertTrue(any("outside what cropiq usually sees" in d.lower() for d in res_extrap["risk_drivers"]))
 
 
 if __name__ == "__main__":

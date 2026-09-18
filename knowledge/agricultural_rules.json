@@ -10,7 +10,9 @@
       "priority": "HIGH",
       "actionability": "ACTIONABLE",
       "supported_crops": [],
-      "required_features": ["soil_moisture"],
+      "required_features": [
+        "soil_moisture"
+      ],
       "trigger": {
         "all": [
           {
@@ -25,8 +27,8 @@
         ]
       },
       "title": "Review soil moisture and irrigation needs",
-      "reason": "Soil moisture is below typical reference levels and contributed negatively to the model prediction.",
-      "action": "Check root-zone moisture conditions and evaluate whether supplemental irrigation is needed.",
+      "reason": "Soil moisture is lower than usual and is pulling your yield estimate down.",
+      "action": "Check the moisture in the root zone and consider whether extra irrigation is needed.",
       "confidence": "HIGH",
       "source_type": "sourced",
       "source": "FAO Irrigation and Drainage Paper 56 (Crop Evapotranspiration); ICAR Agronomy Guidelines",
@@ -44,7 +46,9 @@
       "priority": "MEDIUM",
       "actionability": "ACTIONABLE",
       "supported_crops": [],
-      "required_features": ["soil_moisture"],
+      "required_features": [
+        "soil_moisture"
+      ],
       "trigger": {
         "all": [
           {
@@ -59,8 +63,8 @@
         ]
       },
       "title": "Maintain adequate moisture and avoid over-irrigation",
-      "reason": "Soil moisture is in an adequate-to-high range and is supporting the current yield estimate.",
-      "action": "Maintain existing water management schedule; avoid excess irrigation that could lead to waterlogging or nutrient leaching.",
+      "reason": "Soil moisture is in a good range and is helping your yield estimate.",
+      "action": "Keep your current watering schedule; avoid extra irrigation, which can cause waterlogging or nutrient loss.",
       "confidence": "MEDIUM",
       "source_type": "sourced",
       "source": "FAO Irrigation and Drainage Paper 33 (Yield Response to Water)",
@@ -78,7 +82,11 @@
       "priority": "HIGH",
       "actionability": "ACTIONABLE",
       "supported_crops": [],
-      "required_features": ["soil_moisture", "rainfall", "temperature"],
+      "required_features": [
+        "soil_moisture",
+        "rainfall",
+        "temperature"
+      ],
       "trigger": {
         "all": [
           {
@@ -99,8 +107,8 @@
         ]
       },
       "title": "Mitigate combined drought and heat moisture stress",
-      "reason": "Simultaneous low soil moisture, low precipitation, and elevated temperature indicate heightened evaporative demand and moisture deficit.",
-      "action": "Prioritize field moisture inspection and consider scheduling timely irrigation or protective mulching where feasible.",
+      "reason": "Low soil moisture, little rain, and high temperature together mean your field is losing water faster than usual.",
+      "action": "Check field moisture soon, and consider irrigating or mulching to protect against water loss.",
       "confidence": "HIGH",
       "source_type": "sourced",
       "source": "WMO / FAO Agricultural Meteorology Compendium; ICAR Drought Management Handbook",
@@ -118,7 +126,10 @@
       "priority": "MEDIUM",
       "actionability": "MONITOR",
       "supported_crops": [],
-      "required_features": ["soil_moisture", "rainfall"],
+      "required_features": [
+        "soil_moisture",
+        "rainfall"
+      ],
       "trigger": {
         "all": [
           {
@@ -134,8 +145,8 @@
         ]
       },
       "title": "Inspect field drainage and soil moisture sensor reading",
-      "reason": "Low recorded soil moisture coincides with substantial recent rainfall, which may indicate rapid runoff, poor infiltration, or sensor reporting lag.",
-      "action": "Examine field topography for runoff or crusting issues, and verify the physical placement and calibration of the moisture probe.",
+      "reason": "Soil moisture readings are low despite recent heavy rain — this could mean water is running off instead of soaking in, or that the moisture sensor needs checking.",
+      "action": "Check your field for runoff or soil crusting, and make sure the moisture sensor is placed and calibrated correctly.",
       "confidence": "MEDIUM",
       "source_type": "prototype_heuristic",
       "source": null,
@@ -152,8 +163,13 @@
       "category": "CROP",
       "priority": "HIGH",
       "actionability": "ACTIONABLE",
-      "supported_crops": ["Rice"],
-      "required_features": ["crop_type", "soil_moisture"],
+      "supported_crops": [
+        "Rice"
+      ],
+      "required_features": [
+        "crop_type",
+        "soil_moisture"
+      ],
       "trigger": {
         "all": [
           {
@@ -169,8 +185,8 @@
         ]
       },
       "title": "Check rice paddy water depth and submergence status",
-      "reason": "Rice has high water requirements; recorded soil moisture is below the recommended range for typical lowland/paddy cultivation.",
-      "action": "Inspect bund integrity and check water level in the paddy to protect against water stress during tillering or panicle initiation.",
+      "reason": "Rice needs a lot of water; your soil moisture reading is below what's recommended for paddy rice.",
+      "action": "Inspect bund integrity and check the water level in the paddy to protect against water stress during tillering or panicle initiation.",
       "confidence": "HIGH",
       "source_type": "sourced",
       "source": "ICAR-National Rice Research Institute (NRRI) Production Guidelines; FAO Rice Water Management",
@@ -187,8 +203,13 @@
       "category": "CROP",
       "priority": "HIGH",
       "actionability": "MONITOR",
-      "supported_crops": ["Wheat"],
-      "required_features": ["crop_type", "temperature"],
+      "supported_crops": [
+        "Wheat"
+      ],
+      "required_features": [
+        "crop_type",
+        "temperature"
+      ],
       "trigger": {
         "all": [
           {
@@ -208,8 +229,8 @@
         ]
       },
       "title": "Monitor wheat for terminal heat stress",
-      "reason": "Ambient temperature exceeds the optimal range for wheat and contributed negatively to the model prediction.",
-      "action": "Monitor canopy temperature and soil moisture closely; consider light evening irrigation if permissible to moderate canopy microclimate.",
+      "reason": "Temperature is higher than ideal for wheat and is lowering your yield estimate.",
+      "action": "Keep an eye on crop temperature and soil moisture; a light evening watering may help cool the plants if you're able to irrigate.",
       "confidence": "HIGH",
       "source_type": "sourced",
       "source": "ICAR-Indian Institute of Wheat and Barley Research (IIWBR); CIMMYT Wheat Physiology Manual",
@@ -226,8 +247,13 @@
       "category": "CROP",
       "priority": "HIGH",
       "actionability": "ACTIONABLE",
-      "supported_crops": ["Maize"],
-      "required_features": ["crop_type", "soil_moisture"],
+      "supported_crops": [
+        "Maize"
+      ],
+      "required_features": [
+        "crop_type",
+        "soil_moisture"
+      ],
       "trigger": {
         "all": [
           {
@@ -243,7 +269,7 @@
         ]
       },
       "title": "Assess maize moisture status during critical growth stages",
-      "reason": "Maize is highly sensitive to moisture stress, which can substantially impair pollination and ear development.",
+      "reason": "Maize is very sensitive to water stress, which can seriously hurt pollination and ear development.",
       "action": "Check field soil moisture and ensure adequate irrigation, especially if the crop is approaching tasseling or silking.",
       "confidence": "HIGH",
       "source_type": "sourced",
@@ -262,13 +288,15 @@
       "priority": "MEDIUM",
       "actionability": "MONITOR",
       "supported_crops": [],
-      "required_features": ["NDVI"],
+      "required_features": [
+        "NDVI"
+      ],
       "trigger": {
         "all": [
           {
             "feature": "NDVI",
             "operator": "less_than",
-            "value": 0.40
+            "value": 0.4
           },
           {
             "feature": "NDVI",
@@ -277,8 +305,8 @@
         ]
       },
       "title": "Monitor canopy vigor and conduct field scouting",
-      "reason": "Vegetation index (NDVI) is lower than average and pulled down the model prediction relative to baseline.",
-      "action": "Conduct targeted field walkthroughs to check canopy greenness, stand uniformity, and potential biotic or abiotic stressors.",
+      "reason": "Your plant greenness reading is lower than average, which is pulling your yield estimate down.",
+      "action": "Walk the field to check plant greenness, how evenly the crop is growing, and look for pests, disease, or other stress.",
       "confidence": "MEDIUM",
       "source_type": "sourced",
       "source": "NASA Earth Observatory Remote Sensing Indices Guide; USDA Agricultural Research Service",
@@ -296,7 +324,9 @@
       "priority": "LOW",
       "actionability": "INFORMATIONAL",
       "supported_crops": [],
-      "required_features": ["NDVI"],
+      "required_features": [
+        "NDVI"
+      ],
       "trigger": {
         "all": [
           {
@@ -311,8 +341,8 @@
         ]
       },
       "title": "Healthy canopy greenness supporting yield potential",
-      "reason": "High vegetation index (NDVI) indicates vigorous green biomass and contributes positively to estimated yield.",
-      "action": "Maintain current agronomic practices; continue routine monitoring through maturation.",
+      "reason": "Your plants are showing strong, healthy greenness, which is helping your yield estimate.",
+      "action": "Keep up your current farming practices, and continue watching the crop through to harvest.",
       "confidence": "MEDIUM",
       "source_type": "sourced",
       "source": "USDA ARS Remote Sensing in Agriculture Bulletin",
@@ -330,7 +360,9 @@
       "priority": "MEDIUM",
       "actionability": "MONITOR",
       "supported_crops": [],
-      "required_features": ["NDWI"],
+      "required_features": [
+        "NDWI"
+      ],
       "trigger": {
         "all": [
           {
@@ -345,8 +377,8 @@
         ]
       },
       "title": "Monitor canopy water status using NDWI trend",
-      "reason": "Normalized Difference Water Index (NDWI) is depressed and is lowering the prediction, suggesting possible canopy water deficit.",
-      "action": "Observe crop canopy for signs of wilting or leaf curling and cross-reference with root-zone moisture.",
+      "reason": "Your plant water reading is lower than usual, suggesting the crop may be short on water.",
+      "action": "Watch the crop for wilting or curling leaves, and check this against your root-zone moisture reading.",
       "confidence": "MEDIUM",
       "source_type": "sourced",
       "source": "Gao, B.C. (1996) Remote Sensing of Environment (NDWI Index Specification)",
@@ -374,8 +406,8 @@
         ]
       },
       "title": "Consider standard soil fertility testing",
-      "reason": "The model yield prediction is significantly below the historical reference range for this crop.",
-      "action": "Consider conducting a standard laboratory soil test (pH, EC, organic carbon, and available NPK) before the next planting cycle to rule out nutrient imbalances.",
+      "reason": "Your yield estimate is well below what's typical for this crop.",
+      "action": "Consider a standard soil lab test (pH, salinity, organic matter, and nutrients) before your next planting to rule out nutrient problems.",
       "confidence": "LOW",
       "source_type": "prototype_heuristic",
       "source": null,
@@ -393,20 +425,23 @@
       "priority": "MEDIUM",
       "actionability": "MONITOR",
       "supported_crops": [],
-      "required_features": ["soil_moisture", "soil_moisture_field_expanding_mean"],
+      "required_features": [
+        "soil_moisture",
+        "soil_moisture_field_expanding_mean"
+      ],
       "trigger": {
         "all": [
           {
             "feature": "soil_moisture",
             "operator": "less_than_feature",
             "target_feature": "soil_moisture_field_expanding_mean",
-            "margin_factor": 0.80
+            "margin_factor": 0.8
           }
         ]
       },
       "title": "Monitor declining soil moisture trend across observations",
-      "reason": "Current soil moisture is more than 20% below the field historical expanding mean, indicating a localized drying trend.",
-      "action": "Monitor the field water balance over upcoming days and check if organic mulching could conserve residual moisture.",
+      "reason": "Soil moisture has dropped more than 20% below what's typical for this field recently — a sign it's drying out.",
+      "action": "Monitor the field water balance over the coming days and check if organic mulching could help conserve moisture.",
       "confidence": "MEDIUM",
       "source_type": "prototype_heuristic",
       "source": null,
@@ -423,7 +458,9 @@
       "priority": "MEDIUM",
       "actionability": "MONITOR",
       "supported_crops": [],
-      "required_features": ["temperature"],
+      "required_features": [
+        "temperature"
+      ],
       "trigger": {
         "all": [
           {
@@ -434,8 +471,8 @@
         ]
       },
       "title": "Monitor crop conditions during elevated ambient temperature",
-      "reason": "Recorded ambient temperature is elevated (>35°C), which can accelerate crop transpiration and induce thermal stress.",
-      "action": "Monitor crop canopy for signs of heat scorch and assess soil moisture depletion rates.",
+      "reason": "Temperature is high (over 35°C), which can make your crop lose water faster and become heat-stressed.",
+      "action": "Watch your crop for heat scorch and keep an eye on how quickly soil moisture is dropping.",
       "confidence": "MEDIUM",
       "source_type": "sourced",
       "source": "FAO Guidelines on Heat Stress in Agricultural Production",
@@ -453,7 +490,9 @@
       "priority": "MEDIUM",
       "actionability": "INFORMATIONAL",
       "supported_crops": [],
-      "required_features": ["rainfall"],
+      "required_features": [
+        "rainfall"
+      ],
       "trigger": {
         "all": [
           {
@@ -468,8 +507,8 @@
         ]
       },
       "title": "Contextual note on dry weather conditions",
-      "reason": "Near-zero precipitation contributed negatively to the model prediction relative to learned patterns.",
-      "action": "Acknowledge dry background weather; prioritize soil moisture retention and monitoring.",
+      "reason": "Very little rain recently is lowering your yield estimate.",
+      "action": "Expect dry conditions to continue; focus on conserving soil moisture and keep monitoring the field.",
       "confidence": "MEDIUM",
       "source_type": "prototype_heuristic",
       "source": null,
@@ -497,8 +536,8 @@
         ]
       },
       "title": "High yield risk alert: Prioritize investigation of key downward drivers",
-      "reason": "The integrated crop risk assessment indicates HIGH risk (risk score >= 65/100) due to substantial yield deficit and negative contributing factors.",
-      "action": "Review the primary negative contributors identified by the intelligence model and perform ground checks on highlighted field conditions.",
+      "reason": "Overall, this plot is at high risk — several conditions are combining to pull your yield estimate down.",
+      "action": "Check the conditions flagged above by walking the field yourself to confirm what's happening on the ground.",
       "confidence": "HIGH",
       "source_type": "prototype_heuristic",
       "source": null,
@@ -526,8 +565,8 @@
         ]
       },
       "title": "Moderate yield risk alert: Review key downward factors",
-      "reason": "The integrated crop risk assessment indicates MODERATE risk (risk score 35-64/100).",
-      "action": "Examine the negative factors influencing this prediction and monitor field conditions to prevent further deficit.",
+      "reason": "This plot is at moderate risk — worth keeping an eye on.",
+      "action": "Look at what's holding your yield back and keep monitoring so it doesn't get worse.",
       "confidence": "MEDIUM",
       "source_type": "prototype_heuristic",
       "source": null,
@@ -554,8 +593,8 @@
         ]
       },
       "title": "High model uncertainty: Verify field conditions before major decisions",
-      "reason": "The prediction ensemble exhibits wide dispersion (>25% relative spread), indicating lower consensus among decision trees for this feature combination.",
-      "action": "Treat the estimated yield cautiously and verify actual ground conditions before executing irreversible or costly agronomic interventions.",
+      "reason": "CropIQ is less confident than usual about this estimate for your specific mix of conditions.",
+      "action": "Treat this estimate as a rough guide, and check actual field conditions yourself before making any costly or hard-to-reverse decisions.",
       "confidence": "HIGH",
       "source_type": "prototype_heuristic",
       "source": null,
@@ -584,8 +623,8 @@
         ]
       },
       "title": "Data quality alert: Inputs fall outside typical model training bounds",
-      "reason": "One or more input features exceed the historical training range (1st-99th percentiles or absolute min/max), requiring the model to extrapolate.",
-      "action": "Double-check input measurements and sensor calibrations to confirm their physical validity.",
+      "reason": "One or more of the values you entered are outside the range CropIQ usually sees, so it's estimating beyond what it has learned from.",
+      "action": "Double-check the numbers you entered and your sensor readings to make sure they're accurate.",
       "confidence": "HIGH",
       "source_type": "prototype_heuristic",
       "source": null,
@@ -611,8 +650,8 @@
         ]
       },
       "title": "Verify flagged data values to improve estimate reliability",
-      "reason": "Input validation identified missing, imputed, or anomalous input records.",
-      "action": "Update or verify the flagged features with on-farm observations to ensure maximum prediction fidelity.",
+      "reason": "Some of the data used for this estimate was missing, filled in automatically, or looked unusual.",
+      "action": "Double-check the flagged values against what you actually observe on your farm for the most accurate estimate.",
       "confidence": "MEDIUM",
       "source_type": "prototype_heuristic",
       "source": null,

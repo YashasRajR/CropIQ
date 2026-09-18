@@ -173,7 +173,7 @@ export const RiskCard: React.FC<RiskCardProps> = ({ risk }) => {
       </div>
 
       <div className="pt-3 mt-4 border-t border-slate-100 text-[11px] text-slate-500">
-        Monitors water balance, vegetative indices, and temperature stress.
+        Based on water levels, plant health readings, and heat stress.
       </div>
     </Card>
   );

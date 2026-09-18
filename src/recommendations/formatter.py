@@ -86,28 +86,28 @@ def generate_executive_summary(
 
     risk_level = intelligence_payload.get("risk", {}).get("level", "LOW")
     unc_level = intelligence_payload.get("uncertainty", {}).get("classification", "LOW")
+    risk_word = {"LOW": "low", "MODERATE": "moderate", "HIGH": "high"}.get(risk_level, risk_level.lower())
 
     # Sentence 1: Prediction & Risk posture
-    s1 = (
-        f"Estimated {crop} yield is {est_yield:.2f} {unit} with an assessed {risk_level} yield risk."
-    )
+    unit_suffix = f" {unit}" if unit and unit != "unconfirmed" else ""
+    s1 = f"Your estimated {crop} yield is {est_yield:.2f}{unit_suffix}, with {risk_word} risk."
 
     # Sentence 2: Key influence & top recommendation
     if recommendations:
         top_rec = recommendations[0]
         top_action = top_rec.get("action", top_rec.get("title"))
-        s2 = f"The primary recommended action is to {top_action[:1].lower() + top_action[1:]}"
+        s2 = f"The top thing to do is {top_action[:1].lower() + top_action[1:]}"
         if not s2.endswith("."):
             s2 += "."
     else:
-        s2 = "Current field indicators are within typical ranges; continue standard seasonal monitoring."
+        s2 = "Your field conditions look typical for now; keep up your usual seasonal checks."
 
     # Sentence 3: Uncertainty / verification guidance
     if unc_level == "HIGH":
-        s3 = "Because model uncertainty is high across ensemble trees, verify field ground conditions before committing to major inputs."
+        s3 = "This estimate is less certain than usual, so check field conditions yourself before any major decisions."
     elif unc_level == "MODERATE":
-        s3 = "Field observations show moderate predictive variation; cross-reference with localized field checks."
+        s3 = "This estimate has some uncertainty, so it's worth confirming with a field check."
     else:
-        s3 = "The prediction is supported by consistent ensemble agreement across model trees."
+        s3 = "This estimate is well supported by consistent conditions."
 
     return f"{s1} {s2} {s3}"

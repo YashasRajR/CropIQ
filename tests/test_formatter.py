@@ -87,7 +87,7 @@ class TestFormatter(unittest.TestCase):
         summary = generate_executive_summary(recs, self.payload)
         self.assertIn("Rice", summary)
         self.assertIn("38.50", summary)
-        self.assertIn("MODERATE", summary)
+        self.assertIn("moderate", summary.lower())
         self.assertIn("irrigation", summary.lower())
         # Check non-empty coherent length
         self.assertTrue(len(summary) > 50)

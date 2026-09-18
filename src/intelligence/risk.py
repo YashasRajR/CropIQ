@@ -81,13 +81,13 @@ def compute_yield_risk(
 
     # Yield relative position
     if predicted_yield >= ref_q3:
-        relative_pos = "in the upper historical quartile (above 75th percentile)"
+        relative_pos = "among the best plots CropIQ has seen for this crop"
     elif predicted_yield >= ref_median:
-        relative_pos = "above the historical median"
+        relative_pos = "above average for this crop"
     elif predicted_yield >= ref_q1:
-        relative_pos = "moderately below historical median (within interquartile range)"
+        relative_pos = "a bit below average for this crop"
     else:
-        relative_pos = "in the lower historical quartile (below 25th percentile)"
+        relative_pos = "well below average for this crop"
 
     # -------------------------------------------------------------
     # 2. Component Calculations (0 to 100 each)
@@ -101,7 +101,7 @@ def compute_yield_risk(
         surplus_ratio = min(1.0, (predicted_yield - ref_median) / max(ref_median, 1.0))
         comp_yield = max(0.0, 15.0 - (surplus_ratio * 15.0))  # 0 to 15
         protective_factors.append(
-            f"Estimated yield ({predicted_yield:.2f}) is at or above the historical {crop_type} reference median ({ref_median:.2f})."
+            f"Your estimated yield is at or above what's typical for {crop_type}."
         )
     else:
         # Deficit below median
@@ -109,7 +109,7 @@ def compute_yield_risk(
         # 10% deficit -> 30 score; 25% deficit -> 75 score; >35% deficit -> 100 score
         comp_yield = min(100.0, deficit_ratio * 280.0)
         risk_drivers.append(
-            f"Estimated yield ({predicted_yield:.2f}) is {deficit_ratio * 100:.1f}% below the historical {crop_type} reference median ({ref_median:.2f})."
+            f"Your estimated yield is about {deficit_ratio * 100:.0f}% lower than what's typical for {crop_type}."
         )
 
     # Component B: Prediction Uncertainty (25% weight)
@@ -118,11 +118,11 @@ def compute_yield_risk(
     comp_uncertainty = min(100.0, max(0.0, (rel_unc / 0.30) * 100.0))
     if uncertainty_result.get("classification") == "HIGH":
         risk_drivers.append(
-            f"Model prediction shows elevated uncertainty ({rel_unc * 100:.1f}% relative spread across decision trees)."
+            "This estimate is less certain than usual for your conditions — treat it as a rough guide."
         )
     elif uncertainty_result.get("classification") == "LOW":
         protective_factors.append(
-            f"Model prediction shows high ensemble stability across decision trees (relative spread: {rel_unc * 100:.1f}%)."
+            "This estimate is highly consistent for your conditions."
         )
 
     # Component C: Negative Contributors (15% weight)
@@ -136,28 +136,28 @@ def compute_yield_risk(
     if top_negatives:
         strongest_neg = top_negatives[0]
         risk_drivers.append(
-            f"{strongest_neg['display_name']} contributed negatively ({strongest_neg['contribution']:+.2f}) to the prediction based on learned patterns."
+            f"{strongest_neg['display_name']} is currently working against your yield."
         )
 
     top_positives = explanation_result.get("top_positive_factors", [])
     if top_positives:
         strongest_pos = top_positives[0]
         protective_factors.append(
-            f"{strongest_pos['display_name']} contributed positively ({strongest_pos['contribution']:+.2f}) to the prediction based on learned patterns."
+            f"{strongest_pos['display_name']} is currently helping your yield."
         )
 
     # Component D: Data Quality / OOD (10% weight)
     if extrapolation_warning:
         comp_quality = 100.0
-        risk_drivers.append("Multiple input features are outside the historical training range (extrapolation warning).")
+        risk_drivers.append("Some of the values you entered are well outside what CropIQ usually sees, so treat this estimate as rough guidance.")
     elif is_out_of_distribution:
         comp_quality = 50.0
-        risk_drivers.append("One or more input features are near the extreme tails of the historical training distribution.")
+        risk_drivers.append("A couple of the values you entered are unusual compared to what CropIQ usually sees.")
     elif quality_warnings:
         comp_quality = 25.0
     else:
         comp_quality = 0.0
-        protective_factors.append("Current input observations are well-aligned with the model's historical training distribution.")
+        protective_factors.append("The conditions you entered closely match what CropIQ has seen before, so this estimate should be solid.")
 
     # -------------------------------------------------------------
     # 3. Weighted Score & Risk Level Mapping (Section 29, 30)
