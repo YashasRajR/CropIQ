@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sparkles, MapPin } from 'lucide-react';
+import { MapPin, Check } from 'lucide-react';
 import { EXAMPLE_FARM_PRESETS, ExampleFarmProfile } from '../../config/presets';
 import { FarmInput } from '../../types/farm';
 
@@ -8,48 +8,68 @@ interface ExampleSelectorProps {
   selectedCrop: string;
 }
 
+const CROP_ICONS: Record<string, string> = {
+  Rice: '🌾',
+  Bajra: '🌾',
+  Jowar: '🌾',
+  Soybean: '🌱',
+  Sugarcane: '🎋',
+};
+
 export const ExampleSelector: React.FC<ExampleSelectorProps> = ({
   onSelect,
   selectedCrop,
 }) => {
   return (
-    <div className="mb-8 p-4 rounded-2xl bg-slate-900/50 border border-slate-800">
-      <div className="flex items-center justify-between mb-3">
+    <div className="mb-8 p-5 rounded-2xl bg-emerald-50/60 border border-emerald-200/80">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-3.5">
         <div className="flex items-center gap-2">
-          <Sparkles className="w-4 h-4 text-emerald-400" />
-          <span className="text-xs font-semibold text-slate-200 tracking-tight">
-            1-Click Dataset Observation Presets:
-          </span>
+          <span className="text-base">🌾</span>
+          <h3 className="text-sm font-bold text-emerald-950">
+            Choose an Example Farm to Test
+          </h3>
         </div>
-        <span className="text-[11px] text-slate-400 font-mono hidden sm:inline">
-          Real records from Phase 1 processed data
+        <span className="text-xs text-emerald-800 font-medium">
+          Real verified field observations from research plots
         </span>
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5">
         {EXAMPLE_FARM_PRESETS.map((p: ExampleFarmProfile) => {
-          const isActive = selectedCrop === p.crop;
+          const isActive = selectedCrop.toLowerCase() === p.crop.toLowerCase();
+          const icon = CROP_ICONS[p.crop] || '🌱';
           return (
             <button
               key={p.id}
               type="button"
               onClick={() => onSelect(p.input)}
-              className={`p-2.5 rounded-xl text-left border transition-all cursor-pointer flex flex-col justify-between ${
+              className={`p-3 rounded-xl text-left border transition-all cursor-pointer flex flex-col justify-between ${
                 isActive
-                  ? 'bg-emerald-950/40 border-emerald-500/50 shadow-md shadow-emerald-950/40 text-white'
-                  : 'bg-slate-950/60 border-slate-800/80 hover:border-slate-700 text-slate-300 hover:text-white'
+                  ? 'bg-white border-emerald-600 ring-2 ring-emerald-600/20 shadow-sm text-emerald-950'
+                  : 'bg-white/80 border-slate-200 hover:border-emerald-300 hover:bg-white text-slate-700'
               }`}
             >
               <div>
-                <div className="text-xs font-bold truncate">{p.crop}</div>
-                <div className="text-[10px] text-slate-400 flex items-center gap-1 mt-0.5 truncate">
-                  <MapPin className="w-2.5 h-2.5 text-slate-500 flex-shrink-0" />
+                <div className="flex items-center justify-between">
+                  <span className="text-lg">{icon}</span>
+                  {isActive && (
+                    <span className="w-4 h-4 rounded-full bg-emerald-700 text-white flex items-center justify-center text-[10px]">
+                      <Check className="w-2.5 h-2.5" />
+                    </span>
+                  )}
+                </div>
+                <div className="text-sm font-bold mt-1 text-slate-900 truncate">
+                  {p.crop}
+                </div>
+                <div className="text-xs text-slate-500 flex items-center gap-1 mt-0.5 truncate">
+                  <MapPin className="w-3 h-3 text-slate-400 shrink-0" />
                   <span className="truncate">{p.region}</span>
                 </div>
               </div>
-              <div className="mt-2 pt-1.5 border-t border-slate-800/60 flex items-center justify-between text-[10px] font-mono text-slate-400">
-                <span>Moist: {p.input.soil_moisture.toFixed(1)}</span>
-                <span>Rain: {p.input.rainfall.toFixed(1)}</span>
+
+              <div className="mt-2.5 pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-600 font-medium">
+                <span>💧 {p.input.soil_moisture.toFixed(0)}%</span>
+                <span>🌧️ {p.input.rainfall.toFixed(0)}mm</span>
               </div>
             </button>
           );

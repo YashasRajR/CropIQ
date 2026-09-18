@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ShieldCheck, Sparkles, Filter } from 'lucide-react';
+import { ShieldCheck, Filter } from 'lucide-react';
 import { Card } from '../common/Card';
 import { RecommendationCard } from './RecommendationCard';
 import { RecommendationItem } from '../../types/recommendation';
@@ -26,9 +26,10 @@ export const RecommendationList: React.FC<RecommendationListProps> = ({
     ...Array.from(new Set(recommendations.map((r) => r.category))),
   ];
 
-  const filtered = selectedCategory === 'ALL'
-    ? recommendations
-    : recommendations.filter((r) => r.category === selectedCategory);
+  const filtered =
+    selectedCategory === 'ALL'
+      ? recommendations
+      : recommendations.filter((r) => r.category === selectedCategory);
 
   return (
     <Card variant="elevated" className="p-6 sm:p-8" id="recommendations-section">
@@ -36,81 +37,83 @@ export const RecommendationList: React.FC<RecommendationListProps> = ({
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <div className="p-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400">
+            <span className="p-1.5 rounded-lg bg-emerald-100 text-emerald-800">
               <ShieldCheck className="w-4 h-4" />
-            </div>
-            <h2 className="text-xl font-bold text-white tracking-tight">
-              What you can do
+            </span>
+            <h2 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
+              What You Can Do
             </h2>
           </div>
-          <p className="text-xs text-slate-400">
-            Practical suggestions based on your farm's conditions.
+          <p className="text-sm text-slate-500">
+            Practical management steps based on your farm's conditions and risk indicators.
           </p>
         </div>
 
-        {/* Mode Toggle (Farmer Mode vs Technical Audit) */}
+        {/* View Mode Toggle (Farmer View vs Technical Audit) */}
         {onToggleMode && (
-          <div className="inline-flex items-center p-1 rounded-xl bg-slate-950 border border-slate-800 text-xs">
+          <div className="inline-flex items-center p-1 rounded-xl bg-slate-100 border border-slate-200 text-xs">
             <button
               type="button"
               onClick={() => onToggleMode('farmer')}
-              className={`px-3 py-1 rounded-lg transition-colors cursor-pointer ${
+              className={`px-3 py-1.5 rounded-lg font-medium transition-colors cursor-pointer ${
                 currentMode === 'farmer'
-                  ? 'bg-emerald-600 text-white font-medium'
-                  : 'text-slate-400 hover:text-white'
+                  ? 'bg-emerald-700 text-white shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              Farmer Mode
+              Farmer View
             </button>
             <button
               type="button"
               onClick={() => onToggleMode('technical')}
-              className={`px-3 py-1 rounded-lg transition-colors cursor-pointer ${
+              className={`px-3 py-1.5 rounded-lg font-medium transition-colors cursor-pointer ${
                 currentMode === 'technical'
-                  ? 'bg-emerald-600 text-white font-medium'
-                  : 'text-slate-400 hover:text-white'
+                  ? 'bg-emerald-700 text-white shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              Technical Audit
+              Technical Mode
             </button>
           </div>
         )}
       </div>
 
-      {/* Executive Summary Banner */}
+      {/* Executive Summary Callout */}
       {executiveSummary && (
-        <div className="p-4 rounded-xl bg-emerald-950/20 border border-emerald-500/30 mb-6 flex items-start gap-3">
-          <Sparkles className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
-          <div>
-            <div className="text-xs font-bold text-emerald-300 mb-0.5">Summary</div>
-            <div className="text-xs text-slate-300 leading-relaxed">{executiveSummary}</div>
-          </div>
+        <div className="mb-6 p-4 rounded-xl bg-emerald-50/60 border border-emerald-200 text-xs text-emerald-950 leading-relaxed">
+          <strong className="font-semibold text-emerald-900 block mb-1">
+            Advisory Summary:
+          </strong>
+          {executiveSummary}
         </div>
       )}
 
       {/* Category Filter Pills */}
       {categories.length > 2 && (
-        <div className="flex items-center gap-2 overflow-x-auto pb-2 mb-4 scrollbar-none">
-          <Filter className="w-3.5 h-3.5 text-slate-500 flex-shrink-0" />
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              type="button"
-              onClick={() => setSelectedCategory(cat)}
-              className={`text-xs px-3 py-1 rounded-lg border transition-colors cursor-pointer flex-shrink-0 ${
-                selectedCategory === cat
-                  ? 'bg-slate-800 border-slate-600 text-white font-medium'
-                  : 'bg-slate-950/60 border-slate-800 text-slate-400 hover:text-slate-200'
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
+        <div className="flex items-center gap-2 mb-6 overflow-x-auto pb-1 text-xs">
+          <Filter className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+          <span className="text-slate-500 font-medium shrink-0">Filter by category:</span>
+          <div className="flex gap-1.5 flex-wrap">
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                type="button"
+                onClick={() => setSelectedCategory(cat)}
+                className={`px-3 py-1 rounded-full text-xs transition-colors cursor-pointer ${
+                  selectedCategory === cat
+                    ? 'bg-emerald-700 text-white font-semibold'
+                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200 border border-slate-200'
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
         </div>
       )}
 
-      {/* Recommendation Items List */}
-      <div className="space-y-4">
+      {/* Recommendations Cards Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {filtered.length > 0 ? (
           filtered.map((item) => (
             <RecommendationCard
@@ -121,8 +124,8 @@ export const RecommendationList: React.FC<RecommendationListProps> = ({
             />
           ))
         ) : (
-          <div className="py-8 text-center text-xs text-slate-500">
-            No active recommendations for category "{selectedCategory}".
+          <div className="col-span-2 text-center py-10 text-slate-400 text-sm">
+            No recommendations in this category.
           </div>
         )}
       </div>

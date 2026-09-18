@@ -9,7 +9,7 @@ import {
   Cell,
   ReferenceLine,
 } from 'recharts';
-import { Sparkles, Info, ArrowUpRight, ArrowDownRight } from 'lucide-react';
+import { HelpCircle, ArrowUpRight, ArrowDownRight, Info } from 'lucide-react';
 import { Card } from '../common/Card';
 import { ExplanationResponse } from '../../types/explanation';
 import { formatNumber } from '../../utils/formatting';
@@ -19,12 +19,11 @@ interface FactorChartProps {
 }
 
 export const FactorChart: React.FC<FactorChartProps> = ({ explanation }) => {
-  // Format data for Recharts horizontal bar chart
   const factors = explanation.top_overall_factors || [];
 
-  const chartData = factors.slice(0, 8).map((f) => ({
+  const chartData = factors.slice(0, 7).map((f) => ({
     name: f.display_name || f.feature,
-    contribution: Number(f.contribution.toFixed(3)),
+    contribution: Number(f.contribution.toFixed(2)),
     direction: f.direction,
     magnitude: Math.abs(f.contribution),
     observed: f.observed_value,
@@ -32,34 +31,35 @@ export const FactorChart: React.FC<FactorChartProps> = ({ explanation }) => {
 
   return (
     <Card variant="elevated" className="p-6 sm:p-8" id="factors-section">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <div className="p-1.5 rounded-lg bg-purple-500/10 border border-purple-500/30 text-purple-400">
-              <Sparkles className="w-4 h-4" />
-            </div>
-            <h2 className="text-xl font-bold text-white tracking-tight">
-              Why this estimate?
+            <span className="p-1.5 rounded-lg bg-emerald-100 text-emerald-800">
+              <HelpCircle className="w-4 h-4" />
+            </span>
+            <h2 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
+              What's Affecting Your Crop?
             </h2>
           </div>
-          <p className="text-xs text-slate-400">
-            These are the factors that pushed your estimate up or down the most, compared to a typical field.
+          <p className="text-sm text-slate-500">
+            These are the key conditions on your farm that have the biggest influence on your yield estimate.
           </p>
         </div>
 
-        <div className="text-xs font-mono px-3 py-1.5 rounded-xl bg-slate-950 border border-slate-800 text-slate-400">
-          Method: <span className="text-purple-300 font-semibold">{explanation.method}</span>
+        <div className="text-xs px-3 py-1.5 rounded-lg bg-slate-100 text-slate-600 font-medium">
+          Baseline benchmark: <span className="font-mono font-bold text-slate-900">{formatNumber(explanation.baseline_yield, 2)}</span>
         </div>
       </div>
 
-      {/* Chart Canvas */}
-      <div className="h-72 w-full my-4">
+      {/* Horizontal Bar Chart */}
+      <div className="h-72 w-full my-4 bg-slate-50/70 p-4 rounded-xl border border-slate-200">
         {chartData.length > 0 ? (
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
               data={chartData}
               layout="vertical"
-              margin={{ top: 5, right: 30, left: 120, bottom: 5 }}
+              margin={{ top: 5, right: 30, left: 110, bottom: 5 }}
             >
               <XAxis
                 type="number"
@@ -70,92 +70,109 @@ export const FactorChart: React.FC<FactorChartProps> = ({ explanation }) => {
               <YAxis
                 type="category"
                 dataKey="name"
-                stroke="#94a3b8"
-                fontSize={11}
+                stroke="#334155"
+                fontSize={12}
                 tickLine={false}
+                axisLine={false}
+                width={105}
               />
-              <ReferenceLine x={0} stroke="#475569" strokeWidth={1.5} />
               <RechartsTooltip
-                cursor={{ fill: 'rgba(255, 255, 255, 0.05)' }}
-                content={({ active, payload }) => {
-                  if (active && payload && payload.length) {
-                    const data = payload[0].payload;
-                    return (
-                      <div className="p-3 bg-slate-900 border border-slate-750 text-xs rounded-xl shadow-xl font-mono">
-                        <div className="font-bold text-white mb-1">{data.name}</div>
-                        <div className="text-slate-300">
-                          Contribution: <span className={data.contribution >= 0 ? 'text-emerald-400 font-bold' : 'text-rose-400 font-bold'}>
-                            {data.contribution > 0 ? '+' : ''}{data.contribution}
-                          </span>
-                        </div>
-                        {data.observed !== undefined && (
-                          <div className="text-slate-400 mt-0.5">
-                            Your value: {formatNumber(data.observed, 2)}
-                          </div>
-                        )}
-                      </div>
-                    );
-                  }
-                  return null;
+                formatter={(val: number) => [
+                  `${val > 0 ? '+' : ''}${formatNumber(val, 2)} unconfirmed`,
+                  'Estimated Impact',
+                ]}
+                contentStyle={{
+                  backgroundColor: '#ffffff',
+                  borderColor: '#e2e8f0',
+                  borderRadius: '12px',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+                  color: '#0f172a',
+                  fontSize: '12px',
                 }}
               />
+              <ReferenceLine x={0} stroke="#94a3b8" strokeDasharray="3 3" />
               <Bar dataKey="contribution" radius={[0, 4, 4, 0]}>
                 {chartData.map((entry, index) => (
                   <Cell
                     key={`cell-${index}`}
-                    fill={entry.contribution >= 0 ? '#10b981' : '#f43f5e'}
-                    fillOpacity={0.85}
+                    fill={entry.contribution >= 0 ? '#16a34a' : '#d97706'}
                   />
                 ))}
               </Bar>
             </BarChart>
           </ResponsiveContainer>
         ) : (
-          <div className="h-full flex items-center justify-center text-xs text-slate-500">
-            No local feature attribution data available for this observation.
+          <div className="h-full flex items-center justify-center text-slate-400 text-sm">
+            No factor attributions available
           </div>
         )}
       </div>
 
-      {/* Grid of Key Factors */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 pt-6 mt-6 border-t border-slate-800/80">
-        {factors.slice(0, 6).map((f) => {
-          const isPositive = f.direction === 'positive' || f.contribution > 0;
+      {/* Plain-Language Influence Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-5">
+        {factors.slice(0, 4).map((f) => {
+          const isPos = f.direction === 'positive';
           return (
             <div
               key={f.feature}
-              className="p-3 rounded-xl bg-slate-950/60 border border-slate-800/80 hover:border-slate-700 transition-colors"
+              className={`p-3.5 rounded-xl border flex items-start gap-3 ${
+                isPos
+                  ? 'bg-emerald-50/50 border-emerald-200/80 text-emerald-950'
+                  : 'bg-amber-50/50 border-amber-200/80 text-amber-950'
+              }`}
             >
-              <div className="flex items-center justify-between gap-2 mb-1.5">
-                <span className="text-xs font-semibold text-slate-200 truncate">
-                  {f.display_name || f.feature}
-                </span>
-                <span
-                  className={`text-xs font-mono font-bold flex items-center gap-0.5 ${
-                    isPositive ? 'text-emerald-400' : 'text-rose-400'
-                  }`}
-                >
-                  {isPositive ? (
-                    <ArrowUpRight className="w-3.5 h-3.5" />
-                  ) : (
-                    <ArrowDownRight className="w-3.5 h-3.5" />
-                  )}
-                  {f.contribution > 0 ? '+' : ''}
-                  {formatNumber(f.contribution, 2)}
-                </span>
+              <div
+                className={`p-1.5 rounded-lg shrink-0 ${
+                  isPos ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
+                }`}
+              >
+                {isPos ? (
+                  <ArrowUpRight className="w-4 h-4" />
+                ) : (
+                  <ArrowDownRight className="w-4 h-4" />
+                )}
               </div>
-              <p className="text-[11px] text-slate-400 leading-tight">
-                {f.interpretation}
-              </p>
+              <div className="flex-1 text-xs">
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-slate-900 text-sm">
+                    {f.display_name || f.feature}
+                  </span>
+                  <span
+                    className={`font-mono font-bold ${
+                      isPos ? 'text-emerald-700' : 'text-amber-700'
+                    }`}
+                  >
+                    {isPos ? '+' : ''}
+                    {formatNumber(f.contribution, 2)}
+                  </span>
+                </div>
+                <div className="text-slate-600 mt-0.5">
+                  {f.observed_value !== undefined && (
+                    <span className="text-[11px] text-slate-500 mr-2 font-medium">
+                      Observed: {f.observed_value}
+                    </span>
+                  )}
+                  <span>
+                    {isPos
+                      ? 'Condition is favorable, supporting higher yield.'
+                      : 'Condition is currently restricting full yield potential.'}
+                  </span>
+                </div>
+              </div>
             </div>
           );
         })}
       </div>
 
-      {/* Non-Causal Disclosure */}
-      <div className="mt-6 p-3 rounded-xl bg-slate-950/40 border border-slate-800/60 text-[11px] text-slate-400 flex items-start gap-2">
-        <Info className="w-3.5 h-3.5 text-purple-400 flex-shrink-0 mt-0.5" />
-        <span>{explanation.non_causal_statement}</span>
+      {/* Non-Causal Disclosures */}
+      <div className="mt-5 p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-600 flex items-start gap-2.5">
+        <Info className="w-4 h-4 text-slate-400 shrink-0 mt-0.5" />
+        <span className="leading-relaxed">
+          <strong>How to read this: </strong>
+          Positive values (green) indicate conditions on your farm associated with higher yields in historical records.
+          Negative values (amber) indicate conditions associated with reduced yields.
+          These describe mathematical model associations and are not guaranteed real-world causal effects.
+        </span>
       </div>
     </Card>
   );

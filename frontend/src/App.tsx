@@ -16,7 +16,7 @@ import { ModelInfoModal } from './components/transparency/ModelInfoModal';
 import { TechnicalDrawer } from './components/transparency/TechnicalDrawer';
 import { Skeleton } from './components/common/Skeleton';
 import { Card } from './components/common/Card';
-import { AlertTriangle, RefreshCw, Sparkles, CheckCircle2 } from 'lucide-react';
+import { AlertCircle, RefreshCw, Sprout, CheckCircle2 } from 'lucide-react';
 
 import { cropIQApi } from './services/api';
 import { EXAMPLE_FARM_PRESETS } from './config/presets';
@@ -102,8 +102,8 @@ export const App: React.FC = () => {
         setPrediction(predResult.value);
       } else {
         const errDetail: APIErrorDetail = {
-          code: 'PREDICTION_FAILED',
-          message: predResult.reason?.message || 'Failed to complete yield prediction.',
+          code: 'ESTIMATE_FAILED',
+          message: "CropIQ couldn't complete the estimate right now. Please check if the service is running and try again.",
         };
         setPredictionError(errDetail);
       }
@@ -152,7 +152,7 @@ export const App: React.FC = () => {
   // --- Explore Scenario Trigger from Recommendation ---
   const handleExploreScenario = (featureName: string) => {
     setScenarioTargetFeature(featureName);
-    const element = document.getElementById('simulator-section');
+    const element = document.getElementById('scenario-section');
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
     }
@@ -161,19 +161,18 @@ export const App: React.FC = () => {
   // --- Toggle Recommendation Mode (Farmer vs Technical) ---
   const handleToggleRecMode = (mode: 'farmer' | 'technical') => {
     setRecMode(mode);
-    // Refresh recommendations with new mode
     if (currentInput) {
       cropIQApi.getRecommendations(currentInput, mode, 5).then(setRecommendations);
     }
   };
 
   const handleScrollToAnalysis = () => {
-    const el = document.getElementById('analysis-section');
+    const el = document.getElementById('farm-input-section');
     if (el) el.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-950 text-slate-100 font-sans selection:bg-emerald-500/30 selection:text-emerald-200">
+    <div className="min-h-screen flex flex-col bg-[#f7faf7] text-slate-800 font-sans selection:bg-emerald-100 selection:text-emerald-900">
       {/* Navbar */}
       <Navbar
         health={health}
@@ -188,7 +187,7 @@ export const App: React.FC = () => {
         onSelectExample={handleScrollToAnalysis}
       />
 
-      {/* Main App Container */}
+      {/* Main Content Area */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
         {/* Section 1: Farm Conditions Input Form */}
         <FarmInputForm
@@ -202,50 +201,52 @@ export const App: React.FC = () => {
           }}
         />
 
-        {/* Section 2: Core Prediction & Diagnostic Dashboard */}
-        <section id="prediction-section" className="space-y-6">
-          <div className="flex items-center justify-between border-b border-slate-800/80 pb-4">
+        {/* Section 2: Your Farm Overview (Estimated Yield, Crop Risk, Reliability) */}
+        <section id="overview-section" className="space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-4">
             <div>
-              <h2 className="text-xl font-bold text-white tracking-tight flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-emerald-400" />
-                <span>Yield Prediction & Intelligence Dashboard</span>
+              <h2 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
+                <span className="p-1.5 rounded-lg bg-emerald-100 text-emerald-800">
+                  <Sprout className="w-5 h-5" />
+                </span>
+                <span>Your Farm Overview</span>
               </h2>
-              <p className="text-xs text-slate-400 mt-0.5">
-                Evaluation across 30 agro-climatic and satellite features for crop:{' '}
-                <span className="text-emerald-400 font-mono font-semibold">{currentInput.crop_type}</span>
+              <p className="text-sm text-slate-500 mt-1">
+                Estimated yield, crop risk, and prediction reliability for your{' '}
+                <strong className="text-emerald-800">{currentInput.crop_type}</strong> crop.
               </p>
             </div>
 
             {lastUpdated && (
-              <div className="hidden sm:flex items-center gap-2 text-xs text-slate-500 font-mono">
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-                <span>Synced: {lastUpdated.toLocaleTimeString()}</span>
+              <div className="flex items-center gap-1.5 text-xs text-slate-500 font-medium">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                <span>Updated {lastUpdated.toLocaleTimeString()}</span>
               </div>
             )}
           </div>
 
-          {/* Prediction Error Alert */}
+          {/* Error Notice */}
           {predictionError && (
-            <Card variant="bordered" className="p-5 border-rose-500/40 bg-rose-950/20 text-rose-200">
+            <Card variant="bordered" className="p-5 border-rose-300 bg-rose-50 text-rose-900">
               <div className="flex items-start gap-3">
-                <AlertTriangle className="w-5 h-5 text-rose-400 shrink-0 mt-0.5" />
+                <AlertCircle className="w-5 h-5 text-rose-600 shrink-0 mt-0.5" />
                 <div className="flex-1">
-                  <h4 className="text-sm font-bold text-rose-300">{predictionError.code}</h4>
-                  <p className="text-xs mt-1 text-rose-200/90">{predictionError.message}</p>
+                  <h4 className="text-sm font-bold text-rose-950">Could not complete estimate</h4>
+                  <p className="text-xs mt-1 text-rose-800">{predictionError.message}</p>
                   <button
                     type="button"
                     onClick={() => runFullPipeline(currentInput)}
-                    className="mt-3 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-rose-900/60 hover:bg-rose-800 text-xs font-semibold text-white transition-colors cursor-pointer"
+                    className="mt-3 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-rose-700 hover:bg-rose-800 text-xs font-semibold text-white transition-colors cursor-pointer"
                   >
                     <RefreshCw className="w-3 h-3" />
-                    <span>Retry Pipeline</span>
+                    <span>Try Again</span>
                   </button>
                 </div>
               </div>
             </Card>
           )}
 
-          {/* Prediction Metric Cards Grid */}
+          {/* Metric Cards Grid */}
           {isPredicting ? (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <Skeleton className="h-64 rounded-2xl" />
@@ -268,14 +269,14 @@ export const App: React.FC = () => {
           ) : null}
         </section>
 
-        {/* Section 3: Explainability — Local TreeSHAP Feature Attributions */}
+        {/* Section 3: What's Affecting Your Crop? */}
         {isExplaining ? (
           <Skeleton className="h-80 rounded-2xl" />
         ) : explanation ? (
           <FactorChart explanation={explanation} />
         ) : null}
 
-        {/* Section 4: Actionable Recommendations */}
+        {/* Section 4: What You Can Do (Recommendations) */}
         {isRecommending ? (
           <Skeleton className="h-72 rounded-2xl" />
         ) : recommendations ? (
@@ -288,8 +289,8 @@ export const App: React.FC = () => {
           />
         ) : null}
 
-        {/* Section 5: What-If Scenario Simulator & Sensitivity Engine */}
-        <section id="simulator-section" className="space-y-6">
+        {/* Section 5: Try a Different Situation (What-If Simulator & Sensitivity) */}
+        <section id="scenario-section" className="space-y-6">
           <ScenarioSimulator
             currentInput={currentInput}
             catalog={scenarioCatalog}
@@ -305,10 +306,10 @@ export const App: React.FC = () => {
             <ScenarioComparison scenario={activeScenario} />
           )}
 
-          {/* 1D Sensitivity Response Curve */}
+          {/* 1D Sensitivity Curve */}
           <SensitivityChart currentInput={currentInput} />
 
-          {/* Session Trial History Table */}
+          {/* Tested Situations History */}
           <ScenarioHistory
             history={scenarioHistory}
             onClear={() => setScenarioHistory([])}
@@ -320,7 +321,7 @@ export const App: React.FC = () => {
       {/* Footer */}
       <Footer onOpenModelInfo={() => setIsModelInfoOpen(true)} />
 
-      {/* Modals & Drawers */}
+      {/* Modals & Technical Audit Drawer */}
       <ModelInfoModal
         isOpen={isModelInfoOpen}
         onClose={() => setIsModelInfoOpen(false)}

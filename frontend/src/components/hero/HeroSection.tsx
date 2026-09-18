@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowDown, Cpu, Sparkles, TrendingUp, ShieldAlert, Sliders, CheckCircle2 } from 'lucide-react';
+import { ArrowDown, Sprout, TrendingUp, HelpCircle, CheckCircle2, Sliders } from 'lucide-react';
 import { Button } from '../common/Button';
 
 interface HeroSectionProps {
@@ -13,112 +13,104 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 }) => {
   const steps = [
     {
-      num: '01',
-      title: 'Tell us about your farm',
-      desc: 'Crop, location, weather - just what you know',
-      icon: Cpu,
-      color: 'text-sky-400 bg-sky-500/10 border-sky-500/30',
+      num: '1',
+      title: 'Your Farm',
+      desc: 'Enter your crop and field conditions',
+      icon: Sprout,
     },
     {
-      num: '02',
-      title: 'Get your yield estimate',
-      desc: 'An AI forecast based on similar farms',
+      num: '2',
+      title: 'Estimated Yield',
+      desc: 'See expected yield and crop risk',
       icon: TrendingUp,
-      color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30',
     },
     {
-      num: '03',
-      title: 'See what matters',
-      desc: 'The biggest factors behind your result',
-      icon: Sparkles,
-      color: 'text-purple-400 bg-purple-500/10 border-purple-500/30',
+      num: '3',
+      title: "What's Affecting It",
+      desc: 'See which conditions matter most',
+      icon: HelpCircle,
     },
     {
-      num: '04',
-      title: 'Know what to do',
-      desc: 'Practical, prioritized next steps',
-      icon: ShieldAlert,
-      color: 'text-amber-400 bg-amber-500/10 border-amber-500/30',
+      num: '4',
+      title: 'What You Can Do',
+      desc: 'Get practical advisory actions',
+      icon: CheckCircle2,
     },
     {
-      num: '05',
-      title: 'Try what-ifs',
-      desc: 'See how a change might affect yield',
+      num: '5',
+      title: 'Try Scenarios',
+      desc: 'Test what happens if conditions change',
       icon: Sliders,
-      color: 'text-teal-400 bg-teal-500/10 border-teal-500/30',
     },
   ];
 
   return (
-    <section className="relative overflow-hidden pt-12 pb-16 lg:pt-20 lg:pb-24 border-b border-slate-800/60">
-      {/* Background radial glow */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-emerald-500/10 blur-[120px] rounded-full pointer-events-none -z-10" />
-
+    <section className="relative overflow-hidden pt-10 pb-12 sm:pt-16 sm:pb-18 bg-gradient-to-b from-emerald-50/70 via-[#f7faf7] to-[#f7faf7] border-b border-emerald-900/10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        {/* Top Tagline Pill */}
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-mono uppercase tracking-wider mb-6 animate-in fade-in slide-in-from-top-4 duration-500">
-          <Sparkles className="w-3.5 h-3.5" />
-          <span>Predict • Understand • Optimize</span>
+        {/* Agricultural Badge */}
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-100 text-emerald-800 text-xs font-semibold tracking-normal mb-5 shadow-2xs">
+          <Sprout className="w-4 h-4 text-emerald-700" />
+          <span>Smart Yield Assistant for Farmers</span>
         </div>
 
         {/* Primary Headline */}
-        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-[1.15] max-w-4xl mx-auto mb-6">
-          AI-Powered Crop Yield{' '}
-          <span className="bg-gradient-to-r from-emerald-400 via-teal-300 to-sky-400 bg-clip-text text-transparent">
-            Intelligence
+        <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight leading-[1.15] max-w-3xl mx-auto mb-4">
+          Know your crop.{' '}
+          <span className="text-emerald-800">
+            Plan your next step.
           </span>
         </h1>
 
-        {/* Subheading */}
-        <p className="text-base sm:text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed mb-8">
-          Tell us a little about your field and we'll estimate your crop yield, explain what's
-          driving it, flag risks early, and suggest practical next steps.
+        {/* Farmer-friendly Subheading */}
+        <p className="text-base sm:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed mb-8">
+          CropIQ helps you understand your expected crop yield, important farm conditions,
+          and what may need attention — before harvest arrives.
         </p>
 
-        {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
+        {/* Primary and Secondary CTAs */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-12">
           <Button
             size="lg"
             variant="primary"
             onClick={onAnalyzeClick}
             rightIcon={<ArrowDown className="w-4 h-4" />}
-            className="w-full sm:w-auto shadow-xl shadow-emerald-950/60"
+            className="w-full sm:w-auto text-base px-7 py-3.5"
           >
-            Analyze Your Farm
+            Check My Farm
           </Button>
 
           <Button
             size="lg"
-            variant="secondary"
+            variant="outline"
             onClick={onSelectExample}
-            leftIcon={<CheckCircle2 className="w-4 h-4 text-emerald-400" />}
-            className="w-full sm:w-auto"
+            leftIcon={<Sprout className="w-4 h-4 text-emerald-700" />}
+            className="w-full sm:w-auto text-base px-6 py-3.5"
           >
-            Load Example Farm (Rice)
+            Choose an Example Farm
           </Button>
         </div>
 
-        {/* 5-Step Process Visual Cards */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 max-w-5xl mx-auto text-left">
+        {/* 5-Step Simple Flow Cards */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 max-w-5xl mx-auto text-left">
           {steps.map((step) => {
             const Icon = step.icon;
             return (
               <div
                 key={step.num}
-                className="p-4 rounded-xl bg-slate-900/60 border border-slate-800 hover:border-slate-700 transition-all group"
+                className="p-4 rounded-xl bg-white border border-slate-200/90 shadow-2xs hover:border-emerald-300 transition-all"
               >
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-[10px] font-mono text-slate-500 font-bold">
+                <div className="flex items-center justify-between mb-2.5">
+                  <span className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-900 font-bold text-xs flex items-center justify-center">
                     {step.num}
                   </span>
-                  <div className={`p-1.5 rounded-lg border ${step.color}`}>
+                  <div className="p-1.5 rounded-lg bg-emerald-50 text-emerald-700">
                     <Icon className="w-4 h-4" />
                   </div>
                 </div>
-                <div className="font-bold text-xs text-slate-100 tracking-tight mb-1">
+                <div className="font-bold text-sm text-slate-900 mb-1">
                   {step.title}
                 </div>
-                <p className="text-[11px] text-slate-400 leading-tight">
+                <p className="text-xs text-slate-500 leading-snug">
                   {step.desc}
                 </p>
               </div>

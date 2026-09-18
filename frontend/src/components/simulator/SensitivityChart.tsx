@@ -54,122 +54,114 @@ export const SensitivityChart: React.FC<SensitivityChartProps> = ({ currentInput
   }, [currentInput, selectedFeature]);
 
   return (
-    <Card variant="bordered" className="p-6 bg-slate-900/60 mt-8">
+    <Card variant="default" className="p-6 sm:p-7 bg-white border border-slate-200 mt-8 shadow-xs">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <TrendingUp className="w-4 h-4 text-teal-400" />
-            <h3 className="text-base font-bold text-white tracking-tight">
-              1D Feature Model Sensitivity Curve
+            <span className="p-1.5 rounded-lg bg-emerald-100 text-emerald-800">
+              <TrendingUp className="w-4 h-4" />
+            </span>
+            <h3 className="text-lg font-bold text-slate-900 tracking-tight">
+              How Yield Estimates Change Across Different Levels
             </h3>
           </div>
-          <p className="text-xs text-slate-400">
-            Sweeps feature values across historical training range [P01, P99] while holding all other variables constant.
+          <p className="text-xs text-slate-500">
+            See the model response curve as one farm condition varies across historical ranges.
           </p>
         </div>
 
         {/* Feature Dropdown */}
-        <select
-          value={selectedFeature}
-          onChange={(e) => setSelectedFeature(e.target.value)}
-          className="px-3 py-1.5 rounded-xl bg-slate-950 border border-slate-800 text-xs font-mono text-white focus:outline-none focus:ring-1 focus:ring-teal-500"
-        >
-          <option value="soil_moisture">Soil Moisture</option>
-          <option value="rainfall">Rainfall</option>
-          <option value="temperature">Temperature</option>
-          <option value="NDVI">NDVI</option>
-        </select>
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-semibold text-slate-600">Explore condition:</span>
+          <select
+            value={selectedFeature}
+            onChange={(e) => setSelectedFeature(e.target.value)}
+            className="px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-300 text-xs font-semibold text-slate-800 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+          >
+            <option value="soil_moisture">Soil Moisture (%)</option>
+            <option value="rainfall">Recent Rainfall (mm)</option>
+            <option value="temperature">Temperature (°C)</option>
+            <option value="SAVI">SAVI (Greenness)</option>
+          </select>
+        </div>
       </div>
 
       {/* Chart Canvas */}
-      <div className="h-64 w-full my-4 relative">
+      <div className="h-64 w-full my-3 bg-slate-50/60 p-3 rounded-xl border border-slate-200 flex items-center justify-center">
         {isLoading ? (
-          <div className="h-full flex items-center justify-center gap-2 text-xs text-slate-400">
-            <Loader2 className="w-4 h-4 animate-spin text-teal-400" />
-            <span>Computing model sensitivity curve...</span>
+          <div className="flex items-center gap-2 text-xs text-slate-500">
+            <Loader2 className="w-4 h-4 animate-spin text-emerald-700" />
+            <span>Calculating sensitivity curve...</span>
           </div>
         ) : error ? (
-          <div className="h-full flex items-center justify-center text-xs text-rose-400">
-            {error}
-          </div>
+          <div className="text-xs text-rose-600">{error}</div>
         ) : data && data.points.length > 0 ? (
           <ResponsiveContainer width="100%" height="100%">
             <LineChart
               data={data.points}
-              margin={{ top: 10, right: 30, left: 10, bottom: 20 }}
+              margin={{ top: 10, right: 30, left: 10, bottom: 5 }}
             >
               <XAxis
                 dataKey="feature_value"
                 stroke="#64748b"
                 fontSize={11}
-                tickFormatter={(v) => formatNumber(v, 1)}
-                label={{
-                  value: `${data.display_name} (${data.unit})`,
-                  position: 'insideBottom',
-                  offset: -10,
-                  fill: '#94a3b8',
-                  fontSize: 11,
-                }}
+                tickFormatter={(val) => Number(val).toFixed(1)}
               />
               <YAxis
                 stroke="#64748b"
                 fontSize={11}
                 domain={['auto', 'auto']}
-                tickFormatter={(v) => formatNumber(v, 1)}
+                tickFormatter={(val) => Number(val).toFixed(1)}
               />
-              {data.baseline_yield && (
+              <RechartsTooltip
+                formatter={(val: number) => [
+                  `${formatNumber(val, 2)} unconfirmed`,
+                  'Estimated Yield',
+                ]}
+                labelFormatter={(label) =>
+                  `${data.display_name}: ${Number(label).toFixed(2)} ${data.unit}`
+                }
+                contentStyle={{
+                  backgroundColor: '#ffffff',
+                  borderColor: '#e2e8f0',
+                  borderRadius: '12px',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+                  fontSize: '12px',
+                  color: '#0f172a',
+                }}
+              />
+              {data.baseline_value !== undefined && (
                 <ReferenceLine
-                  y={data.baseline_yield}
-                  stroke="#10b981"
-                  strokeDasharray="3 3"
+                  x={data.baseline_value}
+                  stroke="#15803d"
+                  strokeDasharray="4 4"
                   label={{
-                    value: `Baseline: ${formatNumber(data.baseline_yield, 2)}`,
-                    fill: '#10b981',
-                    fontSize: 10,
+                    value: 'Current',
+                    position: 'top',
+                    fill: '#15803d',
+                    fontSize: 11,
                   }}
                 />
               )}
-              <RechartsTooltip
-                content={({ active, payload }) => {
-                  if (active && payload && payload.length) {
-                    const pt = payload[0].payload;
-                    return (
-                      <div className="p-3 bg-slate-900 border border-slate-750 text-xs rounded-xl shadow-xl font-mono">
-                        <div className="text-slate-400 mb-0.5">
-                          {data.display_name}: <strong className="text-white">{formatNumber(pt.feature_value, 2)}</strong>
-                        </div>
-                        <div className="text-teal-300 font-bold">
-                          Estimated Yield: {formatNumber(pt.predicted_yield, 2)} unconfirmed
-                        </div>
-                        <div className="text-slate-400 text-[11px] mt-0.5">
-                          Diff from Baseline: {pt.difference > 0 ? '+' : ''}{formatNumber(pt.difference, 2)}
-                        </div>
-                      </div>
-                    );
-                  }
-                  return null;
-                }}
-              />
               <Line
                 type="monotone"
                 dataKey="predicted_yield"
-                stroke="#14b8a6"
+                stroke="#16a34a"
                 strokeWidth={2.5}
-                dot={{ r: 3, fill: '#14b8a6' }}
-                activeDot={{ r: 6 }}
+                dot={{ r: 3, fill: '#16a34a' }}
+                activeDot={{ r: 6, fill: '#15803d' }}
               />
             </LineChart>
           </ResponsiveContainer>
         ) : null}
       </div>
 
-      {/* Non-causal Disclaimer */}
-      <div className="p-3 rounded-xl bg-slate-950/40 border border-slate-800/60 text-[11px] text-slate-400 flex items-start gap-2">
-        <Info className="w-3.5 h-3.5 text-teal-400 flex-shrink-0 mt-0.5" />
+      <div className="mt-3 text-[11px] text-slate-500 leading-relaxed flex items-start gap-2">
+        <Info className="w-3.5 h-3.5 text-slate-400 shrink-0 mt-0.5" />
         <span>
-          {data?.disclaimer ||
-            'This curve depicts model sensitivity holding other features constant. It represents learned statistical associations, not a physical crop response curve.'}
+          Curves show how the trained Random Forest responds when varying this single feature holding all other observations fixed.
+          This illustrates model sensitivity and does not guarantee that physical interventions will follow this exact curve.
         </span>
       </div>
     </Card>
