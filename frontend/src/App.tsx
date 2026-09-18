@@ -12,6 +12,7 @@ import { ScenarioSimulator } from './components/simulator/ScenarioSimulator';
 import { ScenarioComparison } from './components/simulator/ScenarioComparison';
 import { SensitivityChart } from './components/simulator/SensitivityChart';
 import { ScenarioHistory } from './components/simulator/ScenarioHistory';
+import { FarmSummaryCard } from './components/narrative/FarmSummaryCard';
 import { ModelInfoModal } from './components/transparency/ModelInfoModal';
 import { TechnicalDrawer } from './components/transparency/TechnicalDrawer';
 import { Skeleton } from './components/common/Skeleton';
@@ -248,23 +249,43 @@ export const App: React.FC = () => {
 
           {/* Metric Cards Grid */}
           {isPredicting ? (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <Skeleton className="h-64 rounded-2xl" />
-              <Skeleton className="h-64 rounded-2xl" />
-              <Skeleton className="h-64 rounded-2xl" />
+            <div className="space-y-6">
+              <Skeleton className="h-44 rounded-2xl" />
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <Skeleton className="h-64 rounded-2xl" />
+                <Skeleton className="h-64 rounded-2xl" />
+                <Skeleton className="h-64 rounded-2xl" />
+              </div>
             </div>
           ) : prediction ? (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <PredictionCard
-                prediction={prediction.prediction}
-                context={prediction.context}
-                modelVersion={prediction.metadata?.model_version}
+            <div className="space-y-6">
+              <FarmSummaryCard
+                prediction={prediction}
+                farmInput={currentInput}
+                onScrollToRecommendations={() => {
+                  const el = document.getElementById('recommendations-section');
+                  if (el) el.scrollIntoView({ behavior: 'smooth' });
+                }}
+                onScrollToFactors={() => {
+                  const el = document.getElementById('factors-section');
+                  if (el) el.scrollIntoView({ behavior: 'smooth' });
+                }}
               />
-              <RiskCard risk={prediction.risk} />
-              <ReliabilityCard
-                uncertainty={prediction.uncertainty}
-                dataQuality={prediction.data_quality}
-              />
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <PredictionCard
+                  prediction={prediction.prediction}
+                  context={prediction.context}
+                  modelVersion={prediction.metadata?.model_version}
+                  topPositive={prediction.explanation?.top_positive_factors?.[0]}
+                  topNegative={prediction.explanation?.top_negative_factors?.[0]}
+                />
+                <RiskCard risk={prediction.risk} />
+                <ReliabilityCard
+                  uncertainty={prediction.uncertainty}
+                  dataQuality={prediction.data_quality}
+                />
+              </div>
             </div>
           ) : null}
         </section>
@@ -273,7 +294,7 @@ export const App: React.FC = () => {
         {isExplaining ? (
           <Skeleton className="h-80 rounded-2xl" />
         ) : explanation ? (
-          <FactorChart explanation={explanation} />
+          <FactorChart explanation={explanation} cropName={currentInput.crop_type} />
         ) : null}
 
         {/* Section 4: What You Can Do (Recommendations) */}
