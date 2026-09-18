@@ -57,7 +57,7 @@ export const RecommendationCard: React.FC<RecommendationCardProps> = ({
           {item.evidence && item.evidence.length > 0 && (
             <div>
               <div className="font-semibold text-slate-300 mb-1.5 flex items-center gap-1.5">
-                <span>Agronomic Evidence:</span>
+                <span>Why we suggest this:</span>
               </div>
               <ul className="list-disc list-inside space-y-1 text-slate-400 pl-1 text-[11px]">
                 {item.evidence.map((ev, idx) => (

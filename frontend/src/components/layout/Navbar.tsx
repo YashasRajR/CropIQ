@@ -27,12 +27,9 @@ export const Navbar: React.FC<NavbarProps> = ({
           <div>
             <div className="flex items-center gap-2">
               <span className="font-bold text-lg text-white tracking-tight">CropIQ</span>
-              <span className="hidden sm:inline-block px-2 py-0.5 text-[10px] font-mono uppercase bg-emerald-500/10 text-emerald-400 rounded-md border border-emerald-500/20">
-                v1.0.0
-              </span>
             </div>
             <p className="text-[11px] text-slate-400 hidden sm:block tracking-wide">
-              AI-Powered Crop Yield Intelligence
+              Know your yield before harvest
             </p>
           </div>
         </div>
@@ -44,18 +41,18 @@ export const Navbar: React.FC<NavbarProps> = ({
             {isCheckingHealth ? (
               <Badge variant="slate" size="sm">
                 <Activity className="w-3 h-3 animate-spin text-slate-400" />
-                <span className="hidden sm:inline">Checking API...</span>
+                <span className="hidden sm:inline">Connecting...</span>
               </Badge>
             ) : health?.model_loaded ? (
               <Badge variant="emerald" size="sm" className="bg-emerald-950/40">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                <span className="hidden sm:inline">FastAPI Ready</span>
-                <span className="sm:hidden">Ready</span>
+                <span className="hidden sm:inline">Ready</span>
+                
               </Badge>
             ) : (
               <Badge variant="amber" size="sm" className="bg-amber-950/40">
                 <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
-                <span>Degraded</span>
+                <span>Having trouble connecting</span>
               </Badge>
             )}
           </div>

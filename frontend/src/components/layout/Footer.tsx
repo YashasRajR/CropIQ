@@ -20,43 +20,35 @@ export const Footer: React.FC<FooterProps> = ({ onOpenModelInfo }) => {
               <span className="text-xs text-slate-500 font-mono">— Predict. Understand. Optimize.</span>
             </div>
             <p className="text-xs leading-relaxed text-slate-400 max-w-lg mb-4">
-              AI-powered agricultural decision intelligence system uniting machine learning regression,
-              local TreeSHAP explainability, ensemble uncertainty, multi-factor risk diagnostics,
-              actionable agronomic rules, and interactive what-if simulation.
+              CropIQ helps you estimate crop yield, understand what's driving it, spot risks early,
+              and get practical steps to improve your harvest - all from a few details about your field.
             </p>
-            <div className="flex items-center gap-2 text-xs text-slate-500 font-mono">
-              <span>FastAPI Backend</span>
-              <span>•</span>
-              <span>Random Forest Regressor (300 Trees)</span>
-              <span>•</span>
-              <span>React 18 + Vite</span>
-            </div>
           </div>
 
           {/* Col 2: Navigation & Specs */}
           <div>
             <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-300 mb-3 font-mono">
-              System Layers
+              On this page
             </h4>
             <ul className="space-y-2 text-xs">
               <li>
                 <a href="#analysis-section" className="hover:text-emerald-400 transition-colors">
-                  01. Farm Analysis
+                  Your Farm
                 </a>
               </li>
               <li>
                 <a href="#prediction-section" className="hover:text-emerald-400 transition-colors">
-                  02. Yield & Risk Intelligence
+                  Yield & Risk
                 </a>
               </li>
               <li>
                 <a href="#recommendations-section" className="hover:text-emerald-400 transition-colors">
-                  03. Actionable Recommendations
+                  What To Do
                 </a>
               </li>
               <li>
                 <a href="#simulator-section" className="hover:text-emerald-400 transition-colors">
-                  04. What-If Scenario Simulator
+                  Try What-Ifs
                 </a>
               </li>
             </ul>
@@ -65,7 +57,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenModelInfo }) => {
           {/* Col 3: Resources & Links */}
           <div>
             <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-300 mb-3 font-mono">
-              Verification & Docs
+              For Developers
             </h4>
             <ul className="space-y-2 text-xs">
               <li>
@@ -107,9 +99,10 @@ export const Footer: React.FC<FooterProps> = ({ onOpenModelInfo }) => {
         <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800 text-[11px] leading-relaxed text-slate-400 flex items-start gap-3">
           <ShieldAlert className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" />
           <div>
-            <span className="font-semibold text-slate-200">Scientific Disclaimer: </span>
-            CropIQ predictions and what-if simulation differences reflect mathematical associations learned by the trained supervised model on historical field and remote-sensing data.
-            Estimates do not represent guaranteed real-world outcomes or agronomic causal guarantees. Target yield unit is strictly designated as <span className="font-mono text-emerald-300">unconfirmed</span> per source dataset documentation.
+            <span className="font-semibold text-slate-200">Please note: </span>
+            These are AI-generated estimates based on patterns in historical farm data, not guarantees. Use them
+            alongside your own judgment and local agricultural advice. The exact unit for yield could not be
+            confirmed from the source data.
           </div>
         </div>
 

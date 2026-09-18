@@ -195,6 +195,7 @@ export const App: React.FC = () => {
           initialInput={currentInput}
           onSubmit={runFullPipeline}
           isLoading={isPredicting}
+          scenarioCatalog={scenarioCatalog}
           onReset={() => {
             setCurrentInput(defaultFarmInput);
             runFullPipeline(defaultFarmInput);

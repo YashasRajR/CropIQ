@@ -14,36 +14,36 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   const steps = [
     {
       num: '01',
-      title: 'INPUT',
-      desc: 'Farm, satellite & weather features',
+      title: 'Tell us about your farm',
+      desc: 'Crop, location, weather - just what you know',
       icon: Cpu,
       color: 'text-sky-400 bg-sky-500/10 border-sky-500/30',
     },
     {
       num: '02',
-      title: 'PREDICT',
-      desc: 'Machine learning yield regression',
+      title: 'Get your yield estimate',
+      desc: 'An AI forecast based on similar farms',
       icon: TrendingUp,
       color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30',
     },
     {
       num: '03',
-      title: 'UNDERSTAND',
-      desc: 'Local TreeSHAP feature attributions',
+      title: 'See what matters',
+      desc: 'The biggest factors behind your result',
       icon: Sparkles,
       color: 'text-purple-400 bg-purple-500/10 border-purple-500/30',
     },
     {
       num: '04',
-      title: 'ACT',
-      desc: 'Prioritized agronomic guidance',
+      title: 'Know what to do',
+      desc: 'Practical, prioritized next steps',
       icon: ShieldAlert,
       color: 'text-amber-400 bg-amber-500/10 border-amber-500/30',
     },
     {
       num: '05',
-      title: 'SIMULATE',
-      desc: 'Interactive what-if scenarios',
+      title: 'Try what-ifs',
+      desc: 'See how a change might affect yield',
       icon: Sliders,
       color: 'text-teal-400 bg-teal-500/10 border-teal-500/30',
     },
@@ -71,9 +71,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
         {/* Subheading */}
         <p className="text-base sm:text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed mb-8">
-          Transform agricultural observations, satellite indices, and weather conditions into
-          validated yield forecasts, transparent feature attributions, multi-factor risk diagnostics,
-          and actionable what-if scenario simulations.
+          Tell us a little about your field and we'll estimate your crop yield, explain what's
+          driving it, flag risks early, and suggest practical next steps.
         </p>
 
         {/* Action Buttons */}

@@ -29,11 +29,11 @@ export const PredictionCard: React.FC<PredictionCardProps> = ({
               <TrendingUp className="w-4 h-4" />
             </div>
             <div>
-              <h3 className="text-xs font-mono uppercase tracking-wider text-slate-400 font-semibold">
-                Estimated Crop Yield
+              <h3 className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+                Estimated Yield
               </h3>
-              <p className="text-[11px] text-slate-500 font-mono">
-                Model: Random Forest Regressor
+              <p className="text-[11px] text-slate-500">
+                AI-based forecast for this field
               </p>
             </div>
           </div>
@@ -56,7 +56,7 @@ export const PredictionCard: React.FC<PredictionCardProps> = ({
           </div>
 
           <p className="text-xs text-slate-400 mt-2 leading-relaxed">
-            Learned statistical association under observed farm, weather, soil, and satellite conditions.
+            Based on the crop, weather, and soil conditions you entered.
           </p>
         </div>
       </div>
@@ -65,14 +65,14 @@ export const PredictionCard: React.FC<PredictionCardProps> = ({
       {context && (
         <div className="pt-4 mt-2 border-t border-slate-800/80 grid grid-cols-2 gap-3">
           <div className="p-2.5 rounded-xl bg-slate-950/60 border border-slate-800">
-            <div className="text-[10px] text-slate-400 font-medium">Historical Crop Median</div>
+            <div className="text-[10px] text-slate-400 font-medium">Typical for this crop</div>
             <div className="text-sm font-bold text-slate-200 font-mono mt-0.5">
               {formatNumber(context.historical_median, 2)} {prediction.unit}
             </div>
           </div>
 
           <div className="p-2.5 rounded-xl bg-slate-950/60 border border-slate-800">
-            <div className="text-[10px] text-slate-400 font-medium">Crop Percentile Rank</div>
+            <div className="text-[10px] text-slate-400 font-medium">How you compare</div>
             <div className="text-sm font-bold text-emerald-400 font-mono mt-0.5 flex items-center gap-1">
               <BarChart3 className="w-3.5 h-3.5" />
               <span>{context.percentile_rank !== undefined ? `${context.percentile_rank.toFixed(0)}th %` : '—'}</span>

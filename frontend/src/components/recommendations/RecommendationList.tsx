@@ -40,11 +40,11 @@ export const RecommendationList: React.FC<RecommendationListProps> = ({
               <ShieldCheck className="w-4 h-4" />
             </div>
             <h2 className="text-xl font-bold text-white tracking-tight">
-              Actionable Agricultural Guidance
+              What you can do
             </h2>
           </div>
           <p className="text-xs text-slate-400">
-            Deterministic agronomic rules evaluated against observed conditions and model risk.
+            Practical suggestions based on your farm's conditions.
           </p>
         </div>
 
@@ -82,7 +82,7 @@ export const RecommendationList: React.FC<RecommendationListProps> = ({
         <div className="p-4 rounded-xl bg-emerald-950/20 border border-emerald-500/30 mb-6 flex items-start gap-3">
           <Sparkles className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
           <div>
-            <div className="text-xs font-bold text-emerald-300 mb-0.5">Agronomic Executive Summary</div>
+            <div className="text-xs font-bold text-emerald-300 mb-0.5">Summary</div>
             <div className="text-xs text-slate-300 leading-relaxed">{executiveSummary}</div>
           </div>
         </div>

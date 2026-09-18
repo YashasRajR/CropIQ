@@ -30,11 +30,11 @@ export const ReliabilityCard: React.FC<ReliabilityCardProps> = ({
               <Gauge className="w-4 h-4" />
             </div>
             <div>
-              <h3 className="text-xs font-mono uppercase tracking-wider text-slate-400 font-semibold">
-                Model Reliability & Uncertainty
+              <h3 className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+                How confident is this estimate?
               </h3>
-              <p className="text-[11px] text-slate-500 font-mono">
-                300-Tree Ensemble Variance
+              <p className="text-[11px] text-slate-500">
+                Based on how much similar predictions vary
               </p>
             </div>
           </div>
@@ -48,14 +48,14 @@ export const ReliabilityCard: React.FC<ReliabilityCardProps> = ({
                 : 'rose'
             }
           >
-            {uncertainty.classification} UNCERTAINTY
+            {uncertainty.classification} CONFIDENCE
           </Badge>
         </div>
 
         {/* Metric Details */}
         <div className="my-3 space-y-3">
           <div className="p-3 rounded-xl bg-slate-950/60 border border-slate-800 flex items-center justify-between">
-            <span className="text-xs text-slate-300">Ensemble Tree Dispersion</span>
+            <span className="text-xs text-slate-300">Typical variation (+/-)</span>
             <span className="text-sm font-bold font-mono text-slate-100">
               ±{formatNumber(uncertainty.std_yield, 2)}
             </span>
@@ -63,7 +63,7 @@ export const ReliabilityCard: React.FC<ReliabilityCardProps> = ({
 
           {uncertainty.lower_bound !== undefined && uncertainty.upper_bound !== undefined && (
             <div className="p-3 rounded-xl bg-slate-950/60 border border-slate-800 flex items-center justify-between">
-              <span className="text-xs text-slate-300">Dispersion Interval (±1σ)</span>
+              <span className="text-xs text-slate-300">Likely range</span>
               <span className="text-xs font-bold font-mono text-purple-300">
                 [{formatNumber(uncertainty.lower_bound, 1)} — {formatNumber(uncertainty.upper_bound, 1)}]
               </span>
@@ -78,12 +78,12 @@ export const ReliabilityCard: React.FC<ReliabilityCardProps> = ({
           {isOod ? (
             <div className="flex items-center gap-1.5 text-amber-400">
               <AlertTriangle className="w-3.5 h-3.5 flex-shrink-0" />
-              <span className="text-[11px]">Inputs in tail or extrapolative region of training data.</span>
+              <span className="text-[11px]">These conditions are unusual compared to the farms we've learned from - take this estimate with extra caution.</span>
             </div>
           ) : (
             <div className="flex items-center gap-1.5 text-emerald-400">
               <CheckCircle className="w-3.5 h-3.5 flex-shrink-0" />
-              <span className="text-[11px]">Inputs reside within verified training distribution.</span>
+              <span className="text-[11px]">These conditions are similar to farms we've learned from, so this estimate should be reliable.</span>
             </div>
           )}
         </div>

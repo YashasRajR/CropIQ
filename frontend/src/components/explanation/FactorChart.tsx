@@ -39,11 +39,11 @@ export const FactorChart: React.FC<FactorChartProps> = ({ explanation }) => {
               <Sparkles className="w-4 h-4" />
             </div>
             <h2 className="text-xl font-bold text-white tracking-tight">
-              Why this prediction? (Local Feature Attributions)
+              Why this estimate?
             </h2>
           </div>
           <p className="text-xs text-slate-400">
-            TreeSHAP feature contributions relative to model training baseline ({formatNumber(explanation.baseline_yield, 2)} unconfirmed).
+            These are the factors that pushed your estimate up or down the most, compared to a typical field.
           </p>
         </div>
 
@@ -90,7 +90,7 @@ export const FactorChart: React.FC<FactorChartProps> = ({ explanation }) => {
                         </div>
                         {data.observed !== undefined && (
                           <div className="text-slate-400 mt-0.5">
-                            Observed Value: {formatNumber(data.observed, 2)}
+                            Your value: {formatNumber(data.observed, 2)}
                           </div>
                         )}
                       </div>

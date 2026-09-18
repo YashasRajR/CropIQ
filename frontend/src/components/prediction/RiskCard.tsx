@@ -31,11 +31,11 @@ export const RiskCard: React.FC<RiskCardProps> = ({ risk }) => {
               )}
             </div>
             <div>
-              <h3 className="text-xs font-mono uppercase tracking-wider text-slate-400 font-semibold">
-                Crop Yield Risk Assessment
+              <h3 className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+                Risk of a poor harvest
               </h3>
-              <p className="text-[11px] text-slate-500 font-mono">
-                Multi-Factor Risk Diagnostic
+              <p className="text-[11px] text-slate-500">
+                Based on weather, soil, and crop conditions
               </p>
             </div>
           </div>
@@ -52,7 +52,7 @@ export const RiskCard: React.FC<RiskCardProps> = ({ risk }) => {
         {/* Score and Bar */}
         <div className="my-4">
           <div className="flex items-baseline justify-between mb-2">
-            <span className="text-xs font-medium text-slate-300">Composite Risk Score</span>
+            <span className="text-xs font-medium text-slate-300">Risk Score</span>
             <span className={`text-2xl font-bold font-mono ${styles.text}`}>
               {risk.score !== undefined ? `${risk.score} / 100` : 'Assessed'}
             </span>
@@ -80,7 +80,7 @@ export const RiskCard: React.FC<RiskCardProps> = ({ risk }) => {
           <div className="text-[11px] flex items-start gap-1.5 text-emerald-300/90 leading-tight">
             <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0 mt-0.5" />
             <span>
-              <strong>Protective: </strong> {risk.protective_factors.slice(0, 2).join('; ')}
+              <strong>Working in your favor: </strong> {risk.protective_factors.slice(0, 2).join('; ')}
             </span>
           </div>
         )}
@@ -89,12 +89,12 @@ export const RiskCard: React.FC<RiskCardProps> = ({ risk }) => {
           <div className="text-[11px] flex items-start gap-1.5 text-rose-300/90 leading-tight">
             <AlertTriangle className="w-3.5 h-3.5 text-rose-400 flex-shrink-0 mt-0.5" />
             <span>
-              <strong>Vulnerability: </strong> {risk.drivers.slice(0, 2).join('; ')}
+              <strong>Watch out for: </strong> {risk.drivers.slice(0, 2).join('; ')}
             </span>
           </div>
         ) : (
           <div className="text-[11px] text-slate-400">
-            No acute agronomic stress drivers detected in current observation.
+            No major risk factors detected for these conditions.
           </div>
         )}
       </div>
