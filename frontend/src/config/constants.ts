@@ -77,9 +77,9 @@ export const FEATURE_DICTIONARY: Record<string, FieldHelpInfo> = {
   },
   soil_moisture: {
     label: 'Soil Moisture',
-    unit: 'unconfirmed',
+    unit: '%',
     category: 'Soil',
-    description: 'In-situ volumetric or relative root-zone soil moisture measurement.',
+    description: 'In-situ volumetric root-zone soil moisture measurement (0-100%).',
     min: 0.0,
     max: 105.0,
     step: 0.5,

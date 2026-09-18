@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Sprout, CloudSun, MapPin, Locate, ChevronDown, RotateCcw, ArrowRight, Layers, Droplets, CloudRain } from 'lucide-react';
+import { Sprout, CloudSun, MapPin, Locate, ChevronDown, RotateCcw, ArrowRight, Layers, Droplets, CloudRain, CheckCircle2, Loader2 } from 'lucide-react';
 import { Card } from '../common/Card';
 import { Button } from '../common/Button';
 import { Tooltip } from '../common/Tooltip';
@@ -68,6 +68,10 @@ export const FarmInputForm: React.FC<FarmInputFormProps> = ({
   };
 
   const fetchWeather = async (lat: number, lon: number) => {
+    if (isNaN(lat) || isNaN(lon) || (lat === 0 && lon === 0)) {
+      setWeatherError('Please provide valid latitude and longitude coordinates first.');
+      return;
+    }
     setFetchingWeather(true);
     setWeatherError(null);
     try {
@@ -76,6 +80,7 @@ export const FarmInputForm: React.FC<FarmInputFormProps> = ({
         ...prev,
         temperature: weather.temperature,
         rainfall: weather.rainfall,
+        ...(weather.soil_moisture !== undefined ? { soil_moisture: weather.soil_moisture } : {}),
       }));
       setWeatherFetched(true);
     } catch (err) {
@@ -260,17 +265,29 @@ export const FarmInputForm: React.FC<FarmInputFormProps> = ({
               disabled={fetchingWeather}
               className="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-emerald-50 border border-slate-300 hover:border-emerald-400 text-xs font-semibold text-slate-700 hover:text-emerald-900 transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
             >
-              <CloudRain className="w-3.5 h-3.5 text-emerald-700" />
-              <span>{fetchingWeather ? 'Fetching...' : 'Fetch Live Weather for This Spot'}</span>
+              {fetchingWeather ? (
+                <Loader2 className="w-3.5 h-3.5 text-emerald-700 animate-spin" />
+              ) : (
+                <CloudRain className="w-3.5 h-3.5 text-emerald-700" />
+              )}
+              <span>{fetchingWeather ? 'Fetching Live Conditions...' : 'Fetch Live Weather & Soil'}</span>
             </button>
           </div>
           {weatherError && (
             <p className="text-[11px] text-rose-600 -mt-2 mb-3">{weatherError}</p>
           )}
           {weatherFetched && !weatherError && (
-            <p className="text-[11px] text-emerald-700 -mt-2 mb-3">
-              Temperature and rainfall filled in from live weather data for your coordinates.
-            </p>
+            <div className="p-3 rounded-xl bg-emerald-50/90 border border-emerald-200 -mt-2 mb-3 text-xs text-emerald-950 flex items-start gap-2.5 animate-in fade-in duration-150">
+              <CheckCircle2 className="w-4 h-4 text-emerald-700 shrink-0 mt-0.5" />
+              <div>
+                <span className="font-semibold text-emerald-950 block mb-0.5">
+                  Live Field Conditions Updated for ({formData.latitude.toFixed(2)}°, {formData.longitude.toFixed(2)}°)
+                </span>
+                <span className="text-[11px] text-emerald-800 leading-relaxed">
+                  Filled in ambient temperature ({formData.temperature}°C), root-zone soil moisture ({formData.soil_moisture}%), and recent observation rainfall ({formData.rainfall} mm) from live meteorological data.
+                </span>
+              </div>
+            </div>
           )}
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
