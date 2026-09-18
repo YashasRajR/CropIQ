@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Sprout, CloudSun, MapPin, Locate, ChevronDown, RotateCcw, ArrowRight, Layers, Droplets } from 'lucide-react';
+import { Sprout, CloudSun, MapPin, Locate, ChevronDown, RotateCcw, ArrowRight, Layers, Droplets, CloudRain } from 'lucide-react';
 import { Card } from '../common/Card';
 import { Button } from '../common/Button';
 import { Tooltip } from '../common/Tooltip';
@@ -7,6 +7,7 @@ import { ExampleSelector } from './ExampleSelector';
 import { FarmInput, SUPPORTED_CROPS, ScenarioFeaturesCatalog } from '../../types/farm';
 import { FEATURE_DICTIONARY } from '../../config/constants';
 import { validateFarmInput, FormValidationErrors } from '../../utils/validation';
+import { fetchLiveWeather } from '../../services/weather';
 
 interface FarmInputFormProps {
   initialInput: FarmInput;
@@ -30,6 +31,9 @@ export const FarmInputForm: React.FC<FarmInputFormProps> = ({
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [locating, setLocating] = useState(false);
   const [locateError, setLocateError] = useState<string | null>(null);
+  const [fetchingWeather, setFetchingWeather] = useState(false);
+  const [weatherError, setWeatherError] = useState<string | null>(null);
+  const [weatherFetched, setWeatherFetched] = useState(false);
 
   const handleSelectPreset = (preset: FarmInput) => {
     setFormData(preset);
@@ -63,6 +67,24 @@ export const FarmInputForm: React.FC<FarmInputFormProps> = ({
     }
   };
 
+  const fetchWeather = async (lat: number, lon: number) => {
+    setFetchingWeather(true);
+    setWeatherError(null);
+    try {
+      const weather = await fetchLiveWeather(lat, lon);
+      setFormData((prev) => ({
+        ...prev,
+        temperature: weather.temperature,
+        rainfall: weather.rainfall,
+      }));
+      setWeatherFetched(true);
+    } catch (err) {
+      setWeatherError(err instanceof Error ? err.message : 'Could not fetch live weather.');
+    } finally {
+      setFetchingWeather(false);
+    }
+  };
+
   const useMyLocation = () => {
     if (!navigator.geolocation) {
       setLocateError('Location is not supported by your browser.');
@@ -72,12 +94,11 @@ export const FarmInputForm: React.FC<FarmInputFormProps> = ({
     setLocateError(null);
     navigator.geolocation.getCurrentPosition(
       (pos) => {
-        setFormData((prev) => ({
-          ...prev,
-          latitude: Math.round(pos.coords.latitude * 10000) / 10000,
-          longitude: Math.round(pos.coords.longitude * 10000) / 10000,
-        }));
+        const lat = Math.round(pos.coords.latitude * 10000) / 10000;
+        const lon = Math.round(pos.coords.longitude * 10000) / 10000;
+        setFormData((prev) => ({ ...prev, latitude: lat, longitude: lon }));
         setLocating(false);
+        fetchWeather(lat, lon);
       },
       () => {
         setLocateError('Could not fetch GPS coordinates. Please enter them manually.');
@@ -228,10 +249,29 @@ export const FarmInputForm: React.FC<FarmInputFormProps> = ({
 
         {/* Section 2: Farm Conditions (Soil Moisture & Weather) */}
         <div>
-          <div className="flex items-center gap-2 text-sm font-bold text-slate-900 mb-3 border-b border-slate-200 pb-2">
-            <CloudSun className="w-4 h-4 text-emerald-700" />
-            <span>2. Soil Moisture & Weather Conditions</span>
+          <div className="flex items-center justify-between gap-2 mb-3 border-b border-slate-200 pb-2">
+            <div className="flex items-center gap-2 text-sm font-bold text-slate-900">
+              <CloudSun className="w-4 h-4 text-emerald-700" />
+              <span>2. Soil Moisture & Weather Conditions</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => fetchWeather(formData.latitude, formData.longitude)}
+              disabled={fetchingWeather}
+              className="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-emerald-50 border border-slate-300 hover:border-emerald-400 text-xs font-semibold text-slate-700 hover:text-emerald-900 transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+            >
+              <CloudRain className="w-3.5 h-3.5 text-emerald-700" />
+              <span>{fetchingWeather ? 'Fetching...' : 'Fetch Live Weather for This Spot'}</span>
+            </button>
           </div>
+          {weatherError && (
+            <p className="text-[11px] text-rose-600 -mt-2 mb-3">{weatherError}</p>
+          )}
+          {weatherFetched && !weatherError && (
+            <p className="text-[11px] text-emerald-700 -mt-2 mb-3">
+              Temperature and rainfall filled in from live weather data for your coordinates.
+            </p>
+          )}
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {/* Soil Moisture */}

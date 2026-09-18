@@ -208,3 +208,18 @@ python -m unittest discover -s tests -p "test_*.py"
 
 All predictive outputs and scenario differences represent **model-based statistical associations** learned from historical observational data. CropIQ explicitly enforces non-causal language and disclaims physical guarantees.
 Target `yield` is strictly designated with the unit **`unconfirmed`** (never falsely presented as tons or kilograms per hectare).
+
+---
+
+## Deployment
+
+Both apps read their config from environment variables, so no code changes are needed to deploy:
+
+- **Backend** (`render.yaml`): push to GitHub, then on [Render](https://render.com) choose *New → Blueprint* and point it at this repo. Set `CORS_ORIGINS` to your deployed frontend URL once you have it.
+- **Frontend** (`frontend/vercel.json`): import the repo on [Vercel](https://vercel.com) with root directory `frontend`, and set `VITE_API_BASE_URL` to your deployed backend URL.
+
+Both have generous free tiers and need no server management.
+
+## Live Weather
+
+Coordinates entered (or fetched via "Use My GPS Location") can pull current temperature and 7-day rainfall totals live from [Open-Meteo](https://open-meteo.com) — a free, keyless weather API — via the "Fetch Live Weather for This Spot" button on the farm form. Satellite vegetation indices (NDVI/GNDVI/NDWI/SAVI) remain manually entered: live satellite ingestion needs an Earth Engine or Sentinel Hub service account, which is out of scope for this pass.

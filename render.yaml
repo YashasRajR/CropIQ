@@ -1,0 +1,22 @@
+# Deploys the FastAPI backend on Render (render.com) free tier.
+# Push this repo to GitHub, then on Render: New -> Blueprint -> pick this repo.
+services:
+  - type: web
+    name: cropiq-api
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn backend.app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+      - key: CORS_ORIGINS
+        value: https://your-frontend.vercel.app
+      - key: MODEL_PATH
+        value: models/cropiq_yield_model.joblib
+      - key: MODEL_METADATA_PATH
+        value: models/model_metadata.json
+      - key: SCENARIO_METADATA_PATH
+        value: knowledge/scenario_features.json
+      - key: AGRICULTURAL_RULES_PATH
+        value: knowledge/agricultural_rules.json
