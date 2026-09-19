@@ -1,7 +1,7 @@
 export interface FeatureContribution {
   feature: string;
   display_name: string;
-  observed_value?: number;
+  observed_value?: number | string;
   contribution: number;
   direction: 'positive' | 'negative' | 'neutral';
   magnitude: number;

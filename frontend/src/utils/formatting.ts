@@ -1,5 +1,14 @@
-export function formatNumber(val: number | undefined | null, decimals = 2): string {
-  if (val === undefined || val === null || isNaN(val)) return '—';
+export function formatNumber(val: number | string | undefined | null, decimals = 2): string {
+  if (val === undefined || val === null || val === '') return '—';
+  if (typeof val === 'string') {
+    const parsed = Number(val);
+    if (isNaN(parsed)) return val;
+    return parsed.toLocaleString(undefined, {
+      minimumFractionDigits: decimals,
+      maximumFractionDigits: decimals,
+    });
+  }
+  if (isNaN(val)) return '—';
   return Number(val).toLocaleString(undefined, {
     minimumFractionDigits: decimals,
     maximumFractionDigits: decimals,

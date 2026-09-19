@@ -140,6 +140,12 @@ export const MyCropToday: React.FC<MyCropTodayProps> = ({
     };
   };
 
+  const formatObsVal = (val: unknown): string => {
+    if (val === undefined || val === null) return '';
+    if (typeof val === 'number') return val.toFixed(2);
+    return String(val);
+  };
+
   const todayCheck = getTodayPriorityCheck();
 
   return (
@@ -454,8 +460,8 @@ export const MyCropToday: React.FC<MyCropTodayProps> = ({
                       </span>
                       <p className="text-[11px] text-slate-600 leading-snug">
                         {f.interpretation ||
-                          (f.observed_value !== undefined
-                            ? `Current level (${f.observed_value.toFixed(2)}) supports favorable yield formation.`
+                          (f.observed_value !== undefined && f.observed_value !== null
+                            ? `Current level (${formatObsVal(f.observed_value)}) supports favorable yield formation.`
                             : 'Favorable field condition.')}
                       </p>
                     </div>
@@ -487,8 +493,8 @@ export const MyCropToday: React.FC<MyCropTodayProps> = ({
                       </span>
                       <p className="text-[11px] text-slate-600 leading-snug">
                         {f.interpretation ||
-                          (f.observed_value !== undefined
-                            ? `Current level (${f.observed_value.toFixed(2)}) is pulling down estimated potential.`
+                          (f.observed_value !== undefined && f.observed_value !== null
+                            ? `Current level (${formatObsVal(f.observed_value)}) is pulling down estimated potential.`
                             : 'Field stress factor.')}
                       </p>
                     </div>
