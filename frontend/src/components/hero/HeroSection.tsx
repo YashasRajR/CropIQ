@@ -1,121 +1,77 @@
 import React from 'react';
-import { ArrowDown, Sprout, TrendingUp, HelpCircle, CheckCircle2, Sliders } from 'lucide-react';
+import { ArrowDown, Sprout, Sliders, ShieldCheck, Satellite, Users } from 'lucide-react';
 import { Button } from '../common/Button';
 
 interface HeroSectionProps {
   onAnalyzeClick: () => void;
-  onSelectExample: () => void;
+  onSelectSimulator: () => void;
 }
 
 export const HeroSection: React.FC<HeroSectionProps> = ({
   onAnalyzeClick,
-  onSelectExample,
+  onSelectSimulator,
 }) => {
-  const steps = [
-    {
-      num: '1',
-      title: 'Your Farm',
-      desc: 'Enter your crop and field conditions',
-      icon: Sprout,
-    },
-    {
-      num: '2',
-      title: 'Estimated Yield',
-      desc: 'See expected yield and crop risk',
-      icon: TrendingUp,
-    },
-    {
-      num: '3',
-      title: "What's Affecting It",
-      desc: 'See which conditions matter most',
-      icon: HelpCircle,
-    },
-    {
-      num: '4',
-      title: 'What You Can Do',
-      desc: 'Get practical advisory actions',
-      icon: CheckCircle2,
-    },
-    {
-      num: '5',
-      title: 'Try Scenarios',
-      desc: 'Test what happens if conditions change',
-      icon: Sliders,
-    },
-  ];
-
   return (
-    <section className="relative overflow-hidden pt-10 pb-12 sm:pt-16 sm:pb-18 bg-gradient-to-b from-emerald-50/70 via-[#f7faf7] to-[#f7faf7] border-b border-emerald-900/10">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        {/* Agricultural Badge */}
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-100 text-emerald-800 text-xs font-semibold tracking-normal mb-5 shadow-2xs">
-          <Sprout className="w-4 h-4 text-emerald-700" />
-          <span>Smart Yield Assistant for Farmers</span>
-        </div>
+    <section className="relative overflow-hidden pt-8 pb-8 sm:pt-10 sm:pb-10 bg-gradient-to-b from-emerald-50/80 via-emerald-50/30 to-[#f7faf7] border-b border-emerald-900/10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 text-left">
+          {/* Left Column: Headline & Mission */}
+          <div className="space-y-3 max-w-2xl">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-semibold tracking-normal shadow-2xs">
+              <Sprout className="w-3.5 h-3.5 text-emerald-700" />
+              <span>Continuous Crop Intelligence & Decision Support</span>
+            </div>
 
-        {/* Primary Headline */}
-        <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight leading-[1.15] max-w-3xl mx-auto mb-4">
-          Know your crop.{' '}
-          <span className="text-emerald-800">
-            Plan your next step.
-          </span>
-        </h1>
+            <h1 className="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight">
+              Know your crop.{' '}
+              <span className="text-emerald-800">
+                Plan your next step.
+              </span>
+            </h1>
 
-        {/* Farmer-friendly Subheading */}
-        <p className="text-base sm:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed mb-8">
-          CropIQ helps you understand your expected crop yield, important farm conditions,
-          and what may need attention — before harvest arrives.
-        </p>
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-xl">
+              CropIQ combines satellite greenness, live soil moisture, ambient weather, and your ground-truth observations into a continuous decision-support loop throughout the growing season.
+            </p>
 
-        {/* Primary and Secondary CTAs */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-12">
-          <Button
-            size="lg"
-            variant="primary"
-            onClick={onAnalyzeClick}
-            rightIcon={<ArrowDown className="w-4 h-4" />}
-            className="w-full sm:w-auto text-base px-7 py-3.5"
-          >
-            Check My Farm
-          </Button>
+            {/* 3 Trust Pillars */}
+            <div className="flex items-center gap-4 pt-1 text-[11px] text-slate-500 flex-wrap">
+              <span className="inline-flex items-center gap-1.5 font-medium">
+                <Satellite className="w-3.5 h-3.5 text-emerald-700" />
+                <span>Sentinel-2 Satellite Grounded</span>
+              </span>
+              <span className="inline-flex items-center gap-1.5 font-medium">
+                <ShieldCheck className="w-3.5 h-3.5 text-emerald-700" />
+                <span>FAO & ICAR Agronomic Rules</span>
+              </span>
+              <span className="inline-flex items-center gap-1.5 font-medium">
+                <Users className="w-3.5 h-3.5 text-emerald-700" />
+                <span>Farmer Ground-Truth Verified</span>
+              </span>
+            </div>
+          </div>
 
-          <Button
-            size="lg"
-            variant="outline"
-            onClick={onSelectExample}
-            leftIcon={<Sprout className="w-4 h-4 text-emerald-700" />}
-            className="w-full sm:w-auto text-base px-6 py-3.5"
-          >
-            Choose an Example Farm
-          </Button>
-        </div>
+          {/* Right Column: Quick Action CTA Buttons */}
+          <div className="flex flex-col sm:flex-row lg:flex-col gap-2.5 shrink-0 self-start lg:self-center">
+            <Button
+              size="md"
+              variant="primary"
+              onClick={onAnalyzeClick}
+              rightIcon={<ArrowDown className="w-4 h-4" />}
+              className="text-xs sm:text-sm px-5 py-2.5 font-bold shadow-xs"
+            >
+              Go to Today&apos;s Field Cockpit
+            </Button>
 
-        {/* 5-Step Simple Flow Cards */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 max-w-5xl mx-auto text-left">
-          {steps.map((step) => {
-            const Icon = step.icon;
-            return (
-              <div
-                key={step.num}
-                className="p-4 rounded-xl bg-white border border-slate-200/90 shadow-2xs hover:border-emerald-300 transition-all"
-              >
-                <div className="flex items-center justify-between mb-2.5">
-                  <span className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-900 font-bold text-xs flex items-center justify-center">
-                    {step.num}
-                  </span>
-                  <div className="p-1.5 rounded-lg bg-emerald-50 text-emerald-700">
-                    <Icon className="w-4 h-4" />
-                  </div>
-                </div>
-                <div className="font-bold text-sm text-slate-900 mb-1">
-                  {step.title}
-                </div>
-                <p className="text-xs text-slate-500 leading-snug">
-                  {step.desc}
-                </p>
-              </div>
-            );
-          })}
+            <Button
+              size="md"
+              variant="outline"
+              onClick={onSelectSimulator}
+              leftIcon={<Sliders className="w-4 h-4 text-emerald-700" />}
+              className="text-xs sm:text-sm px-5 py-2.5 font-semibold bg-white"
+            >
+              Try What-If Simulator
+            </Button>
+          </div>
         </div>
       </div>
     </section>

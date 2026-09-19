@@ -10,6 +10,11 @@ export interface Translations {
   tagline: string;
   farmerView: string;
   technicalView: string;
+  fieldCockpit: string;
+  fieldJourney: string;
+  fieldDataAndTech: string;
+  switchFarmPreset: string;
+  quickPresets: string;
   myCropToday: string;
   yieldPredictor: string;
   whyThisEstimate: string;
@@ -53,6 +58,11 @@ export const TRANSLATIONS: Record<Language, Translations> = {
     tagline: 'Continuous Crop Intelligence & Decision Support',
     farmerView: 'Farmer View',
     technicalView: 'Technical / Judge View',
+    fieldCockpit: 'My Field Cockpit',
+    fieldJourney: 'Field Journey & Timeline',
+    fieldDataAndTech: 'Field Data & Technical Hub',
+    switchFarmPreset: 'Switch Field Scenario',
+    quickPresets: 'Quick Farm Presets',
     myCropToday: 'My Crop Today',
     yieldPredictor: 'Yield Predictor',
     whyThisEstimate: 'Why This Estimate?',
@@ -94,6 +104,11 @@ export const TRANSLATIONS: Record<Language, Translations> = {
     tagline: 'निरंतर फसल बुद्धिमत्ता और निर्णय सहायता',
     farmerView: 'किसान दृश्य (सरल)',
     technicalView: 'तकनीकी / परीक्षक दृश्य',
+    fieldCockpit: 'खेत कॉकपिट',
+    fieldJourney: 'फसल यात्रा और समयरेखा',
+    fieldDataAndTech: 'फ़ील्ड डेटा और तकनीकी हब',
+    switchFarmPreset: 'खेत का परिदृश्य बदलें',
+    quickPresets: 'त्वरित खेत चयन',
     myCropToday: 'मेरी फसल आज',
     yieldPredictor: 'उपज अनुमानक',
     whyThisEstimate: 'यह अनुमान क्यों?',
@@ -135,6 +150,11 @@ export const TRANSLATIONS: Record<Language, Translations> = {
     tagline: 'સતત પાક બુદ્ધિ અને નિર્ણય સહાય',
     farmerView: 'ખેડૂત દૃશ્ય (સરળ)',
     technicalView: 'ટેકનિકલ / નિર્ણાયક દૃશ્ય',
+    fieldCockpit: 'ખેતર કોકપિટ',
+    fieldJourney: 'પાક યાત્રા અને ટાઈમલાઈન',
+    fieldDataAndTech: 'ફીલ્ડ ડેટા અને ટેકનિકલ હબ',
+    switchFarmPreset: 'ખેતરનું પરિદૃશ્ય બદલો',
+    quickPresets: 'ઝડપી ખેતર પસંદગી',
     myCropToday: 'મારો પાક આજે',
     yieldPredictor: 'ઉત્પાદન અનુમાનક',
     whyThisEstimate: 'આ અંદાજ શા માટે?',

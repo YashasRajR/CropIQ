@@ -17,18 +17,29 @@ import {
   MapPin,
   Sparkles,
   FileSpreadsheet,
+  TrendingUp,
+  Sliders,
+  ShieldCheck,
 } from 'lucide-react';
 import { FarmInput } from '../../types/farm';
 import { PredictionResponse } from '../../types/prediction';
+import { ExplanationResponse } from '../../types/explanation';
+import { RecommendationResponse } from '../../types/recommendation';
+import { ExampleFarmProfile } from '../../config/presets';
 import { ObservationType, CropStage, FarmerFeedback } from '../../types/events';
 import { Card } from '../common/Card';
 import { Badge } from '../common/Badge';
 import { FarmerAgreementCard } from './FarmerAgreementCard';
 import { WhatWeDontKnowPanel } from './WhatWeDontKnowPanel';
+import { getFriendlyFeatureName } from '../../utils/explanations';
 
 interface MyCropTodayProps {
   currentInput: FarmInput;
   prediction: PredictionResponse | null;
+  explanation?: ExplanationResponse | null;
+  recommendations?: RecommendationResponse | null;
+  presets?: ExampleFarmProfile[];
+  onSelectPreset?: (preset: ExampleFarmProfile) => void;
   cropStage: CropStage;
   farmerFeedback: FarmerFeedback | null;
   onChangeCropStage: (stage: CropStage) => void;
@@ -36,11 +47,16 @@ interface MyCropTodayProps {
   onSaveFeedback: (agreement: 'agrees' | 'unsure' | 'disagrees', notes?: string) => void;
   onOpenExpertReport: () => void;
   onNavigateToTab: (tabId: string) => void;
+  onExploreScenario?: (featureName: string) => void;
 }
 
 export const MyCropToday: React.FC<MyCropTodayProps> = ({
   currentInput,
   prediction,
+  explanation,
+  recommendations,
+  presets,
+  onSelectPreset,
   cropStage,
   farmerFeedback,
   onChangeCropStage,
@@ -48,10 +64,22 @@ export const MyCropToday: React.FC<MyCropTodayProps> = ({
   onSaveFeedback,
   onOpenExpertReport,
   onNavigateToTab,
+  onExploreScenario,
 }) => {
   const yieldVal = prediction?.prediction?.yield ?? 4.2;
   const lowerBound = prediction?.uncertainty?.lower_bound ?? (yieldVal * 0.9);
   const upperBound = prediction?.uncertainty?.upper_bound ?? (yieldVal * 1.1);
+
+  // Derive top positive and negative factors from SHAP explanation
+  const positiveFactors =
+    explanation?.top_positive_factors?.slice(0, 2) ||
+    prediction?.explanation?.top_positive_factors?.slice(0, 2) ||
+    [];
+  const negativeFactors =
+    explanation?.top_negative_factors?.slice(0, 2) ||
+    prediction?.explanation?.top_negative_factors?.slice(0, 2) ||
+    [];
+  const topRecs = recommendations?.recommendations?.slice(0, 3) || [];
 
   // Derive simple human interpretations from real inputs
   const ndvi = currentInput.NDVI;
@@ -116,6 +144,46 @@ export const MyCropToday: React.FC<MyCropTodayProps> = ({
 
   return (
     <div className="space-y-8 animate-in fade-in duration-300">
+      {/* 0A. 1-Click Quick Farm Preset Switcher */}
+      {presets && onSelectPreset && presets.length > 0 && (
+        <div className="p-3.5 bg-white rounded-2xl border border-slate-200 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-2 shrink-0">
+            <span className="p-1.5 rounded-lg bg-emerald-100 text-emerald-800">
+              <Sparkles className="w-4 h-4" />
+            </span>
+            <span className="text-xs font-bold text-slate-800">Quick Field Preset:</span>
+          </div>
+          <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5 w-full sm:w-auto">
+            {presets.map((p) => {
+              const isSelected =
+                currentInput.crop_type.toLowerCase() === p.crop.toLowerCase() &&
+                (currentInput.field_id ? currentInput.field_id === p.input.field_id : true);
+              return (
+                <button
+                  key={p.id}
+                  type="button"
+                  onClick={() => onSelectPreset(p)}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all cursor-pointer flex items-center gap-1.5 ${
+                    isSelected
+                      ? 'bg-emerald-800 text-white shadow-xs font-bold ring-2 ring-emerald-600/30'
+                      : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200/80'
+                  }`}
+                >
+                  <span>{p.crop}</span>
+                  <span
+                    className={`text-[10px] px-1.5 py-0.2 rounded-md ${
+                      isSelected ? 'bg-emerald-950/60 text-emerald-200' : 'bg-slate-200 text-slate-600'
+                    }`}
+                  >
+                    {p.region.split(' ')[0]}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
       {/* 0. Feature 23: "One Thing to Do Today" Priority Banner */}
       <div className="p-4 sm:p-5 rounded-3xl bg-gradient-to-r from-emerald-800 to-teal-800 text-white shadow-md flex flex-col md:flex-row md:items-center justify-between gap-4 border border-emerald-600">
         <div className="flex items-start gap-3.5">
@@ -348,6 +416,191 @@ export const MyCropToday: React.FC<MyCropTodayProps> = ({
         initialFeedback={farmerFeedback}
         onSaveFeedback={onSaveFeedback}
       />
+
+      {/* 3B. Embedded Factor Influence & Practical Actions (Unified Decision Loop) */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Left: What's Driving Your Crop's Estimate? */}
+        <Card variant="bordered" className="p-6 bg-white rounded-3xl border-slate-200 shadow-xs space-y-4 flex flex-col justify-between">
+          <div className="space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div className="flex items-center gap-2">
+                <span className="p-1.5 rounded-lg bg-emerald-100 text-emerald-800">
+                  <TrendingUp className="w-4 h-4" />
+                </span>
+                <h3 className="text-base font-extrabold text-slate-900">
+                  What's Driving Your Crop's Outlook?
+                </h3>
+              </div>
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600">
+                SHAP Attribution
+              </span>
+            </div>
+
+            {/* Top Positive Influences */}
+            <div className="space-y-2">
+              <div className="text-[11px] font-bold uppercase tracking-wider text-emerald-800 flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-600" />
+                <span>Conditions Boosting Yield</span>
+              </div>
+              {positiveFactors.length > 0 ? (
+                positiveFactors.map((f) => (
+                  <div
+                    key={f.feature}
+                    className="p-3 bg-emerald-50/50 rounded-2xl border border-emerald-100/80 flex items-start justify-between gap-3 text-xs"
+                  >
+                    <div className="space-y-0.5">
+                      <span className="font-bold text-slate-900">
+                        {f.display_name || getFriendlyFeatureName(f.feature)}
+                      </span>
+                      <p className="text-[11px] text-slate-600 leading-snug">
+                        {f.interpretation ||
+                          (f.observed_value !== undefined
+                            ? `Current level (${f.observed_value.toFixed(2)}) supports favorable yield formation.`
+                            : 'Favorable field condition.')}
+                      </p>
+                    </div>
+                    <span className="px-2 py-1 rounded-xl bg-emerald-100 text-emerald-800 font-extrabold text-[11px] shrink-0">
+                      +{Math.abs(f.contribution).toFixed(2)} t/ha
+                    </span>
+                  </div>
+                ))
+              ) : (
+                <p className="text-xs text-slate-500 italic">No strong boosting factors detected at current stage.</p>
+              )}
+            </div>
+
+            {/* Top Limiting / Vulnerability Factors */}
+            <div className="space-y-2 pt-2">
+              <div className="text-[11px] font-bold uppercase tracking-wider text-amber-800 flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-600" />
+                <span>Conditions Limiting Yield</span>
+              </div>
+              {negativeFactors.length > 0 ? (
+                negativeFactors.map((f) => (
+                  <div
+                    key={f.feature}
+                    className="p-3 bg-amber-50/50 rounded-2xl border border-amber-100/80 flex items-start justify-between gap-3 text-xs"
+                  >
+                    <div className="space-y-0.5">
+                      <span className="font-bold text-slate-900">
+                        {f.display_name || getFriendlyFeatureName(f.feature)}
+                      </span>
+                      <p className="text-[11px] text-slate-600 leading-snug">
+                        {f.interpretation ||
+                          (f.observed_value !== undefined
+                            ? `Current level (${f.observed_value.toFixed(2)}) is pulling down estimated potential.`
+                            : 'Field stress factor.')}
+                      </p>
+                    </div>
+                    <span className="px-2 py-1 rounded-xl bg-amber-100 text-amber-900 font-extrabold text-[11px] shrink-0">
+                      -{Math.abs(f.contribution).toFixed(2)} t/ha
+                    </span>
+                  </div>
+                ))
+              ) : (
+                <p className="text-xs text-slate-500 italic">No significant limiting factors identified.</p>
+              )}
+            </div>
+          </div>
+
+          <div className="pt-4 border-t border-slate-100 flex items-center justify-between gap-2">
+            <button
+              type="button"
+              onClick={() => onNavigateToTab('simulator')}
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-800 hover:text-emerald-950 cursor-pointer"
+            >
+              <Sliders className="w-3.5 h-3.5" />
+              <span>Simulate Adjustments in What-If &rarr;</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => onNavigateToTab('technical')}
+              className="text-[11px] font-semibold text-slate-500 hover:text-slate-800 cursor-pointer"
+            >
+              Full SHAP Breakdown
+            </button>
+          </div>
+        </Card>
+
+        {/* Right: Recommended Field Actions Today */}
+        <Card variant="bordered" className="p-6 bg-white rounded-3xl border-slate-200 shadow-xs space-y-4 flex flex-col justify-between">
+          <div className="space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div className="flex items-center gap-2">
+                <span className="p-1.5 rounded-lg bg-blue-100 text-blue-800">
+                  <ShieldCheck className="w-4 h-4" />
+                </span>
+                <h3 className="text-base font-extrabold text-slate-900">
+                  Recommended Field Actions
+                </h3>
+              </div>
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
+                FAO / ICAR Rules
+              </span>
+            </div>
+
+            <div className="space-y-3">
+              {topRecs.length > 0 ? (
+                topRecs.map((rec) => {
+                  const priorityVariant =
+                    rec.priority === 'HIGH'
+                      ? ('amber' as const)
+                      : rec.priority === 'MEDIUM'
+                      ? ('sky' as const)
+                      : ('emerald' as const);
+
+                  return (
+                    <div
+                      key={rec.id}
+                      className="p-3.5 bg-slate-50/70 hover:bg-slate-50 rounded-2xl border border-slate-200/80 transition-all space-y-2"
+                    >
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="text-xs font-bold text-slate-900">
+                          {rec.title}
+                        </span>
+                        <Badge variant={priorityVariant}>{rec.priority} PRIORITY</Badge>
+                      </div>
+
+                      <p className="text-xs text-slate-600 leading-relaxed">
+                        {rec.action}
+                      </p>
+
+                      <div className="flex items-center justify-between gap-2 pt-1">
+                        <span className="text-[10px] text-slate-500 font-medium">
+                          <strong>Why?</strong> {rec.summary || rec.reason}
+                        </span>
+                        {rec.what_if_supported && rec.what_if_variable && onExploreScenario && (
+                          <button
+                            type="button"
+                            onClick={() => onExploreScenario(rec.what_if_variable!)}
+                            className="px-2.5 py-1 rounded-lg bg-white hover:bg-emerald-50 text-emerald-900 border border-emerald-200 text-[10px] font-bold transition-colors cursor-pointer shrink-0"
+                          >
+                            Simulate Action &rarr;
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })
+              ) : (
+                <div className="p-4 rounded-xl bg-slate-50 text-slate-500 text-xs text-center">
+                  Field vitals are within stable thresholds. Continue routine management.
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
+            <button
+              type="button"
+              onClick={() => onNavigateToTab('journey')}
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-800 hover:text-emerald-950 cursor-pointer"
+            >
+              <span>View Farm Decisions & Complete Timeline &rarr;</span>
+            </button>
+          </div>
+        </Card>
+      </div>
 
       {/* 4. Feature 2: "HAS ANYTHING CHANGED IN YOUR FIELD?" */}
       <Card variant="bordered" className="p-6 sm:p-8 bg-white rounded-3xl border-slate-200 shadow-xs space-y-6">

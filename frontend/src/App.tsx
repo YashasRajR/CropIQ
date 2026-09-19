@@ -25,13 +25,9 @@ import {
   Sprout,
   CheckCircle2,
   Sliders,
-  Calendar,
-  Layers,
   LineChart,
-  HelpCircle,
   Cpu,
   TrendingUp,
-  ClipboardList,
 } from 'lucide-react';
 
 import { cropIQApi } from './services/api';
@@ -62,21 +58,15 @@ import { FarmDecisionLog } from './components/farmer/FarmDecisionLog';
 import { PhotoJournalCard } from './components/farmer/PhotoJournalCard';
 import { ExpertReportModal } from './components/farmer/ExpertReportModal';
 
-type TabType =
-  | 'my-crop'
-  | 'history'
-  | 'decisions'
-  | 'predictor'
-  | 'why-estimate'
-  | 'simulator'
-  | 'timeline'
-  | 'model-specs';
+type TabType = 'cockpit' | 'journey' | 'simulator' | 'technical';
 
 export const App: React.FC = () => {
   // --- View Mode & Localization State ---
   const [viewMode, setViewMode] = useState<'farmer' | 'technical'>('farmer');
   const [language, setLanguage] = useState<Language>('en');
-  const [activeTab, setActiveTab] = useState<TabType>('my-crop');
+  const [activeTab, setActiveTab] = useState<TabType>('cockpit');
+  const [journeySubTab, setJourneySubTab] = useState<'all' | 'trajectory' | 'photos' | 'decisions' | 'timeline'>('all');
+  const [techSubTab, setTechSubTab] = useState<'input' | 'metrics'>('input');
   const t = TRANSLATIONS[language];
 
   // --- Form & Input State ---
@@ -221,9 +211,10 @@ export const App: React.FC = () => {
     setViewMode(mode);
     setRecMode(mode);
     if (mode === 'technical') {
-      setActiveTab('model-specs');
+      setTechSubTab('metrics');
+      setActiveTab('technical');
     } else {
-      setActiveTab('my-crop');
+      setActiveTab('cockpit');
     }
     if (currentInput) {
       cropIQApi.getRecommendations(currentInput, mode, 5).then(setRecommendations);
@@ -369,85 +360,54 @@ export const App: React.FC = () => {
 
       {/* Hero Section */}
       <HeroSection
-        onAnalyzeClick={() => setActiveTab('my-crop')}
-        onSelectExample={() => setActiveTab('predictor')}
+        onAnalyzeClick={() => setActiveTab('cockpit')}
+        onSelectSimulator={() => setActiveTab('simulator')}
       />
 
-      {/* Primary Tab Navigation */}
+      {/* Primary 4-Hub Navigation Bar */}
       <div className="sticky top-16 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-2xs">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <nav className="flex items-center gap-1 sm:gap-2 overflow-x-auto py-2.5 no-scrollbar text-xs font-semibold">
+            {/* Hub 1: My Field Cockpit */}
             <button
               type="button"
-              onClick={() => setActiveTab('my-crop')}
-              className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl transition-all whitespace-nowrap cursor-pointer ${
-                activeTab === 'my-crop'
-                  ? 'bg-emerald-700 text-white shadow-xs font-bold'
+              onClick={() => setActiveTab('cockpit')}
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all whitespace-nowrap cursor-pointer ${
+                activeTab === 'cockpit'
+                  ? 'bg-emerald-800 text-white shadow-xs font-bold'
                   : 'text-slate-600 hover:bg-slate-100'
               }`}
             >
               <Sprout className="w-4 h-4" />
-              <span>{t.myCropToday}</span>
+              <span>{t.fieldCockpit || 'My Field Cockpit'}</span>
             </button>
 
+            {/* Hub 2: Field Journey & Timeline */}
             <button
               type="button"
-              onClick={() => setActiveTab('history')}
-              className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl transition-all whitespace-nowrap cursor-pointer ${
-                activeTab === 'history'
-                  ? 'bg-emerald-700 text-white shadow-xs font-bold'
+              onClick={() => setActiveTab('journey')}
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all whitespace-nowrap cursor-pointer ${
+                activeTab === 'journey'
+                  ? 'bg-emerald-800 text-white shadow-xs font-bold'
                   : 'text-slate-600 hover:bg-slate-100'
               }`}
             >
               <TrendingUp className="w-4 h-4" />
-              <span>{t.outlookHistory}</span>
+              <span>{t.fieldJourney || 'Field Journey & Timeline'}</span>
+              <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold ${
+                activeTab === 'journey' ? 'bg-emerald-950/40 text-emerald-200' : 'bg-slate-100 text-slate-600'
+              }`}>
+                {timeline.length + decisions.length}
+              </span>
             </button>
 
-            <button
-              type="button"
-              onClick={() => setActiveTab('decisions')}
-              className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl transition-all whitespace-nowrap cursor-pointer ${
-                activeTab === 'decisions'
-                  ? 'bg-emerald-700 text-white shadow-xs font-bold'
-                  : 'text-slate-600 hover:bg-slate-100'
-              }`}
-            >
-              <ClipboardList className="w-4 h-4" />
-              <span>{t.farmDecisions} ({decisions.length})</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setActiveTab('predictor')}
-              className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl transition-all whitespace-nowrap cursor-pointer ${
-                activeTab === 'predictor'
-                  ? 'bg-emerald-700 text-white shadow-xs font-bold'
-                  : 'text-slate-600 hover:bg-slate-100'
-              }`}
-            >
-              <Layers className="w-4 h-4" />
-              <span>{t.yieldPredictor}</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setActiveTab('why-estimate')}
-              className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl transition-all whitespace-nowrap cursor-pointer ${
-                activeTab === 'why-estimate'
-                  ? 'bg-emerald-700 text-white shadow-xs font-bold'
-                  : 'text-slate-600 hover:bg-slate-100'
-              }`}
-            >
-              <HelpCircle className="w-4 h-4" />
-              <span>{t.whyThisEstimate}</span>
-            </button>
-
+            {/* Hub 3: What-If Simulator */}
             <button
               type="button"
               onClick={() => setActiveTab('simulator')}
-              className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl transition-all whitespace-nowrap cursor-pointer ${
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all whitespace-nowrap cursor-pointer ${
                 activeTab === 'simulator'
-                  ? 'bg-emerald-700 text-white shadow-xs font-bold'
+                  ? 'bg-emerald-800 text-white shadow-xs font-bold'
                   : 'text-slate-600 hover:bg-slate-100'
               }`}
             >
@@ -455,30 +415,18 @@ export const App: React.FC = () => {
               <span>{t.whatIfSimulator}</span>
             </button>
 
+            {/* Hub 4: Field Data & Technical Hub */}
             <button
               type="button"
-              onClick={() => setActiveTab('timeline')}
-              className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl transition-all whitespace-nowrap cursor-pointer ${
-                activeTab === 'timeline'
-                  ? 'bg-emerald-700 text-white shadow-xs font-bold'
-                  : 'text-slate-600 hover:bg-slate-100'
-              }`}
-            >
-              <Calendar className="w-4 h-4" />
-              <span>{t.farmMemory} ({timeline.length})</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setActiveTab('model-specs')}
-              className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl transition-all whitespace-nowrap cursor-pointer ml-auto ${
-                activeTab === 'model-specs'
+              onClick={() => setActiveTab('technical')}
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all whitespace-nowrap cursor-pointer ml-auto ${
+                activeTab === 'technical'
                   ? 'bg-slate-900 text-white shadow-xs font-bold'
                   : 'text-slate-600 hover:bg-slate-100'
               }`}
             >
               <Cpu className="w-4 h-4 text-amber-400" />
-              <span>{t.modelAndMetrics}</span>
+              <span>{t.fieldDataAndTech || 'Field Data & Technical Hub'}</span>
             </button>
           </nav>
         </div>
@@ -486,22 +434,40 @@ export const App: React.FC = () => {
 
       {/* Main Content Area */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-10">
-        {/* TAB 1: MY CROP TODAY (The Core Continuous Intelligence Cockpit) */}
-        {activeTab === 'my-crop' && (
+        {/* HUB 1: MY FIELD COCKPIT (Core Continuous Intelligence & Daily Loop) */}
+        {activeTab === 'cockpit' && (
           <div className="space-y-8">
             <MyCropToday
               currentInput={currentInput}
               prediction={prediction}
+              explanation={explanation}
+              recommendations={recommendations}
+              presets={EXAMPLE_FARM_PRESETS}
+              onSelectPreset={(p) => {
+                setCurrentInput(p.input);
+                runFullPipeline(p.input);
+              }}
               cropStage={cropStage}
               farmerFeedback={farmerFeedback}
               onChangeCropStage={setCropStage}
               onOpenEventModal={handleOpenEventModal}
               onSaveFeedback={handleSaveFarmerFeedback}
               onOpenExpertReport={() => setIsExpertModalOpen(true)}
-              onNavigateToTab={(tabId) => setActiveTab(tabId as TabType)}
+              onNavigateToTab={(tabId) => {
+                if (tabId === 'history' || tabId === 'decisions' || tabId === 'timeline') {
+                  setActiveTab('journey');
+                } else if (tabId === 'why-estimate' || tabId === 'predictor' || tabId === 'model-specs') {
+                  setActiveTab('technical');
+                } else if (tabId === 'simulator') {
+                  setActiveTab('simulator');
+                } else {
+                  setActiveTab('cockpit');
+                }
+              }}
+              onExploreScenario={handleExploreScenario}
             />
 
-            {/* Quick Preview of Farm Timeline */}
+            {/* Field Journey Preview */}
             <div className="pt-2">
               <FarmTimelineCard
                 timeline={timeline.slice(0, 4)}
@@ -514,188 +480,150 @@ export const App: React.FC = () => {
               <div className="text-center pt-3">
                 <button
                   type="button"
-                  onClick={() => setActiveTab('timeline')}
+                  onClick={() => setActiveTab('journey')}
                   className="text-xs font-bold text-emerald-800 hover:text-emerald-950 inline-flex items-center gap-1 cursor-pointer"
                 >
-                  <span>View Complete Farm Memory & Crop Journey ({timeline.length} events) &rarr;</span>
+                  <span>View Complete Field Journey & Management Timeline ({timeline.length + decisions.length} entries) &rarr;</span>
                 </button>
               </div>
             </div>
           </div>
         )}
 
-        {/* TAB 2: OUTLOOK HISTORY & PHOTO JOURNAL (Trajectory & Before vs Now) */}
-        {activeTab === 'history' && (
+        {/* HUB 2: FIELD JOURNEY & TIMELINE (Trajectory, Photos, Decisions, & Memory) */}
+        {activeTab === 'journey' && (
           <div className="space-y-8 animate-in fade-in duration-300">
-            <PredictionHistoryCard
-              cropName={currentInput.crop_type}
-              history={predictionHistory}
-              currentYield={currentYieldVal}
-            />
-
-            <PhotoJournalCard
-              cropName={currentInput.crop_type}
-              timeline={timeline}
-              onTriggerPhotoModal={() => handleOpenEventModal('PHOTO_LOG')}
-            />
-          </div>
-        )}
-
-        {/* TAB 3: FARM DECISIONS & ACTIONABLE ADVICE */}
-        {activeTab === 'decisions' && (
-          <div className="space-y-8 animate-in fade-in duration-300">
-            <FarmDecisionLog
-              cropName={currentInput.crop_type}
-              decisions={decisions}
-              onAddDecision={handleAddDecision}
-              onDeleteDecision={handleDeleteDecision}
-            />
-
-            {/* Preserved FAO/ICAR Prioritized Recommendations */}
-            {isRecommending ? (
-              <Skeleton className="h-72 rounded-2xl" />
-            ) : recommendations ? (
-              <RecommendationList
-                recommendations={recommendations.recommendations}
-                executiveSummary={recommendations.summary.executive_summary}
-                onExploreScenario={handleExploreScenario}
-                onToggleMode={handleToggleRecMode}
-                currentMode={recMode}
-              />
-            ) : null}
-          </div>
-        )}
-
-        {/* TAB 4: YIELD PREDICTOR & FIELD CONDITIONS (Preserved Full Form & Overview) */}
-        {activeTab === 'predictor' && (
-          <div className="space-y-10 animate-in fade-in duration-300">
-            {/* Section 1: Farm Conditions Input Form */}
-            <FarmInputForm
-              initialInput={currentInput}
-              onSubmit={runFullPipeline}
-              isLoading={isPredicting}
-              scenarioCatalog={scenarioCatalog}
-              onReset={() => {
-                setCurrentInput(defaultFarmInput);
-                runFullPipeline(defaultFarmInput);
-              }}
-            />
-
-            {/* Section 2: Farm Overview */}
-            <section id="overview-section" className="space-y-6">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-4">
-                <div>
-                  <h2 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
-                    <span className="p-1.5 rounded-lg bg-emerald-100 text-emerald-800">
-                      <Sprout className="w-5 h-5" />
-                    </span>
-                    <span>Your Farm Overview</span>
-                  </h2>
-                  <p className="text-sm text-slate-500 mt-1">
-                    Estimated yield, crop risk, and prediction reliability for your{' '}
-                    <strong className="text-emerald-800">{currentInput.crop_type}</strong> crop.
-                  </p>
-                </div>
-
-                {lastUpdated && (
-                  <div className="flex items-center gap-1.5 text-xs text-slate-500 font-medium">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                    <span>Updated {lastUpdated.toLocaleTimeString()}</span>
-                  </div>
-                )}
+            {/* Journey Header & Filter Bar */}
+            <div className="bg-white p-4 rounded-3xl border border-slate-200 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <h2 className="text-lg font-extrabold text-slate-900 flex items-center gap-2">
+                  <span className="p-1.5 rounded-lg bg-emerald-100 text-emerald-800">
+                    <TrendingUp className="w-4 h-4" />
+                  </span>
+                  <span>Field Journey & Season Memory</span>
+                </h2>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  Trajectory outlook, photo journal, management actions, and chronological timeline for your {currentInput.crop_type}.
+                </p>
               </div>
 
-              {/* Error Notice */}
-              {predictionError && (
-                <Card variant="bordered" className="p-5 border-rose-300 bg-rose-50 text-rose-900">
-                  <div className="flex items-start gap-3">
-                    <AlertCircle className="w-5 h-5 text-rose-600 shrink-0 mt-0.5" />
-                    <div className="flex-1">
-                      <h4 className="text-sm font-bold text-rose-950">Could not complete estimate</h4>
-                      <p className="text-xs mt-1 text-rose-800">{predictionError.message}</p>
-                      <button
-                        type="button"
-                        onClick={() => runFullPipeline(currentInput)}
-                        className="mt-3 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-rose-700 hover:bg-rose-800 text-xs font-semibold text-white transition-colors cursor-pointer"
-                      >
-                        <RefreshCw className="w-3 h-3" />
-                        <span>Try Again</span>
-                      </button>
-                    </div>
-                  </div>
-                </Card>
-              )}
+              {/* Sub-Filters */}
+              <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-2xl overflow-x-auto no-scrollbar text-xs font-semibold">
+                <button
+                  type="button"
+                  onClick={() => setJourneySubTab('all')}
+                  className={`px-3 py-1.5 rounded-xl transition-all cursor-pointer ${
+                    journeySubTab === 'all'
+                      ? 'bg-white text-slate-900 shadow-2xs font-bold'
+                      : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                >
+                  All
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setJourneySubTab('trajectory')}
+                  className={`px-3 py-1.5 rounded-xl transition-all cursor-pointer ${
+                    journeySubTab === 'trajectory'
+                      ? 'bg-white text-slate-900 shadow-2xs font-bold'
+                      : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                >
+                  📈 Trajectory
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setJourneySubTab('photos')}
+                  className={`px-3 py-1.5 rounded-xl transition-all cursor-pointer ${
+                    journeySubTab === 'photos'
+                      ? 'bg-white text-slate-900 shadow-2xs font-bold'
+                      : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                >
+                  📷 Photos
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setJourneySubTab('decisions')}
+                  className={`px-3 py-1.5 rounded-xl transition-all cursor-pointer ${
+                    journeySubTab === 'decisions'
+                      ? 'bg-white text-slate-900 shadow-2xs font-bold'
+                      : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                >
+                  📋 Decisions ({decisions.length})
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setJourneySubTab('timeline')}
+                  className={`px-3 py-1.5 rounded-xl transition-all cursor-pointer ${
+                    journeySubTab === 'timeline'
+                      ? 'bg-white text-slate-900 shadow-2xs font-bold'
+                      : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                >
+                  📅 Timeline ({timeline.length})
+                </button>
+              </div>
+            </div>
 
-              {/* Metric Cards Grid */}
-              {isPredicting ? (
-                <div className="space-y-6">
-                  <Skeleton className="h-44 rounded-2xl" />
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <Skeleton className="h-64 rounded-2xl" />
-                    <Skeleton className="h-64 rounded-2xl" />
-                    <Skeleton className="h-64 rounded-2xl" />
-                  </div>
-                </div>
-              ) : prediction ? (
-                <div className="space-y-6">
-                  {/* 1. Farm Snapshot Visual Indicators */}
-                  <FarmSnapshot
-                    prediction={prediction}
-                    farmInput={currentInput}
-                    scenarioCatalog={scenarioCatalog}
+            {/* 1. Multi-Week Prediction Outlook Trajectory */}
+            {(journeySubTab === 'all' || journeySubTab === 'trajectory') && (
+              <PredictionHistoryCard
+                cropName={currentInput.crop_type}
+                history={predictionHistory}
+                currentYield={currentYieldVal}
+              />
+            )}
+
+            {/* 2. Field Photo Journal (Before vs Now) */}
+            {(journeySubTab === 'all' || journeySubTab === 'photos') && (
+              <PhotoJournalCard
+                cropName={currentInput.crop_type}
+                timeline={timeline}
+                onTriggerPhotoModal={() => handleOpenEventModal('PHOTO_LOG')}
+              />
+            )}
+
+            {/* 3. Farm Decisions Log & Actionable Recommendations */}
+            {(journeySubTab === 'all' || journeySubTab === 'decisions') && (
+              <div className="space-y-6">
+                <FarmDecisionLog
+                  cropName={currentInput.crop_type}
+                  decisions={decisions}
+                  onAddDecision={handleAddDecision}
+                  onDeleteDecision={handleDeleteDecision}
+                />
+
+                {isRecommending ? (
+                  <Skeleton className="h-72 rounded-2xl" />
+                ) : recommendations ? (
+                  <RecommendationList
+                    recommendations={recommendations.recommendations}
+                    executiveSummary={recommendations.summary.executive_summary}
+                    onExploreScenario={handleExploreScenario}
+                    onToggleMode={handleToggleRecMode}
+                    currentMode={recMode}
                   />
+                ) : null}
+              </div>
+            )}
 
-                  {/* 2. Visual Outcome Cards */}
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <PredictionCard
-                      prediction={prediction.prediction}
-                      context={prediction.context}
-                      modelVersion={prediction.metadata?.model_version}
-                      topPositive={prediction.explanation?.top_positive_factors?.[0]}
-                      topNegative={prediction.explanation?.top_negative_factors?.[0]}
-                    />
-                    <RiskCard risk={prediction.risk} />
-                    <ReliabilityCard
-                      uncertainty={prediction.uncertainty}
-                      dataQuality={prediction.data_quality}
-                    />
-                  </div>
-
-                  {/* 3. Farm Narrative Summary */}
-                  <FarmSummaryCard
-                    prediction={prediction}
-                    farmInput={currentInput}
-                    onScrollToRecommendations={() => setActiveTab('decisions')}
-                    onScrollToFactors={() => setActiveTab('why-estimate')}
-                  />
-                </div>
-              ) : null}
-            </section>
-          </div>
-        )}
-
-        {/* TAB 5: WHY THIS ESTIMATE? (Preserved SHAP Factor Influence) */}
-        {activeTab === 'why-estimate' && (
-          <div className="space-y-10 animate-in fade-in duration-300">
-            {isExplaining ? (
-              <Skeleton className="h-80 rounded-2xl" />
-            ) : explanation ? (
-              <FactorChart explanation={explanation} cropName={currentInput.crop_type} />
-            ) : null}
-
-            {/* Preserved Farm Summary */}
-            {prediction && (
-              <FarmSummaryCard
-                prediction={prediction}
-                farmInput={currentInput}
-                onScrollToRecommendations={() => setActiveTab('decisions')}
-                onScrollToFactors={() => {}}
+            {/* 4. Farm Timeline & Harvest Outcome Recorder */}
+            {(journeySubTab === 'all' || journeySubTab === 'timeline') && (
+              <FarmTimelineCard
+                timeline={timeline}
+                cropName={currentInput.crop_type}
+                onOpenObservationModal={handleOpenEventModal}
+                onDeleteEvent={handleDeleteTimelineEvent}
+                onRecordHarvest={handleRecordHarvest}
+                onResetTimeline={handleResetTimeline}
               />
             )}
           </div>
         )}
 
-        {/* TAB 6: WHAT-IF SCENARIO SIMULATOR (Preserved Scenario Engine) */}
+        {/* HUB 3: WHAT-IF SCENARIO SIMULATOR (Interactive Sliders & Sensitivity) */}
         {activeTab === 'simulator' && (
           <section id="scenario-section" className="space-y-6 animate-in fade-in duration-300">
             <ScenarioSimulator
@@ -725,59 +653,201 @@ export const App: React.FC = () => {
           </section>
         )}
 
-        {/* TAB 7: FARM MEMORY & CROP JOURNEY */}
-        {activeTab === 'timeline' && (
-          <div className="space-y-6 animate-in fade-in duration-300">
-            <FarmTimelineCard
-              timeline={timeline}
-              cropName={currentInput.crop_type}
-              onOpenObservationModal={handleOpenEventModal}
-              onDeleteEvent={handleDeleteTimelineEvent}
-              onRecordHarvest={handleRecordHarvest}
-              onResetTimeline={handleResetTimeline}
-            />
-          </div>
-        )}
-
-        {/* TAB 8: MODEL SPECIFICATIONS & ARCHITECTURE (Judge View) */}
-        {activeTab === 'model-specs' && (
+        {/* HUB 4: FIELD DATA & TECHNICAL HUB (Form, GroupKFold, SHAP, API) */}
+        {activeTab === 'technical' && (
           <div className="space-y-8 animate-in fade-in duration-300">
-            {/* Architecture Overview Banner */}
-            <Card variant="bordered" className="p-6 bg-slate-900 text-white rounded-3xl border-slate-800 space-y-4 shadow-lg">
-              <div className="flex items-center gap-2">
-                <span className="p-1.5 rounded-lg bg-amber-400/20 text-amber-400">
-                  <LineChart className="w-5 h-5" />
-                </span>
-                <h3 className="text-lg font-bold">CropIQ Model Architecture & Pipeline Integrity</h3>
+            {/* Technical Hub Header with Sub-Toggle */}
+            <div className="bg-white p-4 rounded-3xl border border-slate-200 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <h2 className="text-lg font-extrabold text-slate-900 flex items-center gap-2">
+                  <span className="p-1.5 rounded-lg bg-slate-900 text-amber-400">
+                    <Cpu className="w-4 h-4" />
+                  </span>
+                  <span>Field Data & Technical Hub</span>
+                </h2>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  Input calibration, live telemetry, SHAP waterfall decompositions, and 10-fold spatial GroupKFold validation.
+                </p>
               </div>
-              <p className="text-xs text-slate-300 leading-relaxed max-w-4xl">
-                CropIQ uses a spatial <strong>GroupKFold</strong> validated Random Forest regressor with TreeExplainer SHAP decompositions,
-                strict non-causal associations, RFC 7807 problem details, and deterministic feature encoders.
-                Zero simulated LLMs or fabricated percentages are used in inference.
-              </p>
-              <div className="flex items-center gap-3 pt-2">
-                <button
-                  type="button"
-                  onClick={() => setIsModelInfoOpen(true)}
-                  className="px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-bold transition-colors cursor-pointer"
-                >
-                  View Full Model Specs & Training Card
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setIsTechnicalDrawerOpen(true)}
-                  className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold border border-slate-700 transition-colors cursor-pointer"
-                >
-                  Inspect Live API Payload
-                </button>
-              </div>
-            </Card>
 
-            <ModelPerformanceCard
-              metrics={modelInfo?.metrics}
-              datasetSummary={modelInfo?.dataset_summary}
-              modelVersion={prediction?.metadata?.model_version || modelInfo?.model_version}
-            />
+              {/* Mode Toggle */}
+              <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-2xl text-xs font-semibold shrink-0">
+                <button
+                  type="button"
+                  onClick={() => setTechSubTab('input')}
+                  className={`px-3 py-1.5 rounded-xl transition-all cursor-pointer ${
+                    techSubTab === 'input'
+                      ? 'bg-white text-slate-900 shadow-2xs font-bold'
+                      : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                >
+                  🌱 Input Form & Overview
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setTechSubTab('metrics')}
+                  className={`px-3 py-1.5 rounded-xl transition-all cursor-pointer ${
+                    techSubTab === 'metrics'
+                      ? 'bg-slate-900 text-white shadow-2xs font-bold'
+                      : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                >
+                  ⚙️ Model Specs & Spatial CV
+                </button>
+              </div>
+            </div>
+
+            {techSubTab === 'input' && (
+              <div className="space-y-8">
+                {/* Farm Conditions Input Form */}
+                <FarmInputForm
+                  initialInput={currentInput}
+                  onSubmit={runFullPipeline}
+                  isLoading={isPredicting}
+                  scenarioCatalog={scenarioCatalog}
+                  onReset={() => {
+                    setCurrentInput(defaultFarmInput);
+                    runFullPipeline(defaultFarmInput);
+                  }}
+                />
+
+                {/* Farm Overview & Metric Cards */}
+                <section id="overview-section" className="space-y-6">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-4">
+                    <div>
+                      <h3 className="text-xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
+                        <span className="p-1.5 rounded-lg bg-emerald-100 text-emerald-800">
+                          <Sprout className="w-5 h-5" />
+                        </span>
+                        <span>Farm Telemetry & Yield Model Outcomes</span>
+                      </h3>
+                      <p className="text-xs sm:text-sm text-slate-500 mt-1">
+                        Detailed model breakdown and calibration for your{' '}
+                        <strong className="text-emerald-800">{currentInput.crop_type}</strong> crop.
+                      </p>
+                    </div>
+
+                    {lastUpdated && (
+                      <div className="flex items-center gap-1.5 text-xs text-slate-500 font-medium">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                        <span>Updated {lastUpdated.toLocaleTimeString()}</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Error Notice */}
+                  {predictionError && (
+                    <Card variant="bordered" className="p-5 border-rose-300 bg-rose-50 text-rose-900">
+                      <div className="flex items-start gap-3">
+                        <AlertCircle className="w-5 h-5 text-rose-600 shrink-0 mt-0.5" />
+                        <div className="flex-1">
+                          <h4 className="text-sm font-bold text-rose-950">Could not complete estimate</h4>
+                          <p className="text-xs mt-1 text-rose-800">{predictionError.message}</p>
+                          <button
+                            type="button"
+                            onClick={() => runFullPipeline(currentInput)}
+                            className="mt-3 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-rose-700 hover:bg-rose-800 text-xs font-semibold text-white transition-colors cursor-pointer"
+                          >
+                            <RefreshCw className="w-3 h-3" />
+                            <span>Try Again</span>
+                          </button>
+                        </div>
+                      </div>
+                    </Card>
+                  )}
+
+                  {/* Metric Cards Grid */}
+                  {isPredicting ? (
+                    <div className="space-y-6">
+                      <Skeleton className="h-44 rounded-2xl" />
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <Skeleton className="h-64 rounded-2xl" />
+                        <Skeleton className="h-64 rounded-2xl" />
+                        <Skeleton className="h-64 rounded-2xl" />
+                      </div>
+                    </div>
+                  ) : prediction ? (
+                    <div className="space-y-6">
+                      <FarmSnapshot
+                        prediction={prediction}
+                        farmInput={currentInput}
+                        scenarioCatalog={scenarioCatalog}
+                      />
+
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <PredictionCard
+                          prediction={prediction.prediction}
+                          context={prediction.context}
+                          modelVersion={prediction.metadata?.model_version}
+                          topPositive={prediction.explanation?.top_positive_factors?.[0]}
+                          topNegative={prediction.explanation?.top_negative_factors?.[0]}
+                        />
+                        <RiskCard risk={prediction.risk} />
+                        <ReliabilityCard
+                          uncertainty={prediction.uncertainty}
+                          dataQuality={prediction.data_quality}
+                        />
+                      </div>
+
+                      {/* Full SHAP Breakdown */}
+                      {isExplaining ? (
+                        <Skeleton className="h-80 rounded-2xl" />
+                      ) : explanation ? (
+                        <FactorChart explanation={explanation} cropName={currentInput.crop_type} />
+                      ) : null}
+
+                      <FarmSummaryCard
+                        prediction={prediction}
+                        farmInput={currentInput}
+                        onScrollToRecommendations={() => setActiveTab('journey')}
+                        onScrollToFactors={() => {}}
+                      />
+                    </div>
+                  ) : null}
+                </section>
+              </div>
+            )}
+
+            {techSubTab === 'metrics' && (
+              <div className="space-y-8">
+                {/* Architecture & Pipeline Integrity Card */}
+                <Card variant="bordered" className="p-6 bg-slate-900 text-white rounded-3xl border-slate-800 space-y-4 shadow-lg">
+                  <div className="flex items-center gap-2">
+                    <span className="p-1.5 rounded-lg bg-amber-400/20 text-amber-400">
+                      <LineChart className="w-5 h-5" />
+                    </span>
+                    <h3 className="text-lg font-bold">CropIQ Model Architecture & Pipeline Integrity</h3>
+                  </div>
+                  <p className="text-xs text-slate-300 leading-relaxed max-w-4xl">
+                    CropIQ uses a spatial <strong>GroupKFold</strong> validated Random Forest regressor with TreeExplainer SHAP decompositions,
+                    strict non-causal associations, RFC 7807 problem details, and deterministic feature encoders.
+                    Zero simulated LLMs or fabricated percentages are used in inference.
+                  </p>
+                  <div className="flex items-center gap-3 pt-2">
+                    <button
+                      type="button"
+                      onClick={() => setIsModelInfoOpen(true)}
+                      className="px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-bold transition-colors cursor-pointer"
+                    >
+                      View Full Model Specs & Training Card
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setIsTechnicalDrawerOpen(true)}
+                      className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold border border-slate-700 transition-colors cursor-pointer"
+                    >
+                      Inspect Live API Payload
+                    </button>
+                  </div>
+                </Card>
+
+                <ModelPerformanceCard
+                  metrics={modelInfo?.metrics}
+                  datasetSummary={modelInfo?.dataset_summary}
+                  modelVersion={prediction?.metadata?.model_version || modelInfo?.model_version}
+                />
+              </div>
+            )}
           </div>
         )}
       </main>
