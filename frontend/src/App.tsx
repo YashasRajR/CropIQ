@@ -30,6 +30,8 @@ import {
   LineChart,
   HelpCircle,
   Cpu,
+  TrendingUp,
+  ClipboardList,
 } from 'lucide-react';
 
 import { cropIQApi } from './services/api';
@@ -41,15 +43,34 @@ import { ExplanationResponse } from './types/explanation';
 import { RecommendationResponse } from './types/recommendation';
 import { ScenarioResponse } from './types/scenario';
 import { HealthResponse, ModelInfoResponse, APIErrorDetail } from './types/api';
-import { ObservationType, CropStage, TimelineEvent } from './types/events';
+import {
+  ObservationType,
+  CropStage,
+  TimelineEvent,
+  FarmDecision,
+  PredictionHistoryPoint,
+  FarmerFeedback,
+} from './types/events';
 import { Language, TRANSLATIONS } from './config/i18n';
 
-// Import New Continuous Intelligence Farmer Modules
+// Import Continuous Intelligence Farmer Modules
 import { MyCropToday } from './components/farmer/MyCropToday';
 import { EventImpactModal } from './components/farmer/EventImpactModal';
 import { FarmTimelineCard } from './components/farmer/FarmTimelineCard';
+import { PredictionHistoryCard } from './components/farmer/PredictionHistoryCard';
+import { FarmDecisionLog } from './components/farmer/FarmDecisionLog';
+import { PhotoJournalCard } from './components/farmer/PhotoJournalCard';
+import { ExpertReportModal } from './components/farmer/ExpertReportModal';
 
-type TabType = 'my-crop' | 'predictor' | 'why-estimate' | 'simulator' | 'timeline' | 'model-specs';
+type TabType =
+  | 'my-crop'
+  | 'history'
+  | 'decisions'
+  | 'predictor'
+  | 'why-estimate'
+  | 'simulator'
+  | 'timeline'
+  | 'model-specs';
 
 export const App: React.FC = () => {
   // --- View Mode & Localization State ---
@@ -63,18 +84,32 @@ export const App: React.FC = () => {
   const [currentInput, setCurrentInput] = useState<FarmInput>(defaultFarmInput);
   const [cropStage, setCropStage] = useState<CropStage>('Vegetative / Growing');
 
-  // --- Farm Memory & Timeline State ---
+  // --- Farm Memory, Decisions, History & Feedback State ---
   const farmKey = currentInput.field_id || currentInput.crop_type || 'default_plot';
   const [timeline, setTimeline] = useState<TimelineEvent[]>(() =>
     farmMemoryService.getTimeline(farmKey, currentInput.crop_type)
   );
+  const [decisions, setDecisions] = useState<FarmDecision[]>(() =>
+    farmMemoryService.getDecisions(farmKey, currentInput.crop_type)
+  );
+  const [predictionHistory, setPredictionHistory] = useState<PredictionHistoryPoint[]>(() =>
+    farmMemoryService.getPredictionHistory(farmKey, 4.2)
+  );
+  const [farmerFeedback, setFarmerFeedback] = useState<FarmerFeedback | null>(() =>
+    farmMemoryService.getFarmerFeedback(farmKey)
+  );
+
   const [isEventModalOpen, setIsEventModalOpen] = useState<boolean>(false);
   const [selectedEventType, setSelectedEventType] = useState<ObservationType | null>(null);
+  const [isExpertModalOpen, setIsExpertModalOpen] = useState<boolean>(false);
 
-  // Sync timeline when farm changes
+  // Sync state when farm preset or field changes
   useEffect(() => {
     const key = currentInput.field_id || currentInput.crop_type || 'default_plot';
     setTimeline(farmMemoryService.getTimeline(key, currentInput.crop_type));
+    setDecisions(farmMemoryService.getDecisions(key, currentInput.crop_type));
+    setPredictionHistory(farmMemoryService.getPredictionHistory(key, 4.2));
+    setFarmerFeedback(farmMemoryService.getFarmerFeedback(key));
   }, [currentInput.field_id, currentInput.crop_type]);
 
   // --- API Responses State ---
@@ -143,7 +178,14 @@ export const App: React.FC = () => {
       ]);
 
       if (predResult.status === 'fulfilled') {
-        setPrediction(predResult.value);
+        const val = predResult.value;
+        setPrediction(val);
+
+        // Update prediction history with new point estimate
+        const currentYield = val.prediction?.yield ?? 4.2;
+        const key = input.field_id || input.crop_type || 'default_plot';
+        const newHist = farmMemoryService.getPredictionHistory(key, currentYield);
+        setPredictionHistory(newHist);
       } else {
         const errDetail: APIErrorDetail = {
           code: 'ESTIMATE_FAILED',
@@ -272,6 +314,35 @@ export const App: React.FC = () => {
     setTimeline(resetList);
   };
 
+  // --- Farmer Decisions Handlers ---
+  const handleAddDecision = (
+    decisionData: Omit<FarmDecision, 'id' | 'timestamp'> & { timestamp?: string }
+  ) => {
+    const key = currentInput.field_id || currentInput.crop_type || 'default_plot';
+    const newDec = farmMemoryService.addDecision(key, decisionData);
+    setDecisions((prev) => [newDec, ...prev]);
+    // Refresh timeline because decision is mirrored into timeline
+    setTimeline(farmMemoryService.getTimeline(key, currentInput.crop_type));
+  };
+
+  const handleDeleteDecision = (decisionId: string) => {
+    const key = currentInput.field_id || currentInput.crop_type || 'default_plot';
+    farmMemoryService.deleteDecision(key, decisionId);
+    setDecisions((prev) => prev.filter((d) => d.id !== decisionId));
+  };
+
+  // --- Farmer Feedback & Ground Truth Handler ---
+  const handleSaveFarmerFeedback = (agreement: 'agrees' | 'unsure' | 'disagrees', notes?: string) => {
+    const key = currentInput.field_id || currentInput.crop_type || 'default_plot';
+    const saved = farmMemoryService.saveFarmerFeedback(key, {
+      agreement,
+      farmerNotes: notes,
+    });
+    setFarmerFeedback(saved);
+    // Refresh timeline if note was recorded
+    setTimeline(farmMemoryService.getTimeline(key, currentInput.crop_type));
+  };
+
   // Toggle recommendation mode
   const handleToggleRecMode = (mode: 'farmer' | 'technical') => {
     setRecMode(mode);
@@ -279,6 +350,8 @@ export const App: React.FC = () => {
       cropIQApi.getRecommendations(currentInput, mode, 5).then(setRecommendations);
     }
   };
+
+  const currentYieldVal = prediction?.prediction?.yield ?? 4.2;
 
   return (
     <div className="min-h-screen flex flex-col bg-[#f7faf7] text-slate-800 font-sans selection:bg-emerald-100 selection:text-emerald-900">
@@ -315,6 +388,32 @@ export const App: React.FC = () => {
             >
               <Sprout className="w-4 h-4" />
               <span>{t.myCropToday}</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setActiveTab('history')}
+              className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl transition-all whitespace-nowrap cursor-pointer ${
+                activeTab === 'history'
+                  ? 'bg-emerald-700 text-white shadow-xs font-bold'
+                  : 'text-slate-600 hover:bg-slate-100'
+              }`}
+            >
+              <TrendingUp className="w-4 h-4" />
+              <span>{t.outlookHistory}</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setActiveTab('decisions')}
+              className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl transition-all whitespace-nowrap cursor-pointer ${
+                activeTab === 'decisions'
+                  ? 'bg-emerald-700 text-white shadow-xs font-bold'
+                  : 'text-slate-600 hover:bg-slate-100'
+              }`}
+            >
+              <ClipboardList className="w-4 h-4" />
+              <span>{t.farmDecisions} ({decisions.length})</span>
             </button>
 
             <button
@@ -387,15 +486,18 @@ export const App: React.FC = () => {
 
       {/* Main Content Area */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-10">
-        {/* TAB 1: MY CROP TODAY (The Core Continuous Intelligence Hub) */}
+        {/* TAB 1: MY CROP TODAY (The Core Continuous Intelligence Cockpit) */}
         {activeTab === 'my-crop' && (
           <div className="space-y-8">
             <MyCropToday
               currentInput={currentInput}
               prediction={prediction}
               cropStage={cropStage}
+              farmerFeedback={farmerFeedback}
               onChangeCropStage={setCropStage}
               onOpenEventModal={handleOpenEventModal}
+              onSaveFeedback={handleSaveFarmerFeedback}
+              onOpenExpertReport={() => setIsExpertModalOpen(true)}
               onNavigateToTab={(tabId) => setActiveTab(tabId as TabType)}
             />
 
@@ -422,7 +524,49 @@ export const App: React.FC = () => {
           </div>
         )}
 
-        {/* TAB 2: YIELD PREDICTOR & FIELD CONDITIONS (Preserved Full Form & Overview) */}
+        {/* TAB 2: OUTLOOK HISTORY & PHOTO JOURNAL (Trajectory & Before vs Now) */}
+        {activeTab === 'history' && (
+          <div className="space-y-8 animate-in fade-in duration-300">
+            <PredictionHistoryCard
+              cropName={currentInput.crop_type}
+              history={predictionHistory}
+              currentYield={currentYieldVal}
+            />
+
+            <PhotoJournalCard
+              cropName={currentInput.crop_type}
+              timeline={timeline}
+              onTriggerPhotoModal={() => handleOpenEventModal('PHOTO_LOG')}
+            />
+          </div>
+        )}
+
+        {/* TAB 3: FARM DECISIONS & ACTIONABLE ADVICE */}
+        {activeTab === 'decisions' && (
+          <div className="space-y-8 animate-in fade-in duration-300">
+            <FarmDecisionLog
+              cropName={currentInput.crop_type}
+              decisions={decisions}
+              onAddDecision={handleAddDecision}
+              onDeleteDecision={handleDeleteDecision}
+            />
+
+            {/* Preserved FAO/ICAR Prioritized Recommendations */}
+            {isRecommending ? (
+              <Skeleton className="h-72 rounded-2xl" />
+            ) : recommendations ? (
+              <RecommendationList
+                recommendations={recommendations.recommendations}
+                executiveSummary={recommendations.summary.executive_summary}
+                onExploreScenario={handleExploreScenario}
+                onToggleMode={handleToggleRecMode}
+                currentMode={recMode}
+              />
+            ) : null}
+          </div>
+        )}
+
+        {/* TAB 4: YIELD PREDICTOR & FIELD CONDITIONS (Preserved Full Form & Overview) */}
         {activeTab === 'predictor' && (
           <div className="space-y-10 animate-in fade-in duration-300">
             {/* Section 1: Farm Conditions Input Form */}
@@ -521,7 +665,7 @@ export const App: React.FC = () => {
                   <FarmSummaryCard
                     prediction={prediction}
                     farmInput={currentInput}
-                    onScrollToRecommendations={() => setActiveTab('why-estimate')}
+                    onScrollToRecommendations={() => setActiveTab('decisions')}
                     onScrollToFactors={() => setActiveTab('why-estimate')}
                   />
                 </div>
@@ -530,7 +674,7 @@ export const App: React.FC = () => {
           </div>
         )}
 
-        {/* TAB 3: WHY THIS ESTIMATE? & ADVICE (Preserved SHAP + Recommendations) */}
+        {/* TAB 5: WHY THIS ESTIMATE? (Preserved SHAP Factor Influence) */}
         {activeTab === 'why-estimate' && (
           <div className="space-y-10 animate-in fade-in duration-300">
             {isExplaining ? (
@@ -539,21 +683,19 @@ export const App: React.FC = () => {
               <FactorChart explanation={explanation} cropName={currentInput.crop_type} />
             ) : null}
 
-            {isRecommending ? (
-              <Skeleton className="h-72 rounded-2xl" />
-            ) : recommendations ? (
-              <RecommendationList
-                recommendations={recommendations.recommendations}
-                executiveSummary={recommendations.summary.executive_summary}
-                onExploreScenario={handleExploreScenario}
-                onToggleMode={handleToggleRecMode}
-                currentMode={recMode}
+            {/* Preserved Farm Summary */}
+            {prediction && (
+              <FarmSummaryCard
+                prediction={prediction}
+                farmInput={currentInput}
+                onScrollToRecommendations={() => setActiveTab('decisions')}
+                onScrollToFactors={() => {}}
               />
-            ) : null}
+            )}
           </div>
         )}
 
-        {/* TAB 4: WHAT-IF SCENARIO SIMULATOR (Preserved Scenario Engine) */}
+        {/* TAB 6: WHAT-IF SCENARIO SIMULATOR (Preserved Scenario Engine) */}
         {activeTab === 'simulator' && (
           <section id="scenario-section" className="space-y-6 animate-in fade-in duration-300">
             <ScenarioSimulator
@@ -583,7 +725,7 @@ export const App: React.FC = () => {
           </section>
         )}
 
-        {/* TAB 5: FARM MEMORY & CROP JOURNEY */}
+        {/* TAB 7: FARM MEMORY & CROP JOURNEY */}
         {activeTab === 'timeline' && (
           <div className="space-y-6 animate-in fade-in duration-300">
             <FarmTimelineCard
@@ -597,7 +739,7 @@ export const App: React.FC = () => {
           </div>
         )}
 
-        {/* TAB 6: MODEL SPECIFICATIONS & ARCHITECTURE (Judge View) */}
+        {/* TAB 8: MODEL SPECIFICATIONS & ARCHITECTURE (Judge View) */}
         {activeTab === 'model-specs' && (
           <div className="space-y-8 animate-in fade-in duration-300">
             {/* Architecture Overview Banner */}
@@ -652,6 +794,16 @@ export const App: React.FC = () => {
         onClose={() => setIsEventModalOpen(false)}
         onSaveToTimeline={handleSaveEventToTimeline}
         onTriggerScenario={handleTriggerScenarioFromEvent}
+      />
+
+      {/* Expert Escalation Report Modal */}
+      <ExpertReportModal
+        isOpen={isExpertModalOpen}
+        onClose={() => setIsExpertModalOpen(false)}
+        farmInput={currentInput}
+        prediction={prediction}
+        cropStage={cropStage}
+        timeline={timeline}
       />
 
       {/* Modals & Technical Audit Drawer */}

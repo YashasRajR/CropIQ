@@ -16,6 +16,8 @@ export interface Translations {
   whatIfSimulator: string;
   farmMemory: string;
   modelAndMetrics: string;
+  outlookHistory: string;
+  farmDecisions: string;
   expectedYield: string;
   yieldUnit: string;
   confidenceRange: string;
@@ -57,6 +59,8 @@ export const TRANSLATIONS: Record<Language, Translations> = {
     whatIfSimulator: 'What-If Simulator',
     farmMemory: 'Farm Memory & Journey',
     modelAndMetrics: 'Model & Architecture',
+    outlookHistory: 'Outlook History & Photos',
+    farmDecisions: 'Farm Decisions',
     expectedYield: 'Estimated Harvest Yield',
     yieldUnit: 'tonnes / hectare',
     confidenceRange: 'Expected Range',
@@ -96,6 +100,8 @@ export const TRANSLATIONS: Record<Language, Translations> = {
     whatIfSimulator: 'क्या-अगर सिम्युलेटर',
     farmMemory: 'खेत का इतिहास और यात्रा',
     modelAndMetrics: 'मॉडल और तकनीक',
+    outlookHistory: 'पूर्वानुमान इतिहास और तस्वीरें',
+    farmDecisions: 'खेत के निर्णय',
     expectedYield: 'अनुमानित फसल उपज',
     yieldUnit: 'टन / हेक्टेयर',
     confidenceRange: 'संभावित सीमा',
@@ -135,6 +141,8 @@ export const TRANSLATIONS: Record<Language, Translations> = {
     whatIfSimulator: 'શું-જો સિમ્યુલેટર',
     farmMemory: 'ખેતરનો ઇતિહાસ',
     modelAndMetrics: 'મોડેલ અને આર્કિટેક્ચર',
+    outlookHistory: 'આગાહી ઇતિહાસ અને ફોટા',
+    farmDecisions: 'ખેતરના નિર્ણયો',
     expectedYield: 'અંદાજિત પાક ઉત્પાદન',
     yieldUnit: 'ટન / હેક્ટર',
     confidenceRange: 'સંભવિત રેન્જ',

@@ -16,19 +16,25 @@ import {
   Calendar,
   MapPin,
   Sparkles,
+  FileSpreadsheet,
 } from 'lucide-react';
 import { FarmInput } from '../../types/farm';
 import { PredictionResponse } from '../../types/prediction';
-import { ObservationType, CropStage } from '../../types/events';
+import { ObservationType, CropStage, FarmerFeedback } from '../../types/events';
 import { Card } from '../common/Card';
 import { Badge } from '../common/Badge';
+import { FarmerAgreementCard } from './FarmerAgreementCard';
+import { WhatWeDontKnowPanel } from './WhatWeDontKnowPanel';
 
 interface MyCropTodayProps {
   currentInput: FarmInput;
   prediction: PredictionResponse | null;
   cropStage: CropStage;
+  farmerFeedback: FarmerFeedback | null;
   onChangeCropStage: (stage: CropStage) => void;
   onOpenEventModal: (type: ObservationType) => void;
+  onSaveFeedback: (agreement: 'agrees' | 'unsure' | 'disagrees', notes?: string) => void;
+  onOpenExpertReport: () => void;
   onNavigateToTab: (tabId: string) => void;
 }
 
@@ -36,8 +42,11 @@ export const MyCropToday: React.FC<MyCropTodayProps> = ({
   currentInput,
   prediction,
   cropStage,
+  farmerFeedback,
   onChangeCropStage,
   onOpenEventModal,
+  onSaveFeedback,
+  onOpenExpertReport,
   onNavigateToTab,
 }) => {
   const yieldVal = prediction?.prediction?.yield ?? 4.2;
@@ -69,8 +78,77 @@ export const MyCropToday: React.FC<MyCropTodayProps> = ({
       ? { label: 'Elevated Heat', variant: 'amber' as const, note: `${temp}°C may induce higher water demand.` }
       : { label: 'Cool Ambient', variant: 'slate' as const, note: `${temp}°C may slow development rate.` };
 
+  // Feature 23: "One Thing to Do Today"
+  const getTodayPriorityCheck = () => {
+    if (moisture < 20) {
+      return {
+        action: 'Check Root Moisture Depth Ahead of Scheduled Watering',
+        reason: 'Soil moisture has dropped to ' + moisture.toFixed(1) + '%, which is lower than ideal for ' + currentInput.crop_type + '.',
+        badge: 'Water Management',
+        badgeColor: 'bg-blue-100 text-blue-900 border-blue-200',
+      };
+    }
+    if (temp > 33) {
+      return {
+        action: 'Scout Midday Foliage for Transpiration Stress & Leaf Rolling',
+        reason: 'Ambient temperature is elevated at ' + temp.toFixed(1) + '°C. Check whether leaves recover posture in late afternoon.',
+        badge: 'Heat Watch',
+        badgeColor: 'bg-amber-100 text-amber-900 border-amber-200',
+      };
+    }
+    if (ndvi < 0.35) {
+      return {
+        action: 'Perform Diagonal Field Walk to Inspect Leaf Coloration & Pests',
+        reason: 'Remote sensing shows moderate canopy greenness. Check underside of leaves for early sucking pest colonies.',
+        badge: 'Canopy Inspection',
+        badgeColor: 'bg-emerald-100 text-emerald-900 border-emerald-200',
+      };
+    }
+    return {
+      action: 'Conduct Routine Weekly Scouting Across Diagonal Row Crossings',
+      reason: 'Canopy vigor and soil moisture are in healthy balance. Routine scouting verifies steady vegetative progress.',
+      badge: 'Routine Scouting',
+      badgeColor: 'bg-emerald-100 text-emerald-900 border-emerald-200',
+    };
+  };
+
+  const todayCheck = getTodayPriorityCheck();
+
   return (
     <div className="space-y-8 animate-in fade-in duration-300">
+      {/* 0. Feature 23: "One Thing to Do Today" Priority Banner */}
+      <div className="p-4 sm:p-5 rounded-3xl bg-gradient-to-r from-emerald-800 to-teal-800 text-white shadow-md flex flex-col md:flex-row md:items-center justify-between gap-4 border border-emerald-600">
+        <div className="flex items-start gap-3.5">
+          <span className="p-2.5 rounded-2xl bg-white/15 backdrop-blur-xs text-amber-300 shrink-0 mt-0.5">
+            <CheckCircle2 className="w-5 h-5" />
+          </span>
+          <div className="space-y-1">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="text-[10px] uppercase font-bold tracking-wider px-2.5 py-0.5 rounded-full bg-white/20 text-white border border-white/20">
+                Today&apos;s Crop Check
+              </span>
+              <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full border ${todayCheck.badgeColor}`}>
+                {todayCheck.badge}
+              </span>
+            </div>
+            <h3 className="text-base sm:text-lg font-extrabold text-white">
+              {todayCheck.action}
+            </h3>
+            <p className="text-xs text-emerald-100/90 leading-relaxed max-w-3xl">
+              <strong>Why?</strong> {todayCheck.reason}
+            </p>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => onNavigateToTab('decisions')}
+          className="self-start md:self-center shrink-0 px-4 py-2 rounded-xl bg-white text-emerald-950 hover:bg-emerald-50 text-xs font-bold transition-colors cursor-pointer shadow-xs"
+        >
+          <span>Log Decision / Action &rarr;</span>
+        </button>
+      </div>
+
       {/* 1. Crop Identity & Stage Bar */}
       <Card variant="bordered" className="p-6 bg-gradient-to-br from-emerald-900 via-emerald-800 to-teal-900 text-white rounded-3xl shadow-lg border-emerald-700">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
@@ -99,26 +177,37 @@ export const MyCropToday: React.FC<MyCropTodayProps> = ({
             </p>
           </div>
 
-          {/* Quick Stage Selector */}
-          <div className="bg-white/10 backdrop-blur-sm p-4 rounded-2xl border border-white/15 space-y-2 shrink-0">
-            <label className="block text-[11px] font-bold uppercase tracking-wider text-emerald-200">
-              Current Growth Stage
-            </label>
-            <select
-              value={cropStage}
-              onChange={(e) => onChangeCropStage(e.target.value as CropStage)}
-              className="w-full bg-emerald-950/80 text-white text-xs font-semibold px-3 py-2 rounded-xl border border-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-400 cursor-pointer"
-            >
-              <option value="Sowing / Seedling">🌱 Sowing / Seedling</option>
-              <option value="Vegetative / Growing">🌿 Vegetative / Growing</option>
-              <option value="Flowering / Squaring">🌸 Flowering / Squaring</option>
-              <option value="Grain / Pod Filling">🌾 Grain / Pod Filling</option>
-              <option value="Maturity / Ripening">🧺 Maturity / Ripening</option>
-            </select>
-            <div className="text-[10px] text-emerald-200/70 flex items-center gap-1">
-              <Calendar className="w-3 h-3" />
-              <span>Sown ~52 days ago &bull; Observed: {currentInput.date_of_image || 'Current'}</span>
+          {/* Quick Stage Selector & Expert Consultation Button */}
+          <div className="flex flex-col gap-3 shrink-0">
+            <div className="bg-white/10 backdrop-blur-sm p-4 rounded-2xl border border-white/15 space-y-2">
+              <label className="block text-[11px] font-bold uppercase tracking-wider text-emerald-200">
+                Current Growth Stage
+              </label>
+              <select
+                value={cropStage}
+                onChange={(e) => onChangeCropStage(e.target.value as CropStage)}
+                className="w-full bg-emerald-950/80 text-white text-xs font-semibold px-3 py-2 rounded-xl border border-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-400 cursor-pointer"
+              >
+                <option value="Sowing / Seedling">🌱 Sowing / Seedling</option>
+                <option value="Vegetative / Growing">🌿 Vegetative / Growing</option>
+                <option value="Flowering / Squaring">🌸 Flowering / Squaring</option>
+                <option value="Grain / Pod Filling">🌾 Grain / Pod Filling</option>
+                <option value="Maturity / Ripening">🧺 Maturity / Ripening</option>
+              </select>
+              <div className="text-[10px] text-emerald-200/70 flex items-center gap-1">
+                <Calendar className="w-3 h-3" />
+                <span>Sown ~52 days ago &bull; Observed: {currentInput.date_of_image || 'Current'}</span>
+              </div>
             </div>
+
+            <button
+              type="button"
+              onClick={onOpenExpertReport}
+              className="w-full inline-flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-bold transition-colors cursor-pointer shadow-xs"
+            >
+              <FileSpreadsheet className="w-3.5 h-3.5" />
+              <span>Generate Agronomist Report</span>
+            </button>
           </div>
         </div>
       </Card>
@@ -168,10 +257,10 @@ export const MyCropToday: React.FC<MyCropTodayProps> = ({
             </button>
             <button
               type="button"
-              onClick={() => onNavigateToTab('simulator')}
+              onClick={() => onNavigateToTab('history')}
               className="text-xs font-bold text-slate-600 hover:text-slate-900 inline-flex items-center gap-1 cursor-pointer"
             >
-              <span>Test Changes</span>
+              <span>Outlook History</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>
@@ -253,7 +342,14 @@ export const MyCropToday: React.FC<MyCropTodayProps> = ({
         </div>
       </div>
 
-      {/* 3. Central Question: "HAS ANYTHING CHANGED IN YOUR FIELD?" */}
+      {/* 3. Feature 4: Farmer + AI Agreement Interaction */}
+      <FarmerAgreementCard
+        cropName={currentInput.crop_type}
+        initialFeedback={farmerFeedback}
+        onSaveFeedback={onSaveFeedback}
+      />
+
+      {/* 4. Feature 2: "HAS ANYTHING CHANGED IN YOUR FIELD?" */}
       <Card variant="bordered" className="p-6 sm:p-8 bg-white rounded-3xl border-slate-200 shadow-xs space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-4">
           <div className="space-y-1">
@@ -266,7 +362,7 @@ export const MyCropToday: React.FC<MyCropTodayProps> = ({
               </h3>
             </div>
             <p className="text-xs sm:text-sm text-slate-500">
-              Select what you are noticing. CropIQ will provide scientifically grounded guidance, a field checklist, and next steps.
+              Select what you are noticing. CropIQ provides grounded FAO/ICAR guidance, an on-ground checklist, and next steps.
             </p>
           </div>
 
@@ -375,7 +471,7 @@ export const MyCropToday: React.FC<MyCropTodayProps> = ({
         </div>
       </Card>
 
-      {/* 4. "WHAT SHOULD I CHECK NEXT?" Action Checklist */}
+      {/* 5. Feature 10: "WHAT SHOULD I CHECK NEXT?" Action Checklist */}
       <Card variant="bordered" className="p-6 bg-emerald-50/60 rounded-3xl border-emerald-200 space-y-4">
         <div className="flex items-center gap-2">
           <span className="p-1.5 rounded-lg bg-emerald-200 text-emerald-900">
@@ -425,6 +521,9 @@ export const MyCropToday: React.FC<MyCropTodayProps> = ({
           </div>
         </div>
       </Card>
+
+      {/* 6. Feature 18: What CropIQ Does NOT Know Yet */}
+      <WhatWeDontKnowPanel cropName={currentInput.crop_type} />
     </div>
   );
 };

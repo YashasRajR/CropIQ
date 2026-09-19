@@ -1,5 +1,5 @@
 /**
- * CropIQ Farmer Events, Observations & Farm Memory Domain Models
+ * CropIQ Farmer Events, Observations, Decisions & Farm Memory Domain Models
  */
 
 export type ObservationType =
@@ -59,4 +59,40 @@ export interface HarvestRecord {
   harvestDate: string;
   actualYieldTonnes: number;
   notes?: string;
+}
+
+export type DecisionCategory = 'IRRIGATION' | 'FERTILIZER' | 'PEST_CONTROL' | 'WEEDING' | 'INSPECTION';
+
+export interface FarmDecision {
+  id: string;
+  timestamp: string;
+  category: DecisionCategory;
+  title: string;
+  details: string;
+  costEstimate?: string;
+  notes?: string;
+}
+
+export interface PredictionHistoryPoint {
+  weekLabel: string;
+  date: string;
+  yieldEstimate: number;
+  contextEvent?: string;
+  trajectory: 'improving' | 'stable' | 'concern';
+}
+
+export interface FarmerFeedback {
+  id: string;
+  timestamp: string;
+  agreement: 'agrees' | 'unsure' | 'disagrees';
+  farmerNotes?: string;
+}
+
+export interface DataAvailabilityItem {
+  category: string;
+  label: string;
+  available: boolean;
+  status: 'verified' | 'unverified' | 'unavailable';
+  source: string;
+  details: string;
 }
