@@ -1,3 +1,9 @@
+<!-- profile-card:start -->
+<p align="center">
+  <a href="https://github.com/YashasRajR"><img src="https://raw.githubusercontent.com/YashasRajR/YashasRajR/main/cards/headers/CropIQ.svg" width="100%" alt="CropIQ" /></a>
+</p>
+<!-- profile-card:end -->
+
 # CropIQ: AI-Powered Crop Yield Intelligence
 > **Predict. Understand. Optimize.**
 
